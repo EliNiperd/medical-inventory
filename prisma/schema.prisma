@@ -1,0 +1,66 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["views"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Categorys {
+  name        String  @id(map: "category_pkey")
+  id_category Int     @default(autoincrement())
+  Description String?
+}
+
+model Forms {
+  id_form          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  form_name        String
+  form_description String?
+  create_at        DateTime @default(now()) @db.Timestamp(6)
+}
+
+model Locations {
+  id_location          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  location_name        String
+  location_description String?
+  created_at           DateTime @default(now()) @db.Timestamp(6)
+}
+
+model Medicines {
+  id               String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name             String
+  description      String
+  price            Float?    @db.Real
+  quantity         Int       @default(1)
+  created_at       DateTime  @default(now()) @db.Timestamp(6)
+  updated_at       DateTime? @db.Timestamp(6)
+  expiration_date  DateTime  @db.Timestamp(6)
+  idCategory       Int       @default(1)
+  idForm           String    @db.Uuid
+  packsize         Int       @default(1)
+  reorder_point    Int       @default(1)
+  idLocation       String    @db.Uuid
+  quantity_on_hans Int?      @default(dbgenerated("(quantity * packsize)"))
+}
+
+view Medicines_Table {
+  id               String    @unique @db.Uuid
+  name_medicine    String?
+  description      String
+  price            Float?    @db.Real
+  quantity         Int
+  created_at       DateTime  @db.Timestamp(6)
+  updated_at       DateTime? @db.Timestamp(6)
+  expiration_date  DateTime  @db.Timestamp(6)
+  idCategory       Int
+  idForm           String    @db.Uuid
+  packsize         Int
+  reorder_point    Int
+  idLocation       String    @db.Uuid
+  quantity_on_hans Int?
+  category_name    String?
+  form_name        String?
+  location_name    String
+}
