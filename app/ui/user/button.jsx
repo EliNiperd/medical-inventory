@@ -1,24 +1,24 @@
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { deleteMedicine } from "@/app/dashboard/medicine/actions";
+import { deleteUser } from "@/app/dashboard/admin/user/actions";
 
-export function CreateMedicine() {
+export function CreateUser() {
   return (
     <Link
-      href="/dashboard/medicine/create"
-      className="flex items-center gap-2 bg-primary text-primary-foreground rounded-md p-2 hover:bg-primary/70"
+      href="/dashboard/admin/user/create"
+      className="flex items-center gap-2 bg-primary/90 text-primary-foreground border-2 border-primary-500 rounded-md p-2 hover:bg-primary-600"
     >
-      <span className="hidden md:block">Crear medicina</span>
+      <span className="hidden md:block">Crear user</span>
       {""}
       <PlusIcon className="h-5 md:ml-2" />
     </Link>
   );
 }
 
-export function UpdateMedicine({ id }) {
+export function UpdateUser({ id }) {
   return (
     <Link
-      href={`/dashboard/medicine/${id}/edit`}
+      href={`/dashboard/admin/user/${id}/edit`}
       className="bg-primary text-primary-foreground rounded-md p-2 hover:bg-primary/70 font-sm flex items-center "
     >
       <span className="hidden md:block">Editar</span>
@@ -27,8 +27,8 @@ export function UpdateMedicine({ id }) {
   );
 }
 
-export function DeleteMedicine({ id }) {
-  const deleteWithId = deleteMedicine.bind(null, id);
+export function DeleteUser({ id }) {
+  const deleteWithId = deleteUser.bind(null, id);
   return (
     <>
       <form action={deleteWithId}>
