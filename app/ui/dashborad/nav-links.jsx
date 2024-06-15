@@ -26,6 +26,11 @@ const links = [
     href: "/dashboard/location",
     icon: UserGroupIcon,
   },
+  {
+    name: "Users",
+    href: "/dashboard/admin/user",
+    icon: UserGroupIcon,
+  },
 ];
 
 export default function NavLinks() {
