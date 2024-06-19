@@ -1,8 +1,13 @@
 export const authConfig = {
+  session: {
+    strategy: "jwt",
+    maxAge: 2 * 60 * 60, // 2 hours
+  },
   pages: {
     signIn: "/login",
   },
   secret: process.env.NEXTAUTH_SECRET,
+
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!(auth === null || auth === void 0

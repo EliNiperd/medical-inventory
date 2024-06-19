@@ -13,6 +13,7 @@ model Categorys {
   name        String  @id(map: "category_pkey")
   id_category Int     @default(autoincrement())
   Description String?
+  id_user_create String @db.Uuid
 }
 
 model Forms {
@@ -20,6 +21,7 @@ model Forms {
   form_name        String
   form_description String?
   create_at        DateTime @default(now()) @db.Timestamp(6)
+  id_user_create   String   @db.Uuid
 }
 
 model Locations {
@@ -27,6 +29,8 @@ model Locations {
   location_name        String
   location_description String?
   created_at           DateTime @default(now()) @db.Timestamp(6)
+  id_user_create       String   @db.Uuid
+  updated_at           DateTime? @db.Timestamp(6)
 }
 
 model Medicines {
@@ -44,6 +48,7 @@ model Medicines {
   idCategory       Int       @default(1)
   idForm           String    @db.Uuid
   idLocation       String    @db.Uuid
+  id_user_create   String    @db.Uuid
 }
 
 model Users {
@@ -52,6 +57,7 @@ model Users {
   password       String
   user_name_full String?
   create_at      DateTime? @default(now()) @db.Timestamp(6)
+  id_user_create String    @db.Uuid
 }
 
 model Roles {
@@ -78,4 +84,5 @@ view Medicines_Table {
   category_name    String?
   form_name        String?
   location_name    String
+  id_user_create   String @db.Uuid
 }
