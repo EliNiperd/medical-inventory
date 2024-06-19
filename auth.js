@@ -43,6 +43,25 @@ export const { auth, signIn, signOut } = NextAuth(
         },
       }),
     ],
+    session: {
+      jwt: true,
+    },
+    callbacks: {
+      jwt({ token, user }) {
+        if (user) {
+          token.id = user.id;
+          token.email = user.email;
+        }
+        return token;
+      },
+      session({ session, token }) {
+        session.user = token;
+        return session;
+      },
+    },
+    pages: {
+      signIn: "/login",
+    },
   })
 );
 /*
