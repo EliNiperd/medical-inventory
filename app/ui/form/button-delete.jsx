@@ -1,31 +1,32 @@
 'use client';
 
 import { TrashIcon, ViewfinderCircleIcon } from "@heroicons/react/24/outline";
-import { deleteLocation } from "@/app/dashboard/location/actions";
+import { deleteForm } from "@/app/dashboard/form/actions";
 import { Toaster, toast } from 'sonner';
+import { useState } from 'react';
 
-export function DeleteLocation({ id_location, location_name }) {
+export function DeleteButtonForm({ id_form, form_name }) {
     const [isDeleting, setIsDeleting] = useState(false);
 
-    async function deleteClientAction(id_Location) {
+    async function deleteClientAction(id_Form) {
         setIsDeleting(true);
         try {
-            const response = await deleteLocation(id_Location);
+            const response = await deleteForm(id_Form);
             const { status, message } = JSON.parse(response);
             if (status === 200) {
-                toast.success(`Ubicación ${location_name}, eliminada correctamente`);
+                toast.success(`Forma ${form_name}, eliminada correctamente`);
                 setIsDeleting(false);
             }
         } catch (error) {
-            toast.error('Error al eliminar la ubicación');
+            toast.error('Error al eliminar la forma');
         }
     }
-    const confirmDelete = () => toast.warning(`¿Desea eliminar esta ubicación? ${location_name}`, {
+    const confirmDelete = () => toast.warning(`¿Desea eliminar esta forma? ${form_name}`, {
         position: 'top-right',
         duration: Infinity,
         action: {
             label: 'Eliminar',
-            onClick: () => deleteClientAction(id_location),
+            onClick: () => deleteClientAction(id_form),
         },
         cancel: {
             label: 'Cancelar',
