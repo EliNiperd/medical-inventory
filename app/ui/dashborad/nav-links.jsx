@@ -45,7 +45,7 @@ export default function NavLinks() {
                 <LinkIcon className="w-6 h-6" />
                 <span>{link.name}</span>
               </div>
-              <ChevronRightIcon className="w-6 h-6 ml-auto" />
+              <ChevronRightIcon className="w-6 h-6 ml-auto sm:hidden" />
             </div>
           </Link>
         );
