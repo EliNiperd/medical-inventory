@@ -18,7 +18,7 @@ const links = [
   { name: "Inventario", href: "/dashboard/medicine", icon: DocumentDuplicateIcon },
   { name: "Ubicaciones", href: "/dashboard/location", icon: UserGroupIcon },
   { name: "Tipos/Formas", href: "/dashboard/form", icon: RectangleGroupIcon },
-  { name: "Presentaciones", href: "/dashboard/presentation", icon: SwatchIcon },
+  //{ name: "Presentaciones", href: "/dashboard/presentation", icon: SwatchIcon },
   { name: "Usuarios", href: "/dashboard/admin/user", icon: UserGroupIcon },
 ];
 

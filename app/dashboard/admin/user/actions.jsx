@@ -68,7 +68,7 @@ export async function createUser(formData) {
     },
   });
 
-  prisma.$disconnect();
+  
 
   revalidatePath("/dashboard/admin/user");
   redirect("/dashboard/admin/user");
@@ -96,8 +96,7 @@ export async function fetchFilteredUsers(query, page, limit, sort, order) {
     },
   });
 
-  prisma.$disconnect();
-
+ 
   return users;
 }
 
@@ -108,7 +107,7 @@ export async function fetchUserById(id) {
     },
   });
 
-  prisma.$disconnect();
+  
 
   return user;
 }
@@ -149,8 +148,7 @@ export async function updateUser(id_user, formData) {
     },
   });
 
-  prisma.$disconnect();
-
+ 
   revalidatePath("/dashboard/admin/user");
   redirect("/dashboard/admin/user");
 }
@@ -162,7 +160,5 @@ export async function deleteUser(id_user) {
     },
   });
 
-  prisma.$disconnect();
-
-  revalidatePath("/dashboard/admin/user");
+   revalidatePath("/dashboard/admin/user");
 }

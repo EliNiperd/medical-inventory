@@ -3,6 +3,7 @@
 import { TrashIcon, ViewfinderCircleIcon } from "@heroicons/react/24/outline";
 import { deleteLocation } from "@/app/dashboard/location/actions";
 import { Toaster, toast } from 'sonner';
+import { useState } from "react";
 
 export function DeleteLocation({ id_location, location_name }) {
     const [isDeleting, setIsDeleting] = useState(false);

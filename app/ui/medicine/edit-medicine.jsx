@@ -251,7 +251,7 @@ export default function Form({ medicine, categorys, forms, locations }) {
         <div className="col-span-2 mt-6 mr-6 flex justify-end gap-2  ">
           <Link
             href="/dashboard/medicine"
-            className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-grary-200"
+            className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
           >
             Cancelar
           </Link>

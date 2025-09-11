@@ -5,21 +5,24 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { schemaLocation } from "@/lib/schemas/location";
-import { parseISO } from "date-fns";
+import { wakeUpDb } from "@/app/lib/db-wake-up";
+//import { parseISO } from "date-fns";
+
 
 export async function fetchLocations() {
+
+  // Paso intermedio: Despierta la DB antes de la consulta
+  await wakeUpDb();
+
   try {
     const locations = await prisma.locations.findMany();
     //console.log("locations action:", locations);
-    prisma.$disconnect();
     //console.log("locations action after: ", locations);
     return locations;
   } catch (error) {
-    //  console.error("Database Error:", error);
-    throw new Error("Failed to fetch all locations.");
-  } finally {
-    prisma.$disconnect();
-  }
+      console.error("Database Error:", error);
+    //throw new Error("Failed to fetch all locations.");
+  } 
 }
 
 export async function fetchLocationById(id_location) {
@@ -28,9 +31,6 @@ export async function fetchLocationById(id_location) {
       id_location: id_location,
     },
   });
-
-  prisma.$disconnect();
-
   return location;
 }
 
@@ -56,8 +56,6 @@ export async function fetchFilteredLocations(query, page, limit, sort, order) {
     },
   });
 
-  prisma.$disconnect();
-
   return locations;
 }
 
@@ -80,8 +78,6 @@ export async function createLocation(formData) {
       id_user_create: '8d8b2e5c-649a-4793-bc56-b8ec3eb68b24',
     },
   });
-
-  prisma.$disconnect();
 
   revalidatePath("/dashboard/location");
   redirect("/dashboard/location");
@@ -109,8 +105,6 @@ export async function updateLocation(id_location, formData) {
     },
   });
 
-  prisma.$disconnect();
-
   revalidatePath("/dashboard/location");
   redirect("/dashboard/location");
 }
@@ -134,12 +128,11 @@ export async function deleteLocation(id_location) {
           id_location: id_location,
         },
       });
-      prisma.$disconnect();
+      
       revalidatePath("/dashboard/location");
       return JSON.stringify({ "status": 200, "message": "Location deleted." });
     }
   } catch (error) {
-    prisma.$disconnect();
     return JSON.stringify({ "status": 500, "message": "Failed to delete location." });
     //throw new Error("Failed to delete location.");
   }

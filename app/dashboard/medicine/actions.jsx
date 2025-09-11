@@ -1,5 +1,6 @@
 "use server";
 
+import { wakeUpDb } from "@/app/lib/db-wake-up";
 //import { getURL } from "@/lib/getURL";
 import { prisma } from "@/app/lib/prisma";
 import { parseISO } from "date-fns";
@@ -15,6 +16,9 @@ export async function fetchFilteredMedicines(query, page, limit, sort, order) {
   );
   const data = await res.json();
   */
+
+  await wakeUpDb();
+  
 
   const medicines = await prisma.medicines_Table.findMany({
     where: {
@@ -53,8 +57,6 @@ export async function fetchFilteredMedicines(query, page, limit, sort, order) {
     },
   });
 
-  prisma.$disconnect();
-
   //const medicines = data.medicines;
   //console.log(medicines);
   return medicines;
@@ -67,8 +69,6 @@ export async function fetchMedicineById(id) {
       id: id,
     },
   });
-
-  prisma.$disconnect();
 
   //console.log(medicine);
   return medicine;
@@ -120,8 +120,6 @@ export async function createMedicine(formData) {
       idLocation: location,
     },
   });
-
-  prisma.$disconnect();
 
   revalidatePath("/dashboard/medicine");
   redirect("/dashboard/medicine");
@@ -177,8 +175,6 @@ export async function updateMedicine(id, formData) {
     },
   });
 
-  prisma.$disconnect();
-
   revalidatePath("/dashboard/medicine");
   redirect("/dashboard/medicine");
 }
@@ -189,8 +185,6 @@ export async function deleteMedicine(id) {
       id: id,
     },
   });
-
-  prisma.$disconnect();
 
   revalidatePath("/dashboard/medicine");
 }

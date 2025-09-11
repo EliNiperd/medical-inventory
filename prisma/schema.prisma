@@ -1,36 +1,36 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["views", "postgresqlExtensions"]
+  previewFeatures = ["postgresqlExtensions", "views"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  extensions = [pgcrypto]
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [pgcrypto, uuid_ossp(map: "uuid-ossp", schema: "public")]
 }
 
 model Categorys {
-  name        String  @id(map: "category_pkey")
-  id_category Int     @default(autoincrement())
-  Description String?
-  id_user_create String @db.Uuid
+  name           String  @id(map: "category_pkey")
+  id_category    Int     @default(autoincrement())
+  Description    String?
+  id_user_create String  @db.Uuid
 }
 
 model Forms {
-  id_form          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id_form          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   form_name        String
   form_description String?
-  create_at        DateTime @default(now()) @db.Timestamp(6)
-  id_user_create   String   @db.Uuid
-  update_at           DateTime? @db.Timestamp(6)
+  create_at        DateTime  @default(now()) @db.Timestamp(6)
+  id_user_create   String    @db.Uuid
+  update_at        DateTime? @db.Timestamp(6)
 }
 
 model Locations {
-  id_location          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id_location          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   location_name        String
   location_description String?
-  created_at           DateTime @default(now()) @db.Timestamp(6)
-  id_user_create       String   @db.Uuid
+  created_at           DateTime  @default(now()) @db.Timestamp(6)
+  id_user_create       String    @db.Uuid
   updated_at           DateTime? @db.Timestamp(6)
 }
 
@@ -85,5 +85,5 @@ view Medicines_Table {
   category_name    String?
   form_name        String?
   location_name    String
-  id_user_create   String @db.Uuid
+  id_user_create   String    @db.Uuid
 }

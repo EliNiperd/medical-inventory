@@ -10,10 +10,10 @@ export default async function TableUsers({ query, page, limit, sort, order }) {
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <table className="hidden min-m-full text-gray-900 md:table">
-            <thead className="rounded-lg text-sm font-normal text-center">
-              <tr>
+            <thead className="rounded-lg text-sm font-normal text-center border-b border-gray-200">
+              <tr >
                 <th scope="col" className="px-4 py-5 font-sm font normal">
-                  Nombre Cumpleto
+                  Nombre Completo
                 </th>
                 {/*<th scope="col" className="px-4 py-5 font-sm font normal">
                   Descripción

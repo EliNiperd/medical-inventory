@@ -28,7 +28,6 @@ export function UpdateMedicine({ id }) {
 }
 
 export function DeleteMedicine({ id }) {
-  const deleteWithId = deleteMedicine.bind(null, id);
   return (
     <>
       <form action={deleteWithId}>
