@@ -1,7 +1,7 @@
 "use server";
 
 //import { getURL } from "@/lib/getURL";
-import { prisma } from "@/app/lib/prisma";
+import  prisma from "@/app/lib/prisma";
 import { wakeUpDb } from "@/app/lib/db-wake-up";
 
 export async function fetchCategorys() {

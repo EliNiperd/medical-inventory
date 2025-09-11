@@ -2,7 +2,7 @@
 
 import { wakeUpDb } from "@/app/lib/db-wake-up";
 //import { getURL } from "@/lib/getURL";
-import { prisma } from "@/app/lib/prisma";
+import  prisma  from "@/app/lib/prisma";
 import { parseISO } from "date-fns";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";

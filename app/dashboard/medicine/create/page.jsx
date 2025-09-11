@@ -7,8 +7,8 @@ import { fetchLocations } from "@/app/dashboard/location/actions";
 const categories = await fetchCategorys();
 const forms = await fetchForms();
 const locations = await fetchLocations();
-console.log("errores");
-console.log(forms);
+//console.log("errores");
+//console.log(forms);
 
 export default async function Page() {
   return (
