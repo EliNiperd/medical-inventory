@@ -3,6 +3,7 @@ import NavLinks from "@/app/ui/dashborad/nav-links";
 //import AcmeLogo from '@/app/ui/acme-logo';
 import { PowerIcon, HomeModernIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { signOut } from "@/auth";
+import { redirect } from "next/navigation";
 
 export default function SideNav() {
   return (
@@ -21,6 +22,7 @@ export default function SideNav() {
             action={async () => {
               "use server";
               await signOut();
+              redirect("/login");
             }}
           >
             <button className="flex items-center h-[48px] w-full  text-black justify-start  gap-2 rounded-md bg-gray-50 p-3 font-medium hover:bg-sky-100 hover:text-blue-600  ">
@@ -30,10 +32,6 @@ export default function SideNav() {
             </button>
 
           </form>
-
-        </div>
-        <div>
-
         </div>
       </div>
     </div>
