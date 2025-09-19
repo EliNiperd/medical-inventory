@@ -125,11 +125,11 @@ export async function GET(request) {
       });
     }
     
-    console.log('🔍 Searching for:', cleanQuery);
+    //console.log('🔍 Searching for:', cleanQuery);
     
     try {
-      console.log('🔑 API Key length:', process.env.GOOGLE_API_KEY?.length);
-      console.log('🔑 API Key starts with:', process.env.GOOGLE_API_KEY?.substring(0, 10));
+      //console.log('🔑 API Key length:', process.env.GOOGLE_API_KEY?.length);
+      //console.log('🔑 API Key starts with:', process.env.GOOGLE_API_KEY?.substring(0, 10));
       
       // Probar diferentes modelos
       const modelsToTry = [
@@ -145,7 +145,7 @@ export async function GET(request) {
       
       for (const modelName of modelsToTry) {
         try {
-          console.log(`🤖 Trying model: ${modelName}`);
+          //console.log(`🤖 Trying model: ${modelName}`);
           
           const model = genAI.getGenerativeModel({ 
             model: modelName,
@@ -171,18 +171,18 @@ export async function GET(request) {
 
                 IMPORTANT: Return complete valid JSON array only. Maximum 10 medicines.`;
           
-          console.log('📤 Sending enhanced prompt with packsize');
+          //console.log('📤 Sending enhanced prompt with packsize');
           
           const result = await model.generateContent(prompt);
           
           // Verificar candidatos y safety ratings
           const candidates = result.response?.candidates;
-          console.log('📊 Candidates received:', candidates?.length || 0);
+          //console.log('📊 Candidates received:', candidates?.length || 0);
           
           if (candidates && candidates.length > 0) {
             const candidate = candidates[0];
-            console.log('🏁 Finish reason:', candidate.finishReason);
-            console.log('🛡️ Safety ratings:', candidate.safetyRatings?.map(r => `${r.category}: ${r.probability}`));
+            //console.log('🏁 Finish reason:', candidate.finishReason);
+            //console.log('🛡️ Safety ratings:', candidate.safetyRatings?.map(r => `${r.category}: ${r.probability}`));
             
             // Verificar si fue bloqueado por seguridad
             if (candidate.finishReason === 'SAFETY') {
@@ -205,9 +205,9 @@ export async function GET(request) {
         }
       }
       
-      console.log('📝 Final response length:', text.length);
-      console.log('🤖 Model used:', modelUsed);
-      console.log('📄 Response preview:', text.substring(0, 200));
+      //console.log('📝 Final response length:', text.length);
+      //console.log('🤖 Model used:', modelUsed);
+      //console.log('📄 Response preview:', text.substring(0, 200));
       
       if (!text || text.length === 0) {
         console.log('⚠️ All models returned empty, using mock data');
@@ -262,8 +262,8 @@ export async function GET(request) {
 // Parser simple y robusto
 function parseResponse(text) {
   try {
-    console.log('🔄 Parsing response...');
-    console.log('📄 Full response:', text); // Ver respuesta completa
+    //console.log('🔄 Parsing response...');
+    //console.log('📄 Full response:', text); // Ver respuesta completa
     
     // Limpiar texto
     let cleanText = text
@@ -291,7 +291,7 @@ function parseResponse(text) {
     }
     
     let jsonStr = arrayMatch[0];
-    console.log('📋 Extracted JSON:', jsonStr);
+    //console.log('📋 Extracted JSON:', jsonStr);
     
     // Intentar parsear
     let parsed;
@@ -319,7 +319,7 @@ function parseResponse(text) {
         }
       }
       
-      console.log('🔧 Repaired JSON:', jsonStr);
+      //console.log('🔧 Repaired JSON:', jsonStr);
       
       try {
         parsed = JSON.parse(jsonStr);
@@ -349,7 +349,7 @@ function parseResponse(text) {
       }))
       .slice(0, 6); // Máximo 6 resultados
     
-    console.log('✅ Parsed', cleaned.length, 'medicines successfully');
+    //console.log('✅ Parsed', cleaned.length, 'medicines successfully');
     return cleaned;
     
   } catch (error) {

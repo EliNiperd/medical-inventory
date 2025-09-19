@@ -85,11 +85,12 @@ function useFormValidation(formData, rules) {
     setIsValid(!hasErrors);
 
     // ✅ Debug logs
-    console.log('🔍 Validation result:', {
+    /*console.log('🔍 Validation result:', {
       hasErrors,
       errorFields: Object.keys(newErrors),
       isValid: !hasErrors
     });
+    */
 
     return !hasErrors;
   }, [formData, rules, validateField]);
@@ -143,9 +144,9 @@ export default function CreateMedicineForm({ categorys = [], forms = [], locatio
   }, [formData, validateForm]);
 
   // ✅ Debug: Ver el estado de validación
-  useEffect(() => {
+  /*useEffect(() => {
     console.log('🔍 Form validation state:', { isValid, errors, formData });
-  }, [isValid, errors, formData]);
+  }, [isValid, errors, formData]);*/
 
   // Manejar selección de medicamento del autocompletado
   const handleMedicineSelected = useCallback((suggestion) => {
@@ -212,11 +213,11 @@ export default function CreateMedicineForm({ categorys = [], forms = [], locatio
   const handleInputChange = useCallback((e) => {
     const { name, value } = e.target;
 
-    console.log('🔄 Input change:', { name, value }); // Debug
+    //console.log('🔄 Input change:', { name, value }); // Debug
 
     setFormData(prevData => {
       const newData = { ...prevData, [name]: value };
-      console.log('🔄 New form data:', newData); // Debug
+      //console.log('🔄 New form data:', newData); // Debug
       return newData;
     });
 
@@ -235,7 +236,7 @@ export default function CreateMedicineForm({ categorys = [], forms = [], locatio
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
 
-    console.log('🚀 Form submitted!', { formData, isValid, errors }); // Debug
+    //console.log('🚀 Form submitted!', { formData, isValid, errors }); // Debug
 
 
     // Forzar validación antes de enviar
@@ -251,12 +252,12 @@ export default function CreateMedicineForm({ categorys = [], forms = [], locatio
     setSubmitError(null);
 
     try {
-      console.log('📤 Sending form data:', formData);
+      //console.log('📤 Sending form data:', formData); //Debug
 
       // Llamar a la action directamente (Next.js 13+ App Router)
       const result = await createMedicine(formData);
 
-      console.log('✅ Medicine created:', result);
+      //console.log('✅ Medicine created:', result); //Debug
       setSubmitSuccess(true);
 
       // Resetear formulario después de éxito
