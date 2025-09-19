@@ -10,10 +10,11 @@ datasource db {
 }
 
 model Categorys {
-  name           String  @id(map: "category_pkey")
-  id_category    Int     @default(autoincrement())
-  Description    String?
-  id_user_create String  @db.Uuid
+  category_name        String
+  id_category          Int       @id(map: "category_pkey") @default(autoincrement())
+  category_description String?
+  id_user_create       String    @db.Uuid
+  create_at            DateTime? @default(now()) @db.Timestamp(6)
 }
 
 model Forms {
