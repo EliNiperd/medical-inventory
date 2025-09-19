@@ -10,10 +10,10 @@ export default function Form({ form }) {
     const updateFormWithId = updateForm.bind(null, form.id_form);
     return (
         <form action={updateFormWithId}>
-            <div className="grid col-span-2 rounded-md w-9/12 bg-gray-50 p-4 md:p-6">
+            <div className="form-basic grid col-span-2 w-9/12 p-4 md:p-6">
                 {/* Name Form */}
                 <div className="mb-4 col-span-2 ">
-                    <label htmlFor="name_form" className="mb-2 block text-sm font-medium">
+                    <label htmlFor="name_form" >
                         Nombre Forma
                     </label>
                     <div className="relative mt-2 rounded-md">
@@ -23,9 +23,9 @@ export default function Form({ form }) {
                                 name="form_name"
                                 defaultValue={form.form_name}
                                 placeholder="Ingrese el nombre de la forma"
-                                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                className="input-form"
                             />
-                            <ArchiveBoxIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+                            <ArchiveBoxIcon className="icon-input" />
                         </div>
                     </div>
                 </div>
@@ -33,7 +33,6 @@ export default function Form({ form }) {
                 <div className="mb-4 col-span-2 ">
                     <label
                         htmlFor="form_description"
-                        className="mb-2 block text-sm font-medium"
                     >
                         Descripción Forma
                     </label>
@@ -44,9 +43,9 @@ export default function Form({ form }) {
                                 name="form_description"
                                 defaultValue={form.form_description}
                                 placeholder="Ingrese la descripción de la forma"
-                                className="peer block w-full h-12  rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                className="input-form"
                             />
-                            <Bars3BottomLeftIcon className="pointer-events-none absolute left-3 top-1/3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+                            <Bars3BottomLeftIcon className="icon-input" />
                         </div>
                     </div>
                 </div>
@@ -54,7 +53,7 @@ export default function Form({ form }) {
                 <div className="col-span-2 mt-6 mr-6 flex justify-end gap-2  ">
                     <Link
                         href="/dashboard/form"
-                        className="flex h-10 items-center rounded-lg bg-gray-300 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-400"
+                        className="btn-form-cancel"
                     >
                         Cancelar
                     </Link>

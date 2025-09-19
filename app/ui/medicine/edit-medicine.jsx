@@ -21,10 +21,10 @@ export default function Form({ medicine, categorys, forms, locations }) {
   const expirationDate = medicine.expiration_date.toISOString().split("T")[0];
   return (
     <form action={updateMedicineWithId}>
-      <div className="grid col-span-2 rounded-md w-9/12 bg-gray-50 p-4 md:p-6">
+      <div className=" form-basic max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-4 ">
         {/* Medicine Name */}
-        <div className="mb-4 col-span-2 ">
-          <label htmlFor="name" className="mb-2 block text-sm font-medium">
+        <div className=" col-span-2 ">
+          <label htmlFor="name">
             Nombre
           </label>
           <div className="relative mt-2 rounded-md">
@@ -35,21 +35,20 @@ export default function Form({ medicine, categorys, forms, locations }) {
                 name="name"
                 defaultValue={medicine.name}
                 placeholder="Ingrese el nombre del medicamento"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="input-form"
               />
-              <QueueListIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <QueueListIcon className="icon-input" />
             </div>
           </div>
         </div>
         {/* Medicine Description */}
-        <div className="mb-4 col-span-2 ">
+        <div className="mb-2 col-span-2 ">
           <label
             htmlFor="description"
-            className="mb-2 block text-sm font-medium"
           >
             Descripción
           </label>
-          <div className="relative mt-2 rounded-md">
+          <div className="relative rounded-md">
             <div className="relative">
               <textarea
                 type="text"
@@ -57,23 +56,23 @@ export default function Form({ medicine, categorys, forms, locations }) {
                 name="description"
                 defaultValue={medicine.description}
                 placeholder="Ingrese la descripción del medicamento (sustancia(s) activa(s), uso, etc.)"
-                className="peer block w-full rounded-md border border-gray-200 py-1 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="input-form"
               />
-              <DocumentTextIcon className="pointer-events-none absolute left-3 top-1/3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <DocumentTextIcon className="icon-input top-5" />
             </div>
           </div>
         </div>
 
         {/* Category */}
-        <div className="mb-2">
-          <label htmlFor="category" className="mb-2 block text-sm font-medium">
+        <div >
+          <label htmlFor="category" >
             Categoría
           </label>
           <div className="relative">
             <select
               id="category"
               name="category"
-              className="peer block  cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+              className="input-form"
               defaultValue={medicine.idCategory}
             >
               <option value="" disabled>
@@ -85,20 +84,20 @@ export default function Form({ medicine, categorys, forms, locations }) {
                 </option>
               ))}
             </select>
-            <InboxStackIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+            <InboxStackIcon className="icon-input" />
           </div>
         </div>
 
         {/* Form (Presentación) */}
-        <div className="mb-2">
-          <label htmlFor="form" className="mb-2 block text-sm font-medium">
+        <div >
+          <label htmlFor="form" >
             Presentación
           </label>
           <div className="relative">
             <select
               id="form"
               name="form"
-              className="peer block  cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+              className="input-form"
               defaultValue={medicine.id_form}
             >
               <option value="" disabled>
@@ -110,13 +109,13 @@ export default function Form({ medicine, categorys, forms, locations }) {
                 </option>
               ))}
             </select>
-            <SwatchIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+            <SwatchIcon className="icon-input" />
           </div>
         </div>
 
         {/* Medicine Quantity */}
         <div className="mb-2">
-          <label htmlFor="quantity" className="mb-2 block text-sm font-medium">
+          <label htmlFor="quantity" >
             Cantidad:
           </label>
           <div className="relative mt-2 rounded-md">
@@ -128,15 +127,15 @@ export default function Form({ medicine, categorys, forms, locations }) {
                 type="number"
                 step="1"
                 placeholder="Ingrese cantidad"
-                className="peer block  rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="input-form-number"
               />
-              <CalculatorIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <CalculatorIcon className="icon-input" />
             </div>
           </div>
         </div>
         {/* PackSize (Cantidad de paquetes) */}
         <div className="mb-2">
-          <label htmlFor="packsize" className="mb-2 block text-sm font-medium">
+          <label htmlFor="packsize" >
             Paquetes (de la presentación)
           </label>
           <div className="relative mt-2 rounded-md">
@@ -149,21 +148,20 @@ export default function Form({ medicine, categorys, forms, locations }) {
                 step="1"
                 min={1}
                 placeholder="Ingrese cantidad"
-                className="peer block  rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="input-form-number"
               />
-              <CalculatorIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <CalculatorIcon className="icon-input" />
             </div>
           </div>
         </div>
         {/* reorder_point (Punto de Reorden) */}
-        <div className="mb-2">
+        <div >
           <label
             htmlFor="reorder_point"
-            className="mb-2 block text-sm font-medium"
           >
             Punto de reorden
           </label>
-          <div className="relative mt-2 rounded-md">
+          <div className="relative rounded-md">
             <div className="relative">
               <input
                 id="reorder_point"
@@ -173,38 +171,37 @@ export default function Form({ medicine, categorys, forms, locations }) {
                 step="1"
                 min={0}
                 placeholder="Ingrese cantidad"
-                className="peer block  rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="input-form-number"
               />
-              <CalculatorIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <CalculatorIcon className="icon-input" />
             </div>
           </div>
         </div>
 
         {/*Medicine expiration_date (Fecha de caducidad)*/}
-        <div className="mb-2">
+        <div >
           <label
             htmlFor="expirationDate"
-            className="mb-2 block text-sm font-medium"
           >
             Fecha de caducidad
           </label>
-          <div className="relative mt-2 rounded-md">
+          <div className="relative rounded-md">
             <div className="relative">
               <input
                 id="expirationDate"
                 name="expirationDate"
                 defaultValue={expirationDate}
                 type="date"
-                className="peer block  rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="input-form-number"
               />
-              <CalendarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <CalendarIcon className="icon-input" />
             </div>
           </div>
         </div>
 
         {/* Location (ubicación) */}
-        <div className="mb-2">
-          <label htmlFor="location" className="mb-2 block text-sm font-medium">
+        <div >
+          <label htmlFor="location" >
             Ubicación
           </label>
           <div className="relative">
@@ -212,7 +209,7 @@ export default function Form({ medicine, categorys, forms, locations }) {
               id="location"
               name="location"
               defaultValue={medicine.idLocation}
-              className="peer block  cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+              className="input-form"
             >
               <option value="" disabled>
                 Seleccionar ubicación
@@ -223,16 +220,16 @@ export default function Form({ medicine, categorys, forms, locations }) {
                 </option>
               ))}
             </select>
-            <GlobeAmericasIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+            <GlobeAmericasIcon className="icon-input" />
           </div>
         </div>
 
         {/*Medicine price*/}
-        <div className="mb-2  ">
-          <label htmlFor="price" className="mb-2 block text-sm font-medium">
+        <div>
+          <label htmlFor="price" >
             Precio
           </label>
-          <div className="relative mt-2 rounded-md">
+          <div className="relative rounded-md">
             <div className="relative">
               <input
                 id="price"
@@ -241,21 +238,20 @@ export default function Form({ medicine, categorys, forms, locations }) {
                 type="number"
                 step="0.01"
                 placeholder="Ingrese precio, MXP"
-                className="peer block  rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="input-form-number"
               />
-              <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <CurrencyDollarIcon className="icon-input" />
             </div>
           </div>
         </div>
-
-        <div className="col-span-2 mt-6 mr-6 flex justify-end gap-2  ">
+        <div className="col-span-2  flex justify-end gap-2 border-t pt-4 pb-4  ">
           <Link
             href="/dashboard/medicine"
-            className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
+            className="btn-form-cancel"
           >
             Cancelar
           </Link>
-          <Button type="submit" className="pr-4">
+          <Button type="submit" className="btn-form-submit">
             Guardar información
           </Button>
         </div>

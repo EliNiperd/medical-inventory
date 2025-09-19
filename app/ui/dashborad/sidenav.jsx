@@ -7,14 +7,18 @@ import { redirect } from "next/navigation";
 
 export default function SideNav() {
   return (
-    <div className="flex  h-full flex-col px-3 py-4 md:px-4">
-      <Link
-        className="mb-2 mt-2 flex h-18 items-end justify-start rounded-md bg-blue-600 p-4 md:h-20"
-        href="/"
-      >
-        <HomeModernIcon className="w-6 mt-2 " />
-        <div className="w-full text-white md:w-40 justify-center ml-2">Medical-Inventory</div>
-      </Link>
+    <div className="flex h-full flex-col px-3 py-3 md:px-4">
+      {/* Logo Section */}
+      <div className="mb-6 flex h-16 mt-4 shadow-md rounded-md">
+        <Link
+          className="mb-2 flex h-16 items-end justify-start rounded-md bg-blue-500 
+          p-4 md:h-18 shadow-md hover:bg-blue-400 "
+          href="/"
+        >
+          <HomeModernIcon className="w-6 " />
+          <div className="w-full ml-2 md:w-40 justify-center dark:text-black text-white ">Medical-Inventory</div>
+        </Link>
+      </div>
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
         <div>
           <NavLinks />
@@ -25,12 +29,13 @@ export default function SideNav() {
               redirect("/login");
             }}
           >
-            <button className="flex items-center h-[48px] w-full  text-black justify-start  gap-2 rounded-md bg-gray-50 p-3 font-medium hover:bg-sky-100 hover:text-blue-600  ">
+            <button className="flex items-center w-full 
+              text-black justify-start gap-2 rounded-md bg-gray-50 p-3 
+              font-medium hover:bg-gray-200 hover:text-blue-800 shadow-md">
               <PowerIcon className="w-6 h-6" />
               <p className="  ">Sign Out</p>
-              <ChevronRightIcon className="w-6 h-6 ml-auto" />
+              {/* <ChevronRightIcon className="w-6 h-6 ml-auto" /> */}
             </button>
-
           </form>
         </div>
       </div>

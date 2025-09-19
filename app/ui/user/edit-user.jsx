@@ -16,10 +16,10 @@ export default function Form({ user }) {
   //const expirationDate = medicine.expiration_date.toISOString().split("T")[0];
   return (
     <form action={updateUserWithId}>
-      <div className="grid col-span-2 rounded-md w-9/12 bg-gray-50 p-4 md:p-6">
+      <div className="form-basic  mt-6 grid grid-cols-2 w-10/12 gap-6">
         {/* User Name Full */}
         <div className="mb-4 col-span-2 ">
-          <label htmlFor="name" className="mb-2 block text-sm font-medium">
+          <label htmlFor="name" >
             Nombre completo
           </label>
           <div className="relative mt-2 rounded-md">
@@ -29,19 +29,17 @@ export default function Form({ user }) {
                 id="user_name_full"
                 name="user_name_full"
                 defaultValue={user.user_name_full}
+                value={user.user_name_full}
                 placeholder="Ingrese el nombre completo del usuario"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="input-form"
               />
-              <UserIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <UserIcon className="icon-input" />
             </div>
           </div>
         </div>
         {/* Email  */}
         <div className="mb-4 col-span-2 ">
-          <label
-            htmlFor="description"
-            className="mb-2 block text-sm font-medium"
-          >
+          <label htmlFor="description">
             Email
           </label>
           <div className="relative mt-2 rounded-md">
@@ -52,16 +50,16 @@ export default function Form({ user }) {
                 name="email"
                 defaultValue={user.email}
                 placeholder="Ingrese el email del usuario"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="input-form"
               />
-              <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <AtSymbolIcon className="icon-input" />
             </div>
           </div>
         </div>
 
         {/* Password */}
         <div className="mb-2">
-          <label htmlFor="category" className="mb-2 block text-sm font-medium">
+          <label htmlFor="category" >
             Contraseña
           </label>
           <div className="relative">
@@ -71,15 +69,15 @@ export default function Form({ user }) {
               name="password"
               defaultValue={user.password}
               placeholder="Ingrese la contraseña del usuario"
-              className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+              className="input-form"
             />
-            <LockClosedIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+            <LockClosedIcon className="icon-input" />
           </div>
         </div>
 
         {/* Confirm Password */}
         <div className="mb-2">
-          <label htmlFor="category" className="mb-2 block text-sm font-medium">
+          <label htmlFor="category" >
             Confirmar contraseña
           </label>
           <div className="relative">
@@ -89,20 +87,20 @@ export default function Form({ user }) {
               name="password"
               defaultValue={user.password}
               placeholder="Confirme la contraseña del usuario"
-              className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+              className="input-form"
             />
-            <LockClosedIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+            <LockClosedIcon className="icon-input" />
           </div>
         </div>
 
         <div className="col-span-2 mt-6 mr-6 flex justify-end gap-2  ">
           <Link
             href="/dashboard/admin/user"
-            className="flex h-10 items-center rounded-lg bg-gray-300 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-400"
+            className="btn-form-cancel"
           >
             Cancelar
           </Link>
-          <Button type="submit" className="pr-4">
+          <Button type="submit" className="btn-form-submit">
             Guardar información
           </Button>
         </div>

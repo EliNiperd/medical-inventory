@@ -5,7 +5,7 @@ export function CreateForm() {
     return (
         <Link
             href="/dashboard/form/create"
-            className="flex items-center gap-2 bg-primary/90 text-primary-foreground border-2 border-primary-500 rounded-md p-2 hover:bg-primary-600"
+            className="btn-primary"
         >
             <span className="hidden md:block">Crear Forma</span>
             {""}
@@ -19,7 +19,7 @@ export function UpdateForm({ id_form }) {
     return (
         <Link
             href={`/dashboard/form/${id_form}/edit`}
-            className="bg-primary text-primary-foreground rounded-md p-2 hover:bg-primary/70 font-sm flex items-center "
+            className="btn-primary"
         >
             <span className="hidden md:block">Editar</span>
             <PencilIcon className="h-5 md:ml-2" />

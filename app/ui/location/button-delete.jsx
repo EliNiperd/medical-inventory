@@ -38,12 +38,12 @@ export function DeleteLocation({ id_location, location_name }) {
     return (
         <>
             <button onClick={confirmDelete} disabled={isDeleting}
-                className={`rounded-md border bg-destructive p-2 hover:bg-destructive/70 text-primary-foreground ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                className={`btn-delete ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}>
                 {isDeleting ? (
                     <ViewfinderCircleIcon className="w-5 animate-spin" />
                 ) : (
                     <>
-                        <span className="sr-only">Eliminar</span>
+                        <span className="hidden md:block">Eliminar</span>
                         <TrashIcon className="w-5" />
                     </>
                 )}

@@ -13,7 +13,7 @@ export default async function TableForm({ query, page, limit, sort, order }) {
                         <thead className="rounded-lg text-sm font-normal text-center border-b border-gray-200">
                             <tr>
                                 <th scope="col" className="px-4 py-5 font-sm font normal">
-                                    Formas
+                                    Forma
                                 </th>
                                 <th scope="col" className="px-4 py-5 font-sm font normal">
                                     Descripción

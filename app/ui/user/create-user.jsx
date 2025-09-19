@@ -2,36 +2,15 @@ import Link from "next/link";
 import Button from "@/app/ui/button";
 import { AtSymbolIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 import { createUser } from "@/app/dashboard/admin/user/actions";
-//import { z } from "zod";
-//import { useForm } from "react-hook-form";
-/*import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/app/ui/form";
-*/
-function FormCreate() {
-  /*
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
-*/
-  //const onSubmit = (data) => console.log(data);
 
-  //console.log(watch("example")); // watch input value by passing the name of it
+function FormCreate() {
+ 
   return (
     <form action={createUser}>
-      <div className="grid col-span-2 rounded-md w-9/12 bg-gray-50 p-4 md:p-6">
+      <div className="form-basic grid col-span-2 w-9/12 p-4 md:p-6">
         {/* Email User */}
         <div className="mb-4 col-span-2 ">
-          <label htmlFor="name" className="mb-2 block text-sm font-medium">
+          <label htmlFor="name" >
             Email
           </label>
           <div className="relative mt-2 rounded-md">
@@ -41,15 +20,15 @@ function FormCreate() {
                 id="email"
                 name="email"
                 placeholder="Ingrese el email del usuario"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="input-form"
               />
-              <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <AtSymbolIcon className="icon-input" />
             </div>
           </div>
         </div>
         {/* Password User */}
         <div className="mb-4 col-span-2 ">
-          <label htmlFor="password" className="mb-2 block text-sm font-medium">
+          <label htmlFor="password" >
             Password
           </label>
           <div className="relative mt-2 rounded-md">
@@ -59,9 +38,9 @@ function FormCreate() {
                 id="password"
                 name="password"
                 placeholder="Ingrese la contraseña del usuario"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="input-form"
               />
-              <LockClosedIcon className="pointer-events-none absolute left-3 top-1/3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <LockClosedIcon className="icon-input" />
             </div>
           </div>
         </div>
@@ -69,7 +48,6 @@ function FormCreate() {
         <div className="mb-4 col-span-2 ">
           <label
             htmlFor="confirmPassword"
-            className="mb-2 block text-sm font-medium"
           >
             Confirmar Password
           </label>
@@ -80,16 +58,16 @@ function FormCreate() {
                 id="confirmPassword"
                 name="confirmPassword"
                 placeholder="Confirme la contraseña del usuario"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="input-form"
               />
-              <LockClosedIcon className="pointer-events-none absolute left-3 top-1/3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <LockClosedIcon className="icon-input" />
             </div>
           </div>
         </div>
-        <div className="col-span-2 mt-6 mr-6 flex justify-end gap-2  ">
+        <div className="col-span-2 mt-6 mr-6 flex justify-end gap-2">
           <Link
             href="/dashboard/admin/user"
-            className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
+            className="btn-form-cancel"
           >
             Cancelar
           </Link>

@@ -30,9 +30,9 @@ export default async function TableMedicine({
                 {/*<th scope="col" className="px-4 py-5 font-sm font normal">
                   Descripción
                 </th>*/}
-                <th scope="col" className="px-4 py-5 font-sm font normal">
+                {/* <th scope="col" className="px-4 py-5 font-sm font normal">
                   Tipo
-                </th>
+                </th> */}
                 <th scope="col" className="px-4 py-5 font-sm font normal">
                   Cont.
                 </th>
@@ -43,17 +43,17 @@ export default async function TableMedicine({
                   Cant.
                 </th>
                 <th scope="col" className="px-4 py-5 font-sm font normal">
-                  Fecha de caducidad
+                  Caducidad
                 </th>
-                <th scope="col" className="px-4 py-5 font-sm font normal">
+                {/* <th scope="col" className="px-4 py-5 font-sm font normal">
                   Reorder
-                </th>
+                </th> */}
                 <th scope="col" className="px-4 py-5 font-sm font normal">
                   Ubicación
                 </th>
-                <th scope="col" className="px-4 py-5 font-sm font normal">
+                {/* <th scope="col" className="px-4 py-5 font-sm font normal">
                   Precio
-                </th>
+                </th> */}
                 <th scope="col" className="px-4 py-5 font-sm font normal">
                   Total
                 </th>
@@ -82,11 +82,11 @@ export default async function TableMedicine({
                       {medicine.description}
                     </p>
               </td>*/}
-                    <td className="px-4 py-4">
+                    {/* <td className="px-4 py-4">
                       <p className="text-sm text-gray-500">
                         {medicine.category_name}
                       </p>
-                    </td>
+                    </td> */}
                     <td className="px-4 py-4">
                       <p className="text-sm text-gray-500">{medicine.quantity}</p>
                     </td>
@@ -103,24 +103,24 @@ export default async function TableMedicine({
                         {medicine.expiration_date?.toLocaleDateString() ?? "N/D"}
                       </p>
                     </td>
-                    <td className="px-4 py-4">
+                    {/* <td className="px-4 py-4">
                       <p className="text-sm font-medium text-gray-900">
                         {medicine.reorder_point}
                       </p>
-                    </td>
+                    </td> */}
                     <td className="px-4 py-4">
                       <p className="text-sm font-medium text-gray-900">
                         {medicine.location_name}
                       </p>
                     </td>
-                    <td className="px-4 py-4">
+                    {/* <td className="px-4 py-4">
                       <p className="text-sm font-medium text-gray-900">
                         {medicine.price?.toLocaleString("es-MX", {
                           style: "currency",
                           currency: "MXN",
                         }) ?? "N/D"}
                       </p>
-                    </td>
+                    </td> */}
                     <td className="px-4 py-4">
                       <p className="text-sm font-medium text-gray-900">
                         {medicine.quantity_on_hans}

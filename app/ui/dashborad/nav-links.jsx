@@ -18,7 +18,7 @@ const links = [
   { name: "Inventario", href: "/dashboard/medicine", icon: DocumentDuplicateIcon },
   { name: "Ubicaciones", href: "/dashboard/location", icon: UserGroupIcon },
   { name: "Tipos/Formas", href: "/dashboard/form", icon: RectangleGroupIcon },
-  //{ name: "Presentaciones", href: "/dashboard/presentation", icon: SwatchIcon },
+  { name: "Categorias", href: "/dashboard/category", icon: SwatchIcon },
   { name: "Usuarios", href: "/dashboard/admin/user", icon: UserGroupIcon },
 ];
 
@@ -34,9 +34,9 @@ export default function NavLinks() {
             key={link.name}
             href={link.href}
             className={clsx(
-              "flex h-[48px] w-full  text-black justify-start gap-2 rounded-md bg-gray-50 p-1 mb-2  text-sm hover:bg-sky-100 hover:text-blue-600  justify-start pl-2 pr-0",
+              "flex h-[48px] w-full text-black justify-start gap-2 shadow-md rounded-md bg-gray-50 p-1 mb-2 text-sm hover:bg-gray-200 hover:text-blue-800 justify-start pl-2 pr-0",
               {
-                "bg-sky-100 text-blue-600": pathname === link.href,
+                "bg-blue-400 text-blue-600": pathname === link.href,
               }
             )}
           >

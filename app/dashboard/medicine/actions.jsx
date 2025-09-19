@@ -88,20 +88,20 @@ export async function createMedicine(formData) {
     reorder_point,
     location,
   } = {
-    name: formData.get("name"),
-    description: formData.get("description"),
-    price: formData.get("price") ? parseFloat(formData.get("price")) : 0,
-    quantity: formData.get("quantity") ? parseInt(formData.get("quantity")) : 1,
-    expiration_date: formData.get("expirationDate")
-      ? parseISO(formData.get("expirationDate"))
+    name: formData.name,
+    description: formData.description,
+    price: formData.price ? parseFloat(formData.price) : 0,
+    quantity: formData.quantity ? parseInt(formData.quantity) : 1,
+    expiration_date: formData.expirationDate
+      ? parseISO(formData.expirationDate)
       : parseISO(new Date()),
-    category: formData.get("category") ? parseInt(formData.get("category")) : 1,
-    form: formData.get("form"),
-    packsize: formData.get("packsize") ? parseInt(formData.get("packsize")) : 1,
-    reorder_point: formData.get("reorder_point")
-      ? parseInt(formData.get("reorder_point"))
+    category: formData.category ? parseInt(formData.category) : 1,
+    form: formData.form,
+    packsize: formData.packsize ? parseInt(formData.packsize) : 1,
+    reorder_point: formData.reorder_point
+      ? parseInt(formData.reorder_point)
       : 0,
-    location: formData.get("location"),
+    location: formData.location,
   };
 
   //console.log(formData);
@@ -118,6 +118,7 @@ export async function createMedicine(formData) {
       packsize,
       reorder_point,
       idLocation: location,
+      id_user_create: '5d743e4d-1724-4501-94d2-7d9de771cc66'
     },
   });
 
