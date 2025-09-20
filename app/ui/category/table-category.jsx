@@ -1,9 +1,9 @@
-import { fetchFilteredCategorys } from "@/app/dashboard/category/actions";
+import { fetchFilteredCategories } from "@/app/dashboard/category/actions";
 import { UpdateCategory } from "@/app/ui/category/button-category";
 import { DeleteButtonCategory } from "@/app/ui/category/button-delete";
 
 export default async function TableCategory({ query, page, limit, sort, order }) {
-    const categorys = await fetchFilteredCategorys(query, page, limit, sort, order);
+    const categories = await fetchFilteredCategories(query, page, limit, sort, order);
     //console.log(forms);
     return (
         <div className="mt-6 flow-root">
@@ -27,8 +27,8 @@ export default async function TableCategory({ query, page, limit, sort, order })
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200  rounded-lg">
-                            {categorys.length > 0 ? (
-                                categorys.map((category) => (
+                            {categories.length > 0 ? (
+                                categories.map((category) => (
                                     <tr
                                         key={category.id_category}
                                         className="divide-x divide-gray-200  text-center md:table-row hover:bg-gray-50"

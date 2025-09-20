@@ -14,7 +14,7 @@ import Link from "next/link";
 import Button from "@/app/ui/button";
 import { updateMedicine } from "@/app/dashboard/medicine/actions";
 
-export default function Form({ medicine, categorys, forms, locations }) {
+export default function Form({ medicine, categories, forms, locations }) {
   const updateMedicineWithId = updateMedicine.bind(null, medicine.id);
   //const { updateMedicineWithId } = medicineEditForm;
 
@@ -78,7 +78,7 @@ export default function Form({ medicine, categorys, forms, locations }) {
               <option value="" disabled>
                 Seleccionar categoría
               </option>
-              {categorys.map((category) => (
+              {categories.map((category) => (
                 <option key={category.id_category} value={category.id_category}>
                   {category.name}
                 </option>

@@ -1,3 +1,12 @@
+# 🗃️ Base de Datos (PostgreSQL + Prisma)
+
+## Diagrama de Entidad-Relación (ER)
+
+![Diagrama ER](./database-er.png)
+
+*(Generado con [dbdiagram.io](https://dbdiagram.io))*
+
+## Schema Prisma (`prisma/schema.prisma`)
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["postgresqlExtensions", "views"]
@@ -7,6 +16,14 @@ datasource db {
   provider   = "postgresql"
   url        = env("DATABASE_URL")
   extensions = [pgcrypto, uuid_ossp(map: "uuid-ossp", schema: "public")]
+}
+
+model Categories {
+  category_name        String
+  id_category          Int       @id(map: "category_pkey") @default(autoincrement())
+  category_description String?
+  id_user_create       String    @db.Uuid
+  create_at            DateTime? @default(now()) @db.Timestamp(6)
 }
 
 model Forms {
@@ -58,14 +75,6 @@ model Roles {
   id_rol    String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   rol_name  String
   create_at DateTime? @default(now()) @db.Timestamp(6)
-}
-
-model Categories {
-  category_name        String
-  id_category          Int       @id(map: "category_pkey") @default(autoincrement())
-  category_description String?
-  id_user_create       String    @db.Uuid
-  create_at            DateTime? @default(now()) @db.Timestamp(6)
 }
 
 view Medicines_Table {

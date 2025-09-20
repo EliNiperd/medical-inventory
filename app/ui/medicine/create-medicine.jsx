@@ -117,7 +117,7 @@ function useFormValidation(formData, rules) {
   return { errors, isValid, validateForm, validateSingleField };
 }
 
-export default function CreateMedicineForm({ categorys = [], forms = [], locations = [] }) {
+export default function CreateMedicineForm({ categories = [], forms = [], locations = [] }) {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -195,11 +195,11 @@ export default function CreateMedicineForm({ categorys = [], forms = [], locatio
 
   // Encontrar categoría por nombre
   const findCategoryByName = useCallback((name) => {
-    const category = categorys.find(cat =>
+    const category = categories.find(cat =>
       cat.name.toLowerCase().includes(name.toLowerCase())
     );
     return category?.id_category || '';
-  }, [categorys]);
+  }, [categories]);
 
   // Encontrar forma por nombre
   const findFormByName = useCallback((name) => {
@@ -389,7 +389,7 @@ export default function CreateMedicineForm({ categorys = [], forms = [], locatio
                 className={`input-form cursor-pointer ${errors.category ? 'border-red-300 focus:border-red-500' : ''}`}
               >
                 <option value="">Seleccionar categoría</option>
-                {categorys.map((category) => (
+                {categories.map((category) => (
                   <option key={category.id_category} value={category.id_category}>
                     {category.name}
                   </option>
