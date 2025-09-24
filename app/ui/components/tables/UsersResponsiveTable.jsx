@@ -19,7 +19,8 @@ function UsersResponsiveTable({ users, loading = false }) {
       sortable: true,
       render: (value, row) => (
         <div className="flex items-center space-x-3">
-          <div className={`w-2.5 h-2.5 rounded-full ${row.is_active ? 'bg-green-500' : 'bg-gray-400'}`}></div>
+          {/*<div className={`'w-2.5 h-2.5 rounded-full ${row.is_active ? 'bg-green-500' : 'bg-gray-400'}'`}></div>*/}
+          <div className={`w-2.5 h-2.5 rounded-full   `}></div>
           <div className="flex items-center space-x-3">
             <div className="h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
               <UserIcon className="h-4 w-4 text-gray-500 dark:text-gray-400" />
@@ -356,7 +357,7 @@ function UsersResponsiveTable({ users, loading = false }) {
         <div className="mt-4 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
           <p>
             {searchQuery ? (
-              <>Mostrando {processedUsers.length} resultado{processedUsers.length !== 1 ? 's' : ''} de "{searchQuery}"</>
+              <>Mostrando {processedUsers.length} resultado{processedUsers.length !== 1 ? 's' : ''} de {searchQuery}</>
             ) : (
               <>Mostrando {processedUsers.length} usuario{processedUsers.length !== 1 ? 's' : ''}</>
             )}

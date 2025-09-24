@@ -1,4 +1,4 @@
-import { CalendarIcon } from "@heroicons/react/24/outline";
+import { CalendarIcon, RectangleStackIcon } from "@heroicons/react/24/outline";
 import { useMemo } from "react";
 
 export function RowTable({ value, row, type = "default", icon = null }) {
@@ -37,14 +37,11 @@ export function RowTable({ value, row, type = "default", icon = null }) {
     }
     else {
         return (
-
-            (value) => (
-                <div className="flex items-center space-x-3">
-                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                        {value}
-                    </span>
-                </div>
-            )
+            <div className="flex items-center space-x-3">
+                <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                    {value}
+                </span>
+            </div>
         );
     }
 }
@@ -207,8 +204,8 @@ export function TableViewCard(processedData) {
                         </div>
                     </div>
                     <div className="flex items-center space-x-1">
-                        <UpdateLocation id_location={location.id_location} />
-                        <DeleteLocation id_location={location.id_location} />
+
+
                     </div>
 
 

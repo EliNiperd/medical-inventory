@@ -6,6 +6,7 @@ import { useState, useMemo, createContext, useContext } from 'react';
 // Contexto para compartir configuración
 const TableContext = createContext();
 
+
 // Hook para acceder al contexto
 function useTable() {
   const context = useContext(TableContext);
@@ -414,14 +415,15 @@ function TableSkeleton() {
 }
 
 // 📊 COMPONENTE DE ESTADÍSTICAS REUTILIZABLE
-function TableStats({ className = "" }) {
+function TableStats({ className = '' }) {
   const { data, searchQuery } = useTable();
   
+  //<div className={`flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 ${className}`}>
   return (
-    <div className={`flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 ${className}`}>
+    <div className={`flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 `}>
       <p>
         {searchQuery ? (
-          <>Mostrando {data.length} resultado{data.length !== 1 ? 's' : ''} para "{searchQuery}"</>
+          <>Mostrando {data.length} resultado{data.length !== 1 ? 's' : ''} para {searchQuery}</>
         ) : (
           <>Mostrando {data.length} elemento{data.length !== 1 ? 's' : ''}</>
         )}
