@@ -1,62 +1,83 @@
+'use client';
 
 import Link from "next/link";
-import { ArchiveBoxIcon, Bars3BottomLeftIcon } from "@heroicons/react/24/outline";
+import { SquaresPlusIcon, Bars3BottomLeftIcon } from "@heroicons/react/24/outline";
 import { createLocation } from "@/app/dashboard/location/actions";
-import { ButtonActionGuardar } from "@/components/ui/button-action";
-
+import ResponsiveFormWrapper, { ResponsiveGrid, ResponsiveField } from "@/app/ui/components/responsive-form-wrapper";
+import FooterForm from "@/app/ui/components/footer-form";
+import FormInput, { useFormInput } from "@/app/ui/components/form-input";
+import { useState } from "react";
+import Button from "@/app/ui/button";
 
 
 function FormCreate() {
+    const DICTIONARY_TITLE = {
+        nameSingular: 'Ubicación',
+        namePlural: 'Ubicaciones'
+    }
+    // Inicializar el estado con los datos del formulario
+    const [formData, setFormData] = useState({
+        location_name: '',
+        location_description: '',
+    });
+
+    const nameInput = useFormInput('', {
+        required: true,
+        minLength: 3
+    }, formData);
+    const descriptionInput = useFormInput('', {
+        required: true,
+        minLength: 3
+    }, formData);
+
     return (
-        <form action={createLocation}>
-            <div className="form-basic grid col-span-2 w-9/12 p-4 md:p-6">
-                {/* Location Name */}
-                <div className="mb-4 col-span-2 ">
-                    <label htmlFor="location_name">
-                        Nombre
-                    </label>
-                    <div className="relative mt-2 rounded-md">
-                        <div className="relative">
-                            <input
-                                id="location_name"
+        <>
+            <ResponsiveFormWrapper
+                title={`Crear ${DICTIONARY_TITLE.nameSingular}`}
+                subtitle={`Ingresa la información de la nueva ${String(DICTIONARY_TITLE.nameSingular).toLowerCase()}`}
+                maxWidth="4xl">
+                <form action={createLocation}>
+                    <ResponsiveGrid cols={{ sm: 1, md: 1 }}>
+                        <ResponsiveField span={{ sm: 1, md: 1 }} >
+                            <FormInput
+                                label="Nombre"
                                 name="location_name"
-                                placeholder="Ingrese el nombre de la ubicación"
-                                className="input-form"
+                                icon={SquaresPlusIcon}
+                                required
+                                {...nameInput}
+                                placeholder={`Ingrese el nombre de la ${String(DICTIONARY_TITLE.nameSingular).toLowerCase()}`}
                             />
-                            <ArchiveBoxIcon className="icon-input" />
-                        </div>
-                    </div>
-                </div>
-                {/* Descripción de la Ubicación */}
-                <div className="mb-4 col-span-2 ">
-                    <label htmlFor="location_description" >
-                        Descripción
-                    </label>
-                    <div className="relative mt-2 rounded-md">
-                        <div className="relative">
-                            <input
-                                type="text"
-                                id="location_description"
+                        </ResponsiveField>
+                        <ResponsiveField span={{ sm: 1, md: 2 }}>
+                            <FormInput
+                                label="Descripción"
                                 name="location_description"
-                                placeholder="Ingrese la descripción de la ubicación"
-                                className="input-form"
+                                icon={Bars3BottomLeftIcon}
+                                required
+                                {...descriptionInput}
+                                placeholder={`Ingrese la descripción de la ${String(DICTIONARY_TITLE.nameSingular).toLowerCase()}`}
                             />
-                            <Bars3BottomLeftIcon className="icon-input" />
-                        </div>
-                    </div>
-                </div>
-                {/* Botones */}
-                <div className="col-span-2 mt-6 mr-6 flex justify-end gap-2  ">
-                    <Link
-                        href="/dashboard/location"
-                        className="btn-form-cancel"
-                    >
-                        Cancelar
-                    </Link>
-                    <ButtonActionGuardar />
-                </div>
-            </div>
-        </form>
+                        </ResponsiveField>
+                        <ResponsiveField span={{ sm: 1, md: 1 }} >
+                            <FooterForm>
+                                <Link
+                                    href="/dashboard/location"
+                                    className="btn-form-cancel"
+                                >
+                                    Cancelar
+                                </Link>
+                                <Button
+                                    type="submit"
+                                    disabled={!nameInput.isValid || !descriptionInput.isValid}
+                                >
+                                    Guardar
+                                </Button>
+                            </FooterForm>
+                        </ResponsiveField>
+                    </ResponsiveGrid>
+                </form>
+            </ResponsiveFormWrapper>
+        </>
     );
 }
 export default FormCreate;

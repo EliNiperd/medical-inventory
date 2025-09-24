@@ -1,5 +1,5 @@
-//import { CreateLocation } from "@/app/ui/location/button-location";
-import TableLocations from "@/app/ui/location/table-location";
+//import { CreateUser } from "@/app/ui/user/button";
+import TableUsersPage from "@/app/ui/user/table-users";
 
 const page = ({
   searchParams = {
@@ -11,11 +11,11 @@ const page = ({
   },
 }) => {
   const query = searchParams?.query?.toString() || "";
+  // TODO: revisar si es necesario este parámetro, sino para eliminar
   //const page = searchParams?.page?.toString() || "1";
-
   return (
     <div className="w-full">
-      <TableLocations query={query} />
+      <TableUsersPage query={query} />
     </div>
   );
 };

@@ -1,43 +1,43 @@
 import Link from "next/link";
 import NavLinks from "@/app/ui/dashborad/nav-links";
-//import AcmeLogo from '@/app/ui/acme-logo';
-import { PowerIcon, HomeModernIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
-import { signOut } from "@/auth";
-import { redirect } from "next/navigation";
+import { PowerIcon, HomeModernIcon } from "@heroicons/react/24/outline";
+import { signOutAction } from "@/app/lib/auth-actions";
 
 export default function SideNav() {
   return (
-    <div className="flex h-full flex-col px-3 py-3 md:px-4">
+    <div className="flex h-full flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 shadow-sm">
+      
       {/* Logo Section */}
-      <div className="mb-6 flex h-16 mt-4 shadow-md rounded-md">
+      <div className="p-4">
         <Link
-          className="mb-2 flex h-16 items-end justify-start rounded-md bg-blue-500 
-          p-4 md:h-18 shadow-md hover:bg-blue-400 "
           href="/"
+          className="flex items-center h-12 px-4 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-md transition-all duration-200 hover:shadow-lg"
         >
-          <HomeModernIcon className="w-6 " />
-          <div className="w-full ml-2 md:w-40 justify-center dark:text-black text-white ">Medical-Inventory</div>
+          <HomeModernIcon className="w-6 h-6 flex-shrink-0" />
+          <span className="ml-3 font-medium text-sm">
+            Medical Inventory
+          </span>
         </Link>
       </div>
-      <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
-        <div>
+
+      {/* Navigation Links */}
+      <div className="flex-1 px-4 py-2">
+        <nav className="space-y-1">
           <NavLinks />
-          <form
-            action={async () => {
-              "use server";
-              await signOut();
-              redirect("/login");
-            }}
+        </nav>
+      </div>
+
+      {/* Sign Out Button */}
+      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+        <form action={signOutAction}>
+          <button 
+            type="submit"
+            className="flex items-center w-full text-gray-700 dark:text-gray-300 justify-start gap-3 rounded-md bg-gray-50 dark:bg-gray-700 p-3 font-medium hover:bg-gray-100 dark:hover:bg-gray-600 hover:text-red-600 dark:hover:text-red-400 transition-colors"
           >
-            <button className="flex items-center w-full 
-              text-black justify-start gap-2 rounded-md bg-gray-50 p-3 
-              font-medium hover:bg-gray-200 hover:text-blue-800 shadow-md">
-              <PowerIcon className="w-6 h-6" />
-              <p className="  ">Sign Out</p>
-              {/* <ChevronRightIcon className="w-6 h-6 ml-auto" /> */}
-            </button>
-          </form>
-        </div>
+            <PowerIcon className="w-5 h-5" />
+            <span>Cerrar Sesión</span>
+          </button>
+        </form>
       </div>
     </div>
   );

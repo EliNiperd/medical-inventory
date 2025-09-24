@@ -7,6 +7,8 @@ import bcrypt from "bcrypt";
 import { z } from "zod";
 
 export async function createUser(formData) {
+  //TODO: revisar si a validación es necesaria
+  //TODO: revisar si es necesario agregar validación por emmail 
   const registerUSerSchema = z
     .object({
       email: z.string()
@@ -70,8 +72,8 @@ export async function createUser(formData) {
 
   
 
-  revalidatePath("/dashboard/admin/user");
-  redirect("/dashboard/admin/user");
+  revalidatePath("/dashboard/user");
+  redirect("/dashboard/user");
 }
 
 export async function fetchFilteredUsers(query, page, limit, sort, order) {
@@ -149,8 +151,8 @@ export async function updateUser(id_user, formData) {
   });
 
  
-  revalidatePath("/dashboard/admin/user");
-  redirect("/dashboard/admin/user");
+  revalidatePath("/dashboard/user");
+  redirect("/dashboard/user");
 }
 
 export async function deleteUser(id_user) {
@@ -160,5 +162,5 @@ export async function deleteUser(id_user) {
     },
   });
 
-   revalidatePath("/dashboard/admin/user");
+   revalidatePath("/dashboard/user");
 }

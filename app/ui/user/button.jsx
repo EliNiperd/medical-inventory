@@ -1,16 +1,16 @@
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { deleteUser } from "@/app/dashboard/admin/user/actions";
+import { deleteUser } from "@/app/dashboard/user/actions";
 
 export function CreateUser() {
   return (
     <Link
-      href="/dashboard/admin/user/create"
-      className="btn-primary flex items-center"
+      href="/dashboard/user/create"
+      className="btn-primary inline-flex items-center gap-2"
     >
-      <span className="hidden md:block">Crear user</span>
+      <PlusIcon className="h-5 md:ml-2 " />
       {""}
-      <PlusIcon className="h-5 md:ml-2" />
+      <span > Nuevo usuario</span>
     </Link>
   );
 }
@@ -18,7 +18,7 @@ export function CreateUser() {
 export function UpdateUser({ id }) {
   return (
     <Link
-      href={`/dashboard/admin/user/${id}/edit`}
+      href={`/dashboard/user/${id}/edit`}
       className="btn-primary"
     >
       <span className="hidden md:block">Editar</span>

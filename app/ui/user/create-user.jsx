@@ -1,82 +1,114 @@
+"use client";
 import Link from "next/link";
 import Button from "@/app/ui/button";
-import { AtSymbolIcon, LockClosedIcon } from "@heroicons/react/24/outline";
-import { createUser } from "@/app/dashboard/admin/user/actions";
+import { createUser } from "@/app/dashboard/user/actions";
+import ResponsiveFormWrapper, { ResponsiveGrid, ResponsiveField } from "@/app/ui/components/responsive-form-wrapper";
+import FooterForm from "@/app/ui/components/footer-form";
+import FormInput, { useFormInput } from "@/app/ui/components/form-input";
+import { useState } from "react";
+
+
+//Esquema de validación user
+/*
+const VALIDATION_RULES = {
+  email: { required: true, email: true, type: 'email' },
+  password: { required: true, min: 6 },
+  confirmPassword: {
+    required: true,
+    min: 6,
+    validate: (value, formData) => value === formData.password || "Las contraseñas no coinciden"
+  },
+};
+*/
 
 function FormCreate() {
+ const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+
+  // Usando useFormInput individual con validaciones
+  const emailInput = useFormInput('', {
+    required: true,
+    email: true
+  });
+
+   const passwordInput = useFormInput('', {
+    required: true,
+    min: 6
+  });
+
+  const confirmPasswordInput = useFormInput('', {
+    required: true,
+    min: 6,
+    validate: (value) => value === passwordInput.value || "Las contraseñas no coinciden"
+  }, formData);
  
   return (
-    <form action={createUser}>
-      <div className="form-basic grid col-span-2 w-9/12 p-4 md:p-6">
-        {/* Email User */}
-        <div className="mb-4 col-span-2 ">
-          <label htmlFor="name" >
-            Email
-          </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                type="email"
-                id="email"
+    <>
+      <ResponsiveFormWrapper
+        title="Crear Usuario"
+        subtitle="Ingresa la información del nuevo usuario"
+        maxWidth="4xl"
+      >
+        <form  action={createUser}  >
+          <ResponsiveGrid cols={{ sm: 1, md: 2, lg: 2 }}>
+            {/* Email User */}
+            <ResponsiveField span={{ sm: 1, md: 2 }}>
+              <FormInput
+                label="Email"
                 name="email"
+                type="email"
+                required
+                {...emailInput}
                 placeholder="Ingrese el email del usuario"
-                className="input-form"
+                className="sm:w-full md:w-1/2 lg:w-1/2"
               />
-              <AtSymbolIcon className="icon-input" />
-            </div>
-          </div>
-        </div>
-        {/* Password User */}
-        <div className="mb-4 col-span-2 ">
-          <label htmlFor="password" >
-            Password
-          </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                type="password"
-                id="password"
+            </ResponsiveField>
+            <ResponsiveField span={{ sm: 1, md: 1 }}>
+              {/* Password User */}
+              <FormInput
+                label="Password"
                 name="password"
-                placeholder="Ingrese la contraseña del usuario"
-                className="input-form"
-              />
-              <LockClosedIcon className="icon-input" />
-            </div>
-          </div>
-        </div>
-        {/* Confirm Password User */}
-        <div className="mb-4 col-span-2 ">
-          <label
-            htmlFor="confirmPassword"
-          >
-            Confirmar Password
-          </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
                 type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                placeholder="Confirme la contraseña del usuario"
-                className="input-form"
+                required
+                {...passwordInput}
+                placeholder="Ingrese la contraseña del usuario"
               />
-              <LockClosedIcon className="icon-input" />
-            </div>
-          </div>
-        </div>
-        <div className="col-span-2 mt-6 mr-6 flex justify-end gap-2">
-          <Link
-            href="/dashboard/admin/user"
-            className="btn-form-cancel"
-          >
-            Cancelar
-          </Link>
-          <Button type="submit" className="pr-4">
-            Guardar información
-          </Button>
-        </div>
-      </div>
-    </form>
+            </ResponsiveField>
+            <ResponsiveField span={{ sm: 1, md: 1 }}>
+              {/* Confirm Password User */}
+              <FormInput
+                label="Confirmar Password"
+                name="confirmPassword"
+                type="password"
+                required
+                {...confirmPasswordInput}
+                placeholder="Confirme la contraseña del usuario"
+              />
+            </ResponsiveField>
+            <ResponsiveField span={{ sm: 1, md: 2 }} >
+              <FooterForm>
+                <Link
+                  href="/dashboard/user"
+                  className="btn-form-cancel"
+                >
+                  Cancelar
+                </Link>
+                <Button 
+                  type="submit" 
+                   disabled={!emailInput.isValid || !passwordInput.isValid || !confirmPasswordInput.isValid}
+                  
+                  >
+                  Guardar 
+                </Button>
+              </FooterForm>
+            </ResponsiveField>
+          </ResponsiveGrid>
+        </form>
+      </ResponsiveFormWrapper>
+    </>
   );
 }
 export default FormCreate;

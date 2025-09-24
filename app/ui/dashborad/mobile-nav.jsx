@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import NavLinks from "@/app/ui/dashborad/nav-links";
 import { PowerIcon, HomeModernIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { signOutAction } from "@/app/lib/auth-actions";

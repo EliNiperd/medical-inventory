@@ -9,14 +9,6 @@ datasource db {
   extensions = [pgcrypto, uuid_ossp(map: "uuid-ossp", schema: "public")]
 }
 
-model Categorys {
-  category_name        String
-  id_category          Int       @id(map: "category_pkey") @default(autoincrement())
-  category_description String?
-  id_user_create       String    @db.Uuid
-  create_at            DateTime? @default(now()) @db.Timestamp(6)
-}
-
 model Forms {
   id_form          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   form_name        String
@@ -59,13 +51,21 @@ model Users {
   password       String
   user_name_full String?
   create_at      DateTime? @default(now()) @db.Timestamp(6)
-  id_user_create String    @db.Uuid
+  id_user_create String    @default(dbgenerated("'5d743e4d-1724-4501-94d2-7d9de771cc66'::uuid")) @db.Uuid
 }
 
 model Roles {
   id_rol    String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   rol_name  String
   create_at DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model Categories {
+  category_name        String
+  id_category          Int       @id(map: "category_pkey") @default(autoincrement())
+  category_description String?
+  id_user_create       String    @db.Uuid
+  create_at            DateTime? @default(now()) @db.Timestamp(6)
 }
 
 view Medicines_Table {

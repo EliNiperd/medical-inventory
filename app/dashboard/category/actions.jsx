@@ -8,22 +8,22 @@ import { redirect } from "next/navigation";
 import { schemaCategory } from "@/lib/schemas/category";
 import { wakeUpDb } from "@/app/lib/db-wake-up";
 
-export async function fetchCategorys() {
+export async function fetchCategories() {
   // Paso intermedio: Despierta la DB antes de la consulta
   await wakeUpDb();
 
   try {
-    const categorys = await prisma.categorys.findMany();
-    //console.log("categorys action:", categorys);
-    return categorys;
+    const categories = await prisma.categories.findMany();
+    //console.log("categories action:", categories);
+    return categories;
   } catch (error) {
     console.error("Database Error:", error);
-    //throw new Error("Failed to fetch all categorys.");
+    //throw new Error("Failed to fetch all categories.");
   } 
 }
 
 export async function fetchCategoryById(id_category) {
-  const category = await prisma.categorys.findUnique({
+  const category = await prisma.categories.findUnique({
     where: {
       id_category: parseInt(id_category),
     },
@@ -31,8 +31,8 @@ export async function fetchCategoryById(id_category) {
   return category;
 }
 
-export async function fetchFilteredCategorys(query, page, limit, sort, order) {
-  const categorys = await prisma.categorys.findMany({
+export async function fetchFilteredCategories(query, page, limit, sort, order) {
+  const categories = await prisma.categories.findMany({
     where: {
       OR: [
         {
@@ -50,7 +50,7 @@ export async function fetchFilteredCategorys(query, page, limit, sort, order) {
       ],
     },
   });
-  return categorys;
+  return categories;
 }
 
 
@@ -64,7 +64,7 @@ export async function createCategory(formData) {
     return;
   }
 
-  await prisma.categorys.create({
+  await prisma.categories.create({
     data: {
       category_name: formData.get("category_name"),
       category_description: formData.get("category_description") ?? '',
@@ -85,7 +85,7 @@ export async function updateCategory(id_category, formData) {
     return;
   }
 
-  await prisma.categorys.update({
+  await prisma.categories.update({
     where: {
       id_category: id_category,
     },
@@ -101,7 +101,7 @@ export async function updateCategory(id_category, formData) {
 
 export async function deleteCategory(id_category) {
   try {
-    const category = await prisma.categorys.findUnique({
+    const category = await prisma.categories.findUnique({
       where: {
         id_category: id_category,
       },
@@ -110,7 +110,7 @@ export async function deleteCategory(id_category) {
     if (!category) {
       return JSON.stringify({ status: 500, error: "Category not found." });
     } else {
-      await prisma.categorys.delete({
+      await prisma.categories.delete({
         where: {
           id_category: id_category,
         },

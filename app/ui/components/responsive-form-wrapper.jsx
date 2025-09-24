@@ -1,4 +1,3 @@
-// components/ui/responsive-form-wrapper.jsx
 export default function ResponsiveFormWrapper({ 
   children, 
   title, 
@@ -20,11 +19,11 @@ export default function ResponsiveFormWrapper({
 
   return (
     <div className="min-h-full">
-      <div className={`mx-auto ${maxWidthClasses[maxWidth]} px-4 sm:px-6 lg:px-8`}>
+      <div className={`mx-auto ${maxWidthClasses[maxWidth]}  px-4 sm:px-6 lg:px-8`}>
         
         {/* Header */}
         {(title || subtitle) && (
-          <div className="mb-8 sm:mb-10">
+          <div className="mb-2 sm:mb-4 ">
             {title && (
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
                 {title}

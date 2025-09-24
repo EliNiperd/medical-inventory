@@ -6,10 +6,10 @@ export default function page() {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: "User", href: "/dashboard/admin/user", active: false },
+          { label: "User", href: "/dashboard/user", active: false },
           {
             label: "Crear Usuario",
-            href: "/dashboard/admin/user/create",
+            href: "/dashboard/user/create",
             active: true,
           },
         ]}

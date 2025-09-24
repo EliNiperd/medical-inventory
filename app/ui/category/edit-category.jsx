@@ -1,65 +1,88 @@
+'use client';
 
-import { ArchiveBoxIcon, Bars3BottomLeftIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import Button from "@/app/ui/button";
 import { updateCategory } from "@/app/dashboard/category/actions";
+import ResponsiveFormWrapper, { ResponsiveGrid, ResponsiveField } from "@/app/ui/components/responsive-form-wrapper";
+import FooterForm from "@/app/ui/components/footer-form";
+import FormInput, { useFormInput } from "@/app/ui/components/form-input";
+import { useState } from "react";
+import { SquaresPlusIcon, Bars3BottomLeftIcon } from "@heroicons/react/24/outline";
 
-import { ButtonActionGuardar } from "@/components/ui/button-action";
+//import { ButtonActionGuardar } from "@/components/ui/button-action";
 
 
 export default function Category({ category }) {
+
+    const DICTIONARY_TITLE = {
+        nameSingular: 'Presentación',
+        namePlural: 'Presentaciones'
+    }
+
+    const [formData, setFormData] = useState({
+        category_name: category.category_name,
+        category_description: category.category_description,
+    });
+
+    const nameInput = useFormInput(category.category_name, {
+        required: true,
+        minLength: 3
+    }, formData);
+
+    const descriptionInput = useFormInput(category.category_description, {
+        required: true,
+        minLength: 3
+    }, formData);
+
     const updateCategoryWithId = updateCategory.bind(null, category.id_category);
     return (
-        <form action={updateCategoryWithId}>
-            <div className="form-basic grid col-span-2 w-9/12 p-4 md:p-6">
-                {/* Name Category */}
-                <div className="mb-4 col-span-2 ">
-                    <label htmlFor="category_name" >
-                        Nombre Presentación
-                    </label>
-                    <div className="relative mt-2 rounded-md">
-                        <div className="relative">
-                            <input
-                                id="category_name"
+        <>
+            <ResponsiveFormWrapper
+                title={`Editar ${DICTIONARY_TITLE.nameSingular}`}
+                subtitle={`Ingresa la información de la ${String(DICTIONARY_TITLE.nameSingular).toLowerCase()}`}
+                maxWidth="4xl"
+            >
+                <form action={updateCategoryWithId}>
+                    <ResponsiveGrid cols={{ sm: 1, md: 1 }}>
+                        <ResponsiveField span={{ sm: 1, md: 1 }} >
+                            <FormInput
+                                label="Nombre"
                                 name="category_name"
+                                icon={SquaresPlusIcon}
+                                required
+                                placeholder={`Ingrese el nombre de la ${String(DICTIONARY_TITLE.nameSingular).toLowerCase()}`}
                                 defaultValue={category.category_name}
-                                placeholder="Ingrese el nombre de la presentación"
-                                className="input-form"
+
                             />
-                            <ArchiveBoxIcon className="icon-input" />
-                        </div>
-                    </div>
-                </div>
-                {/* Descripción Category  */}
-                <div className="mb-4 col-span-2 ">
-                    <label
-                        htmlFor="category_description"
-                    >
-                        Descripción Presentación
-                    </label>
-                    <div className="relative mt-2 rounded-md">
-                        <div className="relative">
-                            <input
-                                id="category_description"
+                        </ResponsiveField>
+                        <ResponsiveField span={{ sm: 1, md: 1 }} >
+                            <FormInput
+                                label="Descripción"
                                 name="category_description"
+                                icon={Bars3BottomLeftIcon}
+                                required
+                                placeholder={`Ingrese la descripción de la ${String(DICTIONARY_TITLE.nameSingular).toLowerCase()}`}
                                 defaultValue={category.category_description}
-                                placeholder="Ingrese la descripción de la presentación"
-                                className="input-form"
                             />
-                            <Bars3BottomLeftIcon className="icon-input" />
-                        </div>
-                    </div>
-                </div>
-                {/* Buttons */}
-                <div className="col-span-2 mt-6 mr-6 flex justify-end gap-2  ">
-                    <Link
-                        href="/dashboard/category"
-                        className="btn-form-cancel"
-                    >
-                        Cancelar
-                    </Link>
-                    <ButtonActionGuardar />
-                </div>
-            </div>
-        </form>
+                        </ResponsiveField>
+                        <ResponsiveField span={{ sm: 1, md: 1 }}>
+                            <FooterForm>
+                                <Link
+                                    href="/dashboard/form"
+                                    className="btn-form-cancel"
+                                >
+                                    Cancelar
+                                </Link>
+                                <Button type="submit"
+                                    disabled={!nameInput.isValid || !descriptionInput.isValid}
+                                >
+                                    Guardar
+                                </Button>
+                            </FooterForm>
+                        </ResponsiveField>
+                    </ResponsiveGrid>
+                </ form>
+            </ResponsiveFormWrapper>
+        </>
     );
 }
