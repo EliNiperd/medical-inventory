@@ -1,6 +1,6 @@
 import Breadcrumbs from "@/app/ui/breadcrumbs";
 import Form from "@/app/ui/medicine/edit-medicine";
-import { fetchCategorys } from "@/app/dashboard/category/actions";
+import { fetchCategories } from "@/app/dashboard/category/actions";
 import { fetchForms } from "@/app/dashboard/form/actions";
 import { fetchLocations } from "@/app/dashboard/location/actions";
 import { fetchMedicineById } from "@/app/dashboard/medicine/actions";
@@ -10,7 +10,7 @@ export default async function Page({ params }) {
 
   const [medicine, categories, forms, locations] = await Promise.all([
     fetchMedicineById(id),
-    fetchCategorys(),
+    fetchCategories(),
     fetchForms(),
     fetchLocations(),
   ]);
@@ -29,7 +29,7 @@ export default async function Page({ params }) {
       ></Breadcrumbs>
       <Form
         medicine={medicine}
-        categorys={categories}
+        categories={categories}
         forms={forms}
         locations={locations}
       />
