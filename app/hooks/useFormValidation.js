@@ -75,6 +75,30 @@ export function useSchemaValidation(nameSchema) {
           }
         };
       break;
+      case 'form':
+        VALIDATION_RULES = {
+          form_name: {
+            required: true,
+            min: 5
+          },
+          form_description: {
+            required: true,
+            min: 10
+          }
+        };
+      break;
+      case 'category':
+        VALIDATION_RULES = {
+          category_name: {
+            required: true,
+            min: 5
+          },
+          category_description: {
+            required: true,
+            min: 10
+          }
+        };
+      break;
   }
 
   if (!VALIDATION_RULES.length === 0) {

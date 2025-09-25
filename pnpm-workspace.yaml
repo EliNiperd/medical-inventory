@@ -1,7 +1,0 @@
-onlyBuiltDependencies:
-  - '@prisma/client'
-  - '@prisma/engines'
-  - bcrypt
-  - bufferutil
-  - prisma
-  - unrs-resolver
