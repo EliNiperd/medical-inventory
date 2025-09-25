@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import SideNav from "@/app/ui/dashborad/sidenav";
-import MobileNav from "@/app/ui/dashborad/mobile-nav";
-import ModeToggle from "@/components/theme-toggle";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useState, useEffect } from 'react';
+import SideNav from '@/app/ui/dashborad/sidenav';
+import MobileNav from '@/app/ui/dashborad/mobile-nav';
+import ModeToggle from '@/components/theme-toggle';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 
 export default function Layout({ children }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -22,10 +22,10 @@ export default function Layout({ children }) {
 
     // Verificar al cargar
     checkScreenSize();
-    
+
     // Escuchar cambios de tamaño
     window.addEventListener('resize', checkScreenSize);
-    
+
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
@@ -34,7 +34,6 @@ export default function Layout({ children }) {
 
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
-      
       {/* Desktop Sidebar - Solo visible en md+ */}
       <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
         <SideNav />
@@ -42,28 +41,28 @@ export default function Layout({ children }) {
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-40 bg-gray-600 bg-opacity-75 md:hidden"
           onClick={closeMobileMenu}
         />
       )}
 
       {/* Mobile Sidebar */}
-      <div className={`
+      <div
+        className={`
         fixed inset-y-0 left-0 z-50 w-64 transform transition-transform duration-300 ease-in-out md:hidden
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
-      `}>
+      `}
+      >
         <MobileNav onClose={closeMobileMenu} />
       </div>
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col md:ml-64">
-        
         {/* Top Bar - Solo visible en móvil */}
         <div className="md:hidden">
           <div className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between h-16 px-4">
-              
               {/* Menu Button */}
               <button
                 onClick={() => setIsMobileMenuOpen(true)}
@@ -87,9 +86,7 @@ export default function Layout({ children }) {
 
         {/* Page Content */}
         <main className="flex-1 overflow-y-auto">
-          <div className="p-4 sm:p-6 lg:p-8">
-            {children}
-          </div>
+          <div className="p-4 sm:p-6 lg:p-8">{children}</div>
         </main>
 
         {/* Desktop Mode Toggle - Posición fija */}

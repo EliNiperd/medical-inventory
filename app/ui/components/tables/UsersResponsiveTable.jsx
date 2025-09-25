@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { UserIcon, EnvelopeIcon, ShieldCheckIcon, CalendarIcon } from "@heroicons/react/24/outline";
-import { UpdateUser, DeleteUser } from "@/app/ui/user/button";
+import { UserIcon, EnvelopeIcon, ShieldCheckIcon, CalendarIcon } from '@heroicons/react/24/outline';
+import { UpdateUser, DeleteUser } from '@/app/ui/user/button';
 
 // ✅ SOLUCIÓN: Todo dentro del Client Component
 function UsersResponsiveTable({ users, loading = false }) {
@@ -11,81 +11,80 @@ function UsersResponsiveTable({ users, loading = false }) {
   const [searchQuery, setSearchQuery] = useState('');
 
   // ✅ Columnas definidas dentro del componente cliente
-  const columns = useMemo(() => [
-    {
-      key: 'user_name_full',
-      header: 'Usuario',
-      primary: true,
-      sortable: true,
-      render: (value, row) => (
-        <div className="flex items-center space-x-3">
-          {/*<div className={`'w-2.5 h-2.5 rounded-full ${row.is_active ? 'bg-green-500' : 'bg-gray-400'}'`}></div>*/}
-          <div className={`w-2.5 h-2.5 rounded-full   `}></div>
+  const columns = useMemo(
+    () => [
+      {
+        key: 'user_name_full',
+        header: 'Usuario',
+        primary: true,
+        sortable: true,
+        render: (value, row) => (
           <div className="flex items-center space-x-3">
-            <div className="h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
-              <UserIcon className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+            {/*<div className={`'w-2.5 h-2.5 rounded-full ${row.is_active ? 'bg-green-500' : 'bg-gray-400'}'`}></div>*/}
+            <div className={`w-2.5 h-2.5 rounded-full   `}></div>
+            <div className="flex items-center space-x-3">
+              <div className="h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
+                <UserIcon className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+              </div>
+              <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{value}</span>
             </div>
-            <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-              {value}
+          </div>
+        ),
+      },
+      {
+        key: 'email',
+        header: 'Email',
+        sortable: true,
+        showOnTablet: true,
+        render: (value) => (
+          <div className="flex items-center space-x-2">
+            <EnvelopeIcon className="h-4 w-4 text-gray-400" />
+            <span className="text-sm text-gray-500 dark:text-gray-400">{value}</span>
+          </div>
+        ),
+      },
+      {
+        key: 'role',
+        header: 'Rol',
+        sortable: true,
+        showOnTablet: true,
+        render: (value) => (
+          <div className="flex items-center space-x-2">
+            <ShieldCheckIcon className="h-4 w-4 text-gray-400" />
+            <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+              {value || 'Usuario'}
             </span>
           </div>
-        </div>
-      )
-    },
-    {
-      key: 'email',
-      header: 'Email',
-      sortable: true,
-      showOnTablet: true,
-      render: (value) => (
-        <div className="flex items-center space-x-2">
-          <EnvelopeIcon className="h-4 w-4 text-gray-400" />
-          <span className="text-sm text-gray-500 dark:text-gray-400">
-            {value}
-          </span>
-        </div>
-      )
-    },
-    {
-      key: 'role',
-      header: 'Rol',
-      sortable: true,
-      showOnTablet: true,
-      render: (value) => (
-        <div className="flex items-center space-x-2">
-          <ShieldCheckIcon className="h-4 w-4 text-gray-400" />
-          <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-            {value || 'Usuario'}
-          </span>
-        </div>
-      )
-    },
-    {
-      key: 'create_at',
-      header: 'Fecha Alta',
-      sortable: true,
-      render: (value) => (
-        <div className="flex items-center space-x-2">
-          <CalendarIcon className="h-4 w-4 text-gray-400" />
-          <span className="text-sm text-gray-500 dark:text-gray-400">
-            {value ? new Date(value).toLocaleDateString('es-MX') : 'N/D'}
-          </span>
-        </div>
-      )
-    },
-    {
-      key: 'actions',
-      header: 'Acciones',
-      type: 'actions',
-      align: 'right',
-      render: (_, row) => (
-        <div className="flex items-center space-x-2">
-          <UpdateUser id={row.id_user} />
-          <DeleteUser id={row.id_user} />
-        </div>
-      )
-    }
-  ], []); // Memoizar para evitar re-renders innecesarios
+        ),
+      },
+      {
+        key: 'create_at',
+        header: 'Fecha Alta',
+        sortable: true,
+        render: (value) => (
+          <div className="flex items-center space-x-2">
+            <CalendarIcon className="h-4 w-4 text-gray-400" />
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              {value ? new Date(value).toLocaleDateString('es-MX') : 'N/D'}
+            </span>
+          </div>
+        ),
+      },
+      {
+        key: 'actions',
+        header: 'Acciones',
+        type: 'actions',
+        align: 'right',
+        render: (_, row) => (
+          <div className="flex items-center space-x-2">
+            <UpdateUser id={row.id_user} />
+            <DeleteUser id={row.id_user} />
+          </div>
+        ),
+      },
+    ],
+    []
+  ); // Memoizar para evitar re-renders innecesarios
 
   // Procesar datos (búsqueda y ordenamiento)
   const processedUsers = useMemo(() => {
@@ -93,10 +92,11 @@ function UsersResponsiveTable({ users, loading = false }) {
 
     // Aplicar búsqueda
     if (searchQuery) {
-      filtered = filtered.filter(user =>
-        user.user_name_full?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.role?.toLowerCase().includes(searchQuery.toLowerCase())
+      filtered = filtered.filter(
+        (user) =>
+          user.user_name_full?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          user.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          user.role?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -107,14 +107,20 @@ function UsersResponsiveTable({ users, loading = false }) {
         const bVal = b[sortBy] || '';
 
         if (typeof aVal === 'string' && typeof bVal === 'string') {
-          return sortOrder === 'asc'
-            ? aVal.localeCompare(bVal)
-            : bVal.localeCompare(aVal);
+          return sortOrder === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
         }
 
         return sortOrder === 'asc'
-          ? (aVal < bVal ? -1 : aVal > bVal ? 1 : 0)
-          : (aVal > bVal ? -1 : aVal < bVal ? 1 : 0);
+          ? aVal < bVal
+            ? -1
+            : aVal > bVal
+              ? 1
+              : 0
+          : aVal > bVal
+            ? -1
+            : aVal < bVal
+              ? 1
+              : 0;
       });
     }
 
@@ -131,11 +137,11 @@ function UsersResponsiveTable({ users, loading = false }) {
   };
 
   const formatDate = (date) => {
-    if (!date) return "N/D";
+    if (!date) return 'N/D';
     return new Date(date).toLocaleDateString('es-MX', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
@@ -155,8 +161,7 @@ function UsersResponsiveTable({ users, loading = false }) {
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           {searchQuery
             ? `No se encontraron usuarios que coincidan con "${searchQuery}"`
-            : 'No se encontraron usuarios registrados.'
-          }
+            : 'No se encontraron usuarios registrados.'}
         </p>
         {searchQuery && (
           <button
@@ -172,7 +177,6 @@ function UsersResponsiveTable({ users, loading = false }) {
 
   return (
     <div className="space-y-4">
-
       {/* Barra de búsqueda */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1">
@@ -209,16 +213,16 @@ function UsersResponsiveTable({ users, loading = false }) {
                     onClick={() => handleSort(column.key)}
                     className={`px-6 py-3 text-left text-xs font-medium text-gray-500 
                       dark:text-gray-400 uppercase tracking-wider 
-                      ${column.sortable ? 'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800' : ''
+                      ${
+                        column.sortable
+                          ? 'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800'
+                          : ''
                       }`}
-                    
                   >
                     <div className="flex items-center space-x-1">
                       <span>{column.header}</span>
                       {column.sortable && sortBy === column.key && (
-                        <span className="text-blue-500">
-                          {sortOrder === 'asc' ? '↑' : '↓'}
-                        </span>
+                        <span className="text-blue-500">{sortOrder === 'asc' ? '↑' : '↓'}</span>
                       )}
                     </div>
                   </th>
@@ -227,13 +231,13 @@ function UsersResponsiveTable({ users, loading = false }) {
             </thead>
             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
               {processedUsers.map((user) => (
-                <tr key={user.id_user} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <tr
+                  key={user.id_user}
+                  className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                >
                   {columns.map((column) => (
                     <td key={column.key} className="px-6 py-4 whitespace-nowrap">
-                      {column.render
-                        ? column.render(user[column.key], user)
-                        : user[column.key]
-                      }
+                      {column.render ? column.render(user[column.key], user) : user[column.key]}
                     </td>
                   ))}
                 </tr>
@@ -265,7 +269,9 @@ function UsersResponsiveTable({ users, loading = false }) {
                 <tr key={user.id_user} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                   <td className="px-4 py-4">
                     <div className="flex items-center space-x-3">
-                      <div className={`w-2.5 h-2.5 rounded-full ${user.is_active ? 'bg-green-500' : 'bg-gray-400'}`}></div>
+                      <div
+                        className={`w-2.5 h-2.5 rounded-full ${user.is_active ? 'bg-green-500' : 'bg-gray-400'}`}
+                      ></div>
                       <div>
                         <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                           {user.user_name_full}
@@ -278,9 +284,7 @@ function UsersResponsiveTable({ users, loading = false }) {
                   </td>
                   <td className="px-4 py-4">
                     <div className="space-y-1">
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {user.email}
-                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
                       <p className="text-xs text-gray-400 dark:text-gray-500">
                         {formatDate(user.create_at)}
                       </p>
@@ -310,7 +314,9 @@ function UsersResponsiveTable({ users, loading = false }) {
               {/* Header */}
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center space-x-3">
-                  <div className={`w-2.5 h-2.5 rounded-full ${user.is_active ? 'bg-green-500' : 'bg-gray-400'}`}></div>
+                  <div
+                    className={`w-2.5 h-2.5 rounded-full ${user.is_active ? 'bg-green-500' : 'bg-gray-400'}`}
+                  ></div>
                   <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {user.user_name_full}
                   </h3>
@@ -326,9 +332,7 @@ function UsersResponsiveTable({ users, loading = false }) {
               <div className="space-y-2">
                 <div className="flex items-center space-x-2 text-sm">
                   <EnvelopeIcon className="h-4 w-4 text-gray-400 flex-shrink-0" />
-                  <span className="text-gray-600 dark:text-gray-300 truncate">
-                    {user.email}
-                  </span>
+                  <span className="text-gray-600 dark:text-gray-300 truncate">{user.email}</span>
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -357,9 +361,14 @@ function UsersResponsiveTable({ users, loading = false }) {
         <div className="mt-4 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
           <p>
             {searchQuery ? (
-              <>Mostrando {processedUsers.length} resultado{processedUsers.length !== 1 ? 's' : ''} de {searchQuery}</>
+              <>
+                Mostrando {processedUsers.length} resultado{processedUsers.length !== 1 ? 's' : ''}{' '}
+                de {searchQuery}
+              </>
             ) : (
-              <>Mostrando {processedUsers.length} usuario{processedUsers.length !== 1 ? 's' : ''}</>
+              <>
+                Mostrando {processedUsers.length} usuario{processedUsers.length !== 1 ? 's' : ''}
+              </>
             )}
           </p>
           <div className="flex items-center space-x-2">
@@ -388,23 +397,29 @@ function TableSkeleton() {
           <table className="min-w-full">
             <thead className="bg-gray-50 dark:bg-gray-900">
               <tr>
-                {Array(5).fill(0).map((_, i) => (
-                  <th key={i} className="px-6 py-3">
-                    <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded animate-pulse"></div>
-                  </th>
-                ))}
+                {Array(5)
+                  .fill(0)
+                  .map((_, i) => (
+                    <th key={i} className="px-6 py-3">
+                      <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded animate-pulse"></div>
+                    </th>
+                  ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-              {Array(5).fill(0).map((_, rowIndex) => (
-                <tr key={rowIndex}>
-                  {Array(5).fill(0).map((_, colIndex) => (
-                    <td key={colIndex} className="px-6 py-4">
-                      <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded animate-pulse"></div>
-                    </td>
-                  ))}
-                </tr>
-              ))}
+              {Array(5)
+                .fill(0)
+                .map((_, rowIndex) => (
+                  <tr key={rowIndex}>
+                    {Array(5)
+                      .fill(0)
+                      .map((_, colIndex) => (
+                        <td key={colIndex} className="px-6 py-4">
+                          <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded animate-pulse"></div>
+                        </td>
+                      ))}
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -412,18 +427,23 @@ function TableSkeleton() {
 
       {/* Mobile Skeleton */}
       <div className="block lg:hidden space-y-3">
-        {Array(5).fill(0).map((_, index) => (
-          <div key={index} className="bg-white dark:bg-gray-800 shadow-sm rounded-lg border border-gray-200 dark:border-gray-700 p-4">
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-32 animate-pulse"></div>
-                <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-16 animate-pulse"></div>
+        {Array(5)
+          .fill(0)
+          .map((_, index) => (
+            <div
+              key={index}
+              className="bg-white dark:bg-gray-800 shadow-sm rounded-lg border border-gray-200 dark:border-gray-700 p-4"
+            >
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-32 animate-pulse"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-16 animate-pulse"></div>
+                </div>
+                <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-48 animate-pulse"></div>
+                <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-24 animate-pulse"></div>
               </div>
-              <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-48 animate-pulse"></div>
-              <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-24 animate-pulse"></div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );

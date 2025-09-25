@@ -8,8 +8,9 @@ export function useTable({
   initialData = [],
   initialSort = { key: '', order: 'asc' },
   initialFilters = {},
-  itemsPerPage = 10
-} = {}) { // ← Agregar default para evitar errores de destructuring
+  itemsPerPage = 10,
+} = {}) {
+  // ← Agregar default para evitar errores de destructuring
   const [data, setData] = useState(initialData);
   const [loading, setLoading] = useState(false);
   const [sortBy, setSortBy] = useState(initialSort.key);
@@ -26,9 +27,9 @@ export function useTable({
 
   // Función para filtrar
   const handleFilter = useCallback((filterKey, value) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
-      [filterKey]: value
+      [filterKey]: value,
     }));
     setCurrentPage(1);
   }, []);
@@ -50,9 +51,9 @@ export function useTable({
 
     // Aplicar búsqueda
     if (searchQuery) {
-      result = result.filter(item =>
-        Object.values(item).some(value =>
-          value && String(value).toLowerCase().includes(searchQuery.toLowerCase())
+      result = result.filter((item) =>
+        Object.values(item).some(
+          (value) => value && String(value).toLowerCase().includes(searchQuery.toLowerCase())
         )
       );
     }
@@ -60,11 +61,13 @@ export function useTable({
     // Aplicar filtros
     Object.entries(filters).forEach(([key, value]) => {
       if (value && value !== '') {
-        result = result.filter(item => {
+        result = result.filter((item) => {
           if (Array.isArray(value)) {
             return value.includes(item[key]);
           }
-          return String(item[key] || '').toLowerCase().includes(String(value).toLowerCase());
+          return String(item[key] || '')
+            .toLowerCase()
+            .includes(String(value).toLowerCase());
         });
       }
     });
@@ -74,13 +77,11 @@ export function useTable({
       result.sort((a, b) => {
         const aVal = a[sortBy] || '';
         const bVal = b[sortBy] || '';
-        
+
         if (typeof aVal === 'string' && typeof bVal === 'string') {
-          return sortOrder === 'asc' 
-            ? aVal.localeCompare(bVal)
-            : bVal.localeCompare(aVal);
+          return sortOrder === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
         }
-        
+
         if (sortOrder === 'asc') {
           return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
         } else {
@@ -99,31 +100,34 @@ export function useTable({
   }, [processedData, currentPage, itemsPerPage]);
 
   // Información de paginación
-  const paginationInfo = useMemo(() => ({
-    totalItems: processedData.length,
-    totalPages: Math.ceil(processedData.length / itemsPerPage),
-    currentPage,
-    itemsPerPage,
-    hasNextPage: currentPage < Math.ceil(processedData.length / itemsPerPage),
-    hasPrevPage: currentPage > 1
-  }), [processedData.length, currentPage, itemsPerPage]);
+  const paginationInfo = useMemo(
+    () => ({
+      totalItems: processedData.length,
+      totalPages: Math.ceil(processedData.length / itemsPerPage),
+      currentPage,
+      itemsPerPage,
+      hasNextPage: currentPage < Math.ceil(processedData.length / itemsPerPage),
+      hasPrevPage: currentPage > 1,
+    }),
+    [processedData.length, currentPage, itemsPerPage]
+  );
 
   return {
     // Datos
     data: paginatedData,
     allData: processedData,
     originalData: data,
-    
+
     // Estado
     loading,
     sortBy,
     sortOrder,
     filters,
     searchQuery,
-    
+
     // Paginación
     ...paginationInfo,
-    
+
     // Funciones
     setData,
     setLoading,
@@ -131,18 +135,18 @@ export function useTable({
     handleFilter,
     handleSearch,
     handlePageChange,
-    
+
     // Utilidades
     clearFilters: useCallback(() => {
       setFilters(initialFilters);
       setSearchQuery('');
       setCurrentPage(1);
     }, [initialFilters]),
-    
+
     refresh: useCallback(() => {
       setLoading(true);
       setTimeout(() => setLoading(false), 1000);
-    }, [])
+    }, []),
   };
 }
 

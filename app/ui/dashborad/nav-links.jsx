@@ -10,7 +10,7 @@ import {
   Cog6ToothIcon,
   RectangleStackIcon,
   RectangleGroupIcon,
-  SquaresPlusIcon
+  SquaresPlusIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -24,10 +24,9 @@ const links = [
   { name: 'Reportes', href: '/dashboard/reports', icon: ChartBarIcon },
   { name: 'Usuarios', href: '/dashboard/user', icon: UserGroupIcon },
   { name: 'Configuración', href: '/dashboard/settings', icon: Cog6ToothIcon },
-  { name: "Ubicaciones", href: "/dashboard/location", icon: RectangleStackIcon },
-  { name: "Tipos/Formas", href: "/dashboard/form", icon: RectangleGroupIcon },
-  { name: "Presentaciones", href: "/dashboard/category", icon: SquaresPlusIcon },
-  
+  { name: 'Ubicaciones', href: '/dashboard/location', icon: RectangleStackIcon },
+  { name: 'Tipos/Formas', href: '/dashboard/form', icon: RectangleGroupIcon },
+  { name: 'Presentaciones', href: '/dashboard/category', icon: SquaresPlusIcon },
 ];
 
 export default function NavLinks({ onLinkClick }) {
@@ -38,7 +37,7 @@ export default function NavLinks({ onLinkClick }) {
       {links.map((link) => {
         const LinkIcon = link.icon;
         const isActive = pathname === link.href || pathname.startsWith(link.href + '/');
-        
+
         return (
           <Link
             key={link.name}
@@ -48,7 +47,8 @@ export default function NavLinks({ onLinkClick }) {
               'flex h-[48px] grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium transition-colors md:flex-none md:justify-start md:p-2 md:px-3',
               {
                 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300': isActive,
-                'text-gray-700 hover:bg-gray-100 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-blue-400': !isActive,
+                'text-gray-700 hover:bg-gray-100 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-blue-400':
+                  !isActive,
               }
             )}
           >

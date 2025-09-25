@@ -1,11 +1,11 @@
-import NextAuth from "next-auth";
-import Credentials from "next-auth/providers/credentials";
-import bcrypt from "bcrypt";
+import NextAuth from 'next-auth';
+import Credentials from 'next-auth/providers/credentials';
+import bcrypt from 'bcrypt';
 //import { sql } from "@vercel/postgres";
-import sql from "@/app/lib/postgresql";
+import sql from '@/app/lib/postgresql';
 //import { prisma } from "@/app/lib/prisma";
 //import { z } from "zod";
-import { authConfig } from "./auth.config";
+import { authConfig } from './auth.config';
 
 async function getUser(email) {
   try {
@@ -14,8 +14,8 @@ async function getUser(email) {
     return user[0];
   } catch (error) {
     //pool.end();
-    console.error("Failed to fetch user:", error);
-    throw new Error("Failed to fetch user.");
+    console.error('Failed to fetch user:', error);
+    throw new Error('Failed to fetch user.');
   }
 }
 export const { auth, signIn, signOut } = NextAuth(
@@ -29,10 +29,7 @@ export const { auth, signIn, signOut } = NextAuth(
           if (!user) return null;
 
           // Comparar la contraseña proporcionada con el hash almacenado
-          const passwordsMatch = bcrypt.compare(
-            credentials.password,
-            user.password
-          );
+          const passwordsMatch = bcrypt.compare(credentials.password, user.password);
 
           //console.log(passwordsMatch, user);
           if (passwordsMatch) return user;
@@ -60,7 +57,7 @@ export const { auth, signIn, signOut } = NextAuth(
       },
     },
     pages: {
-      signIn: "/login",
+      signIn: '/login',
     },
   })
 );

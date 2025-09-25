@@ -1,15 +1,15 @@
 // app/lib/auth-actions.js
-"use server";
+'use server';
 
-import { signOut } from "@/auth";
-import { redirect } from "next/navigation";
+import { signOut } from '@/auth';
+import { redirect } from 'next/navigation';
 
 export async function signOutAction() {
   try {
     await signOut();
-    redirect("/login");
+    redirect('/login');
   } catch (error) {
-    console.error("Error signing out:", error);
+    console.error('Error signing out:', error);
     throw error;
   }
 }

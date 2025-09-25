@@ -1,20 +1,20 @@
-import { CreateMedicine } from "@/app/ui/medicine/button";
-import Table from "@/app/ui/medicine/table";
-import Search from "@/app/ui/search";
-import { MedicineTableSkeleton } from "@/app/ui/medicine/skeletons";
-import { Suspense } from "react";
+import { CreateMedicine } from '@/app/ui/medicine/button';
+import Table from '@/app/ui/medicine/table';
+import Search from '@/app/ui/search';
+import { MedicineTableSkeleton } from '@/app/ui/medicine/skeletons';
+import { Suspense } from 'react';
 
 const page = ({
   searchParams = {
-    query: "",
-    page: "1",
-    limit: "10",
-    sort: "name",
-    order: "asc",
+    query: '',
+    page: '1',
+    limit: '10',
+    sort: 'name',
+    order: 'asc',
   },
 }) => {
-  const query = searchParams?.query?.toString() || "";
-  const page = searchParams?.page?.toString() || "1";
+  const query = searchParams?.query?.toString() || '';
+  const page = searchParams?.page?.toString() || '1';
 
   return (
     <div className="w-full">

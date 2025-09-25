@@ -1,6 +1,6 @@
-import Breadcrumbs from "@/app/ui/breadcrumbs";
-import FormLocationEdit from "@/app/ui/location/edit-location";
-import { fetchLocationById } from "@/app/dashboard/location/actions";
+import Breadcrumbs from '@/app/ui/breadcrumbs';
+import FormLocationEdit from '@/app/ui/location/edit-location';
+import { fetchLocationById } from '@/app/dashboard/location/actions';
 
 async function page({ params }) {
   const id_location = params.id_location;
@@ -11,9 +11,9 @@ async function page({ params }) {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: "Ubicación", href: "/dashboard/location", active: false },
+          { label: 'Ubicación', href: '/dashboard/location', active: false },
           {
-            label: "Editar Ubicación",
+            label: 'Editar Ubicación',
             href: `/dashboard/location/${id_location}/edit`,
             active: true,
           },

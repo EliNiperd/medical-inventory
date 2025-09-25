@@ -1,11 +1,11 @@
-"use server";
+'use server';
 
-import { wakeUpDb } from "@/app/lib/db-wake-up";
+import { wakeUpDb } from '@/app/lib/db-wake-up';
 //import { getURL } from "@/lib/getURL";
-import  prisma  from "@/app/lib/prisma";
-import { parseISO } from "date-fns";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import prisma from '@/app/lib/prisma';
+import { parseISO } from 'date-fns';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 export async function fetchFilteredMedicines(query, page, limit, sort, order) {
   //console.log("fetchFilteredMedicines", query, page, limit, sort, order);
@@ -18,7 +18,6 @@ export async function fetchFilteredMedicines(query, page, limit, sort, order) {
   */
 
   await wakeUpDb();
-  
 
   const medicines = await prisma.medicines_Table.findMany({
     where: {
@@ -26,31 +25,31 @@ export async function fetchFilteredMedicines(query, page, limit, sort, order) {
         {
           name_medicine: {
             contains: query,
-            mode: "insensitive",
+            mode: 'insensitive',
           },
         },
         {
           description: {
             contains: query,
-            mode: "insensitive",
+            mode: 'insensitive',
           },
         },
         {
           category_name: {
             contains: query,
-            mode: "insensitive",
+            mode: 'insensitive',
           },
         },
         {
           form_name: {
             contains: query,
-            mode: "insensitive",
+            mode: 'insensitive',
           },
         },
         {
           location_name: {
             contains: query,
-            mode: "insensitive",
+            mode: 'insensitive',
           },
         },
       ],
@@ -98,9 +97,7 @@ export async function createMedicine(formData) {
     category: formData.category ? parseInt(formData.category) : 1,
     form: formData.form,
     packsize: formData.packsize ? parseInt(formData.packsize) : 1,
-    reorder_point: formData.reorder_point
-      ? parseInt(formData.reorder_point)
-      : 0,
+    reorder_point: formData.reorder_point ? parseInt(formData.reorder_point) : 0,
     location: formData.location,
   };
 
@@ -118,12 +115,12 @@ export async function createMedicine(formData) {
       packsize,
       reorder_point,
       idLocation: location,
-      id_user_create: '5d743e4d-1724-4501-94d2-7d9de771cc66'
+      id_user_create: '5d743e4d-1724-4501-94d2-7d9de771cc66',
     },
   });
 
-  revalidatePath("/dashboard/medicine");
-  redirect("/dashboard/medicine");
+  revalidatePath('/dashboard/medicine');
+  redirect('/dashboard/medicine');
 }
 
 export async function updateMedicine(id, formData) {
@@ -140,20 +137,18 @@ export async function updateMedicine(id, formData) {
     reorder_point,
     location,
   } = {
-    name: formData.get("name"),
-    description: formData.get("description"),
-    price: formData.get("price") ? parseFloat(formData.get("price")) : 0,
-    quantity: formData.get("quantity") ? parseInt(formData.get("quantity")) : 1,
-    expiration_date: formData.get("expirationDate")
-      ? parseISO(formData.get("expirationDate"))
+    name: formData.get('name'),
+    description: formData.get('description'),
+    price: formData.get('price') ? parseFloat(formData.get('price')) : 0,
+    quantity: formData.get('quantity') ? parseInt(formData.get('quantity')) : 1,
+    expiration_date: formData.get('expirationDate')
+      ? parseISO(formData.get('expirationDate'))
       : parseISO(new Date()),
-    category: formData.get("category") ? parseInt(formData.get("category")) : 1,
-    form: formData.get("form"),
-    packsize: formData.get("packsize") ? parseInt(formData.get("packsize")) : 1,
-    reorder_point: formData.get("reorder_point")
-      ? parseInt(formData.get("reorder_point"))
-      : 1,
-    location: formData.get("location"),
+    category: formData.get('category') ? parseInt(formData.get('category')) : 1,
+    form: formData.get('form'),
+    packsize: formData.get('packsize') ? parseInt(formData.get('packsize')) : 1,
+    reorder_point: formData.get('reorder_point') ? parseInt(formData.get('reorder_point')) : 1,
+    location: formData.get('location'),
   };
   //console.log("formData: ", formData);
   //console.log("form:", form);
@@ -176,8 +171,8 @@ export async function updateMedicine(id, formData) {
     },
   });
 
-  revalidatePath("/dashboard/medicine");
-  redirect("/dashboard/medicine");
+  revalidatePath('/dashboard/medicine');
+  redirect('/dashboard/medicine');
 }
 
 export async function deleteMedicine(id) {
@@ -187,5 +182,5 @@ export async function deleteMedicine(id) {
     },
   });
 
-  revalidatePath("/dashboard/medicine");
+  revalidatePath('/dashboard/medicine');
 }

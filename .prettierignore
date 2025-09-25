@@ -1,0 +1,10 @@
+.next
+node_modules
+dist
+build
+coverage
+*.md
+*.json
+*.yml
+*.yaml
+.DS_Store

@@ -9,24 +9,22 @@ import {
   InboxStackIcon,
   SwatchIcon,
   GlobeAmericasIcon,
-} from "@heroicons/react/24/outline";
-import Link from "next/link";
-import Button from "@/app/ui/button";
-import { updateMedicine } from "@/app/dashboard/medicine/actions";
+} from '@heroicons/react/24/outline';
+import Link from 'next/link';
+import Button from '@/app/ui/button';
+import { updateMedicine } from '@/app/dashboard/medicine/actions';
 
 export default function Form({ medicine, categories, forms, locations }) {
   const updateMedicineWithId = updateMedicine.bind(null, medicine.id);
   //const { updateMedicineWithId } = medicineEditForm;
 
-  const expirationDate = medicine.expiration_date.toISOString().split("T")[0];
+  const expirationDate = medicine.expiration_date.toISOString().split('T')[0];
   return (
     <form action={updateMedicineWithId}>
       <div className=" form-basic max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-4 ">
         {/* Medicine Name */}
         <div className=" col-span-2 ">
-          <label htmlFor="name">
-            Nombre
-          </label>
+          <label htmlFor="name">Nombre</label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
               <input
@@ -43,11 +41,7 @@ export default function Form({ medicine, categories, forms, locations }) {
         </div>
         {/* Medicine Description */}
         <div className="mb-2 col-span-2 ">
-          <label
-            htmlFor="description"
-          >
-            Descripción
-          </label>
+          <label htmlFor="description">Descripción</label>
           <div className="relative rounded-md">
             <div className="relative">
               <textarea
@@ -64,10 +58,8 @@ export default function Form({ medicine, categories, forms, locations }) {
         </div>
 
         {/* Category */}
-        <div >
-          <label htmlFor="category" >
-            Categoría
-          </label>
+        <div>
+          <label htmlFor="category">Categoría</label>
           <div className="relative">
             <select
               id="category"
@@ -89,17 +81,10 @@ export default function Form({ medicine, categories, forms, locations }) {
         </div>
 
         {/* Form (Presentación) */}
-        <div >
-          <label htmlFor="form" >
-            Presentación
-          </label>
+        <div>
+          <label htmlFor="form">Presentación</label>
           <div className="relative">
-            <select
-              id="form"
-              name="form"
-              className="input-form"
-              defaultValue={medicine.id_form}
-            >
+            <select id="form" name="form" className="input-form" defaultValue={medicine.id_form}>
               <option value="" disabled>
                 Seleccionar presentación
               </option>
@@ -115,9 +100,7 @@ export default function Form({ medicine, categories, forms, locations }) {
 
         {/* Medicine Quantity */}
         <div className="mb-2">
-          <label htmlFor="quantity" >
-            Cantidad:
-          </label>
+          <label htmlFor="quantity">Cantidad:</label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
               <input
@@ -135,9 +118,7 @@ export default function Form({ medicine, categories, forms, locations }) {
         </div>
         {/* PackSize (Cantidad de paquetes) */}
         <div className="mb-2">
-          <label htmlFor="packsize" >
-            Paquetes (de la presentación)
-          </label>
+          <label htmlFor="packsize">Paquetes (de la presentación)</label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
               <input
@@ -155,12 +136,8 @@ export default function Form({ medicine, categories, forms, locations }) {
           </div>
         </div>
         {/* reorder_point (Punto de Reorden) */}
-        <div >
-          <label
-            htmlFor="reorder_point"
-          >
-            Punto de reorden
-          </label>
+        <div>
+          <label htmlFor="reorder_point">Punto de reorden</label>
           <div className="relative rounded-md">
             <div className="relative">
               <input
@@ -179,12 +156,8 @@ export default function Form({ medicine, categories, forms, locations }) {
         </div>
 
         {/*Medicine expiration_date (Fecha de caducidad)*/}
-        <div >
-          <label
-            htmlFor="expirationDate"
-          >
-            Fecha de caducidad
-          </label>
+        <div>
+          <label htmlFor="expirationDate">Fecha de caducidad</label>
           <div className="relative rounded-md">
             <div className="relative">
               <input
@@ -200,10 +173,8 @@ export default function Form({ medicine, categories, forms, locations }) {
         </div>
 
         {/* Location (ubicación) */}
-        <div >
-          <label htmlFor="location" >
-            Ubicación
-          </label>
+        <div>
+          <label htmlFor="location">Ubicación</label>
           <div className="relative">
             <select
               id="location"
@@ -226,9 +197,7 @@ export default function Form({ medicine, categories, forms, locations }) {
 
         {/*Medicine price*/}
         <div>
-          <label htmlFor="price" >
-            Precio
-          </label>
+          <label htmlFor="price">Precio</label>
           <div className="relative rounded-md">
             <div className="relative">
               <input
@@ -245,10 +214,7 @@ export default function Form({ medicine, categories, forms, locations }) {
           </div>
         </div>
         <div className="col-span-2  flex justify-end gap-2 border-t pt-4 pb-4  ">
-          <Link
-            href="/dashboard/medicine"
-            className="btn-form-cancel"
-          >
+          <Link href="/dashboard/medicine" className="btn-form-cancel">
             Cancelar
           </Link>
           <Button type="submit" className="btn-form-submit">

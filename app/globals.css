@@ -7,23 +7,23 @@
     /* Colores base */
     --background: 0 0% 98%; /* Fondo más claro para mejor contraste */
     --foreground: 222 47% 11%; /* Texto más oscuro */
-    
+
     /* Formularios - Contraste mejorado */
     --background-form: 20 20% 100%; /* Blanco puro para formularios */
     --foreground-form: 222 47% 11%; /* Texto muy oscuro */
-    
+
     /* Primarios (azules profesionales) */
     --primary: 221 83% 53%;
     --primary-foreground: 210 40% 98%;
-    
+
     /* Secundarios (verdes para acciones positivas) */
     --secondary: 142 76% 36%;
     --secondary-foreground: 355 100% 98%;
-    
+
     /* Neutrales */
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
-    
+
     /* Estados */
     --success: 142 72% 36%;
     --success-foreground: 355 100% 98%;
@@ -31,7 +31,7 @@
     --warning-foreground: 355 100% 98%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
-    
+
     /* Componentes */
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
@@ -40,7 +40,7 @@
     --border: 214 32% 91%;
     --input: 214 32% 91%;
     --ring: 221 83% 53%;
-    
+
     /* Radio de bordes */
     --radius: 0.5rem;
   }
@@ -49,23 +49,23 @@
     /* Colores base */
     --background: 222 47% 8%; /* Fondo más oscuro */
     --foreground: 210 40% 96%; /* Texto más claro */
-    
+
     /* Formularios - Diferenciación clara */
     --background-form: 222 47% 12%; /* Más claro que el fondo pero oscuro */
     --foreground-form: 210 40% 96%; /* Texto muy claro */
-    
+
     /* Primarios */
     --primary: 217 91% 60%;
     --primary-foreground: 222 47% 11%;
-    
+
     /* Secundarios */
     --secondary: 142 69% 45%;
     --secondary-foreground: 222 47% 11%;
-    
+
     /* Neutrales */
     --muted: 223 47% 21%;
     --muted-foreground: 215 20% 65%;
-    
+
     /* Estados */
     --success: 142 69% 45%;
     --success-foreground: 222 47% 11%;
@@ -73,7 +73,7 @@
     --warning-foreground: 222 47% 11%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
-    
+
     /* Componentes */
     --card: 222 47% 11%;
     --card-foreground: 210 40% 98%;
@@ -87,7 +87,7 @@
   * {
     @apply border-border;
   }
-  
+
   body {
     @apply bg-background text-foreground;
   }
@@ -100,50 +100,49 @@
            transition-colors focus-visible:outline focus-visible:outline-2 
            focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
   }
-  
+
   /* Variantes de botones */
   .btn-primary {
     @apply btn bg-primary text-primary-foreground hover:bg-primary/90 
            focus-visible:outline-primary active:bg-primary/80;
   }
-  
+
   .btn-secondary {
     @apply btn bg-secondary text-secondary-foreground hover:bg-secondary/90 
            focus-visible:outline-secondary active:bg-secondary/80;
   }
-  
+
   .btn-destructive {
     @apply btn bg-destructive text-destructive-foreground hover:bg-destructive/90 
            focus-visible:outline-destructive active:bg-destructive/80;
   }
-  
+
   .btn-success {
     @apply btn bg-success text-success-foreground hover:bg-success/90 
            focus-visible:outline-success active:bg-success/80;
   }
-  
+
   .btn-outline {
     @apply btn border border-input bg-red-500 hover:bg-accent hover:text-accent-foreground;
   }
-  
+
   .btn-ghost {
     @apply btn hover:bg-accent hover:text-accent-foreground;
   }
-  
-  
+
   /* Botones específicos de formulario */
   .btn-form-submit {
     @apply btn-primary;
   }
-  
+
   .btn-form-cancel {
     @apply btn bg-muted text-muted-foreground hover:bg-muted/80 focus-visible:outline-muted;
   }
-  
+
   .btn-delete {
     @apply btn-destructive;
   }
-  
+
   /* Componentes de formulario */
   .form-basic {
     @apply w-full rounded-lg border border-input bg-background-form px-3 py-2 
@@ -153,23 +152,23 @@
            disabled:cursor-not-allowed disabled:opacity-50
            dark:focus:ring-ring/40;
   }
-  
+
   .input-form {
     @apply block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 
     placeholder:text-gray-500 focus:border-gray-500  
     disabled:cursor-not-allowed disabled:opacity-50  
     dark:text-gray-200 dark:placeholder-gray-300 dark:focus:border-white dark:focus:ring-gray-500;
   }
-  
+
   .input-form-number {
     @apply input-form w-48;
   }
-  
+
   .icon-input {
     @apply pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 
            text-muted-foreground peer-focus:text-foreground;
   }
-  
+
   /* Utilidades adicionales */
   /*.card {
     @apply rounded-lg border bg-card text-card-foreground shadow-sm;
@@ -200,21 +199,33 @@
   .animate-in {
     animation: fadeIn 0.5s ease-in-out;
   }
-  
+
   .animate-out {
     animation: fadeOut 0.5s ease-in-out;
   }
-  
+
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
-  
+
   @keyframes fadeOut {
-    from { opacity: 1; transform: translateY(0); }
-    to { opacity: 0; transform: translateY(10px); }
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(10px);
+    }
   }
-  
+
   .text-balance {
     text-wrap: balance;
   }

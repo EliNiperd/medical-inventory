@@ -1,23 +1,26 @@
-"use server";
+'use server';
 
-import  prisma  from "@/app/lib/prisma";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import bcrypt from "bcrypt";
-import { z } from "zod";
+import prisma from '@/app/lib/prisma';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
+import bcrypt from 'bcrypt';
+import { z } from 'zod';
 
 export async function createUser(formData) {
   //TODO: revisar si a validación es necesaria
-  //TODO: revisar si es necesario agregar validación por emmail 
+  //TODO: revisar si es necesario agregar validación por emmail
   const registerUSerSchema = z
     .object({
-      email: z.string()
+      email: z
+        .string()
         .min(1, 'Please enter your email')
         .email('Please enter a valid email address'),
-      password: z.string()
+      password: z
+        .string()
         .min(1, 'Please enter your password')
         .min(6, 'Password must be at least 6 characters long'),
-      confirmPassword: z.string()
+      confirmPassword: z
+        .string()
         .min(1, 'Please enter your password confirmation')
         .min(6, 'Password must be at least 6 characters long'),
       /*.refine((data) => data === password, {
@@ -25,39 +28,29 @@ export async function createUser(formData) {
       }),*/
     })
     .refine((data) => data.password === data.confirmPassword, {
-      message: "Las contraseñas no coinciden",
-      path: ["confirmPassword"],
+      message: 'Las contraseñas no coinciden',
+      path: ['confirmPassword'],
     });
 
   const parsedFormData = registerUSerSchema.safeParse({
-    email: formData.get("email"),
-    password: formData.get("password"),
-    confirmPassword: formData.get("confirmPassword"),
+    email: formData.get('email'),
+    password: formData.get('password'),
+    confirmPassword: formData.get('confirmPassword'),
   });
-  console.log(
-    "registerUserSchema",
-    registerUSerSchema,
-    "parsedFormData",
-    parsedFormData
-  );
+  console.log('registerUserSchema', registerUSerSchema, 'parsedFormData', parsedFormData);
   //return;
-  console.log(
-    "registerUserSchema",
-    registerUSerSchema,
-    "parsedFormData",
-    parsedFormData
-  );
+  console.log('registerUserSchema', registerUSerSchema, 'parsedFormData', parsedFormData);
   //return;
   if (!parsedFormData.success) {
-    console.error("Invalid form data", parsedFormData.error);
+    console.error('Invalid form data', parsedFormData.error);
     return;
   }
 
   //console.log(formData);
 
-  const hassedPassword = await bcrypt.hash(formData.get("password"), 10);
+  const hassedPassword = await bcrypt.hash(formData.get('password'), 10);
   const { email, password } = {
-    email: formData.get("email"),
+    email: formData.get('email'),
     password: hassedPassword,
   };
 
@@ -70,10 +63,8 @@ export async function createUser(formData) {
     },
   });
 
-  
-
-  revalidatePath("/dashboard/user");
-  redirect("/dashboard/user");
+  revalidatePath('/dashboard/user');
+  redirect('/dashboard/user');
 }
 
 export async function fetchFilteredUsers(query, page, limit, sort, order) {
@@ -85,20 +76,19 @@ export async function fetchFilteredUsers(query, page, limit, sort, order) {
         {
           user_name_full: {
             contains: query,
-            mode: "insensitive",
+            mode: 'insensitive',
           },
         },
         {
           email: {
             contains: query,
-            mode: "insensitive",
+            mode: 'insensitive',
           },
         },
       ],
     },
   });
 
- 
   return users;
 }
 
@@ -109,13 +99,11 @@ export async function fetchUserById(id) {
     },
   });
 
-  
-
   return user;
 }
 
 export async function updateUser(id_user, formData) {
-  console.log("updateUser", id_user, formData.get("password"));
+  console.log('updateUser', id_user, formData.get('password'));
 
   // Obtener el usuario actual de la base de datos
   const currentUser = await fetchUserById(id_user);
@@ -126,16 +114,16 @@ export async function updateUser(id_user, formData) {
 
   // Verificar si la contraseña ha sido modificada
   let hashedPassword = currentUser.password;
-  if (formData.get("password") && formData.get("password") !== currentUser.password) {
+  if (formData.get('password') && formData.get('password') !== currentUser.password) {
     // Si la contraseña ha sido modificada, generar un nuevo hash
-    hashedPassword = await bcrypt.hash(formData.get("password"), 10);
+    hashedPassword = await bcrypt.hash(formData.get('password'), 10);
   }
 
   //const hassedPassword = await bcrypt.hash(formData.get("password"), 10);
 
   const { user_name_full, email, password } = {
-    user_name_full: formData.get("user_name_full"),
-    email: formData.get("email"),
+    user_name_full: formData.get('user_name_full'),
+    email: formData.get('email'),
     password: hashedPassword,
   };
 
@@ -150,9 +138,8 @@ export async function updateUser(id_user, formData) {
     },
   });
 
- 
-  revalidatePath("/dashboard/user");
-  redirect("/dashboard/user");
+  revalidatePath('/dashboard/user');
+  redirect('/dashboard/user');
 }
 
 export async function deleteUser(id_user) {
@@ -162,5 +149,5 @@ export async function deleteUser(id_user) {
     },
   });
 
-   revalidatePath("/dashboard/user");
+  revalidatePath('/dashboard/user');
 }

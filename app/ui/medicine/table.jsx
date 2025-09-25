@@ -1,20 +1,8 @@
-import { fetchFilteredMedicines } from "@/app/dashboard/medicine/actions";
-import { DeleteMedicine, UpdateMedicine } from "@/app/ui/medicine/button";
+import { fetchFilteredMedicines } from '@/app/dashboard/medicine/actions';
+import { DeleteMedicine, UpdateMedicine } from '@/app/ui/medicine/button';
 
-export default async function TableMedicine({
-  query,
-  page,
-  limit,
-  sort,
-  order,
-}) {
-  const medicines = await fetchFilteredMedicines(
-    query,
-    page,
-    limit,
-    sort,
-    order
-  );
+export default async function TableMedicine({ query, page, limit, sort, order }) {
+  const medicines = await fetchFilteredMedicines(query, page, limit, sort, order);
   //console.log(medicines);
 
   return (
@@ -91,16 +79,14 @@ export default async function TableMedicine({
                       <p className="text-sm text-gray-500">{medicine.quantity}</p>
                     </td>
                     <td className="px-4 py-4">
-                      <p className="text-sm text-gray-500">
-                        {medicine.form_name}
-                      </p>
+                      <p className="text-sm text-gray-500">{medicine.form_name}</p>
                     </td>
                     <td className="px-4 py-4">
                       <p className="text-sm text-gray-500">{medicine.packsize}</p>
                     </td>
                     <td className="px-4 py-4 items-center">
                       <p className="text-sm font-medium text-gray-900 ">
-                        {medicine.expiration_date?.toLocaleDateString() ?? "N/D"}
+                        {medicine.expiration_date?.toLocaleDateString() ?? 'N/D'}
                       </p>
                     </td>
                     {/* <td className="px-4 py-4">
@@ -109,9 +95,7 @@ export default async function TableMedicine({
                       </p>
                     </td> */}
                     <td className="px-4 py-4">
-                      <p className="text-sm font-medium text-gray-900">
-                        {medicine.location_name}
-                      </p>
+                      <p className="text-sm font-medium text-gray-900">{medicine.location_name}</p>
                     </td>
                     {/* <td className="px-4 py-4">
                       <p className="text-sm font-medium text-gray-900">

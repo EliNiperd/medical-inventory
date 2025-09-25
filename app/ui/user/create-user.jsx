@@ -1,30 +1,25 @@
-"use client";
-import Link from "next/link";
-import Button from "@/app/ui/button";
-import { createUser } from "@/app/dashboard/user/actions";
-import ResponsiveFormWrapper, { ResponsiveGrid, ResponsiveField } from "@/app/ui/components/form/responsive-form-wrapper";
-import FooterForm from "@/app/ui/components/form/footer-form";
-import FormInput from "@/app/ui/components/form/form-input";
-import { useForm, useSchemaValidation } from "@/app/hooks/useFormValidation";
+'use client';
+import Link from 'next/link';
+import Button from '@/app/ui/button';
+import { createUser } from '@/app/dashboard/user/actions';
+import ResponsiveFormWrapper, {
+  ResponsiveGrid,
+  ResponsiveField,
+} from '@/app/ui/components/form/responsive-form-wrapper';
+import FooterForm from '@/app/ui/components/form/footer-form';
+import FormInput from '@/app/ui/components/form/form-input';
+import { useForm, useSchemaValidation } from '@/app/hooks/useFormValidation';
 
 export default function FormCreate() {
-
-  const VALIDATION_RULES = useSchemaValidation("user");
+  const VALIDATION_RULES = useSchemaValidation('user');
   //console.log(VALIDATION_RULES.password);
 
-  // ✅ Hook unificado para todo el formulario al validar 
-  const {
-    formData,
-    errors,
-    handleChange,
-    handleBlur,
-    validateForm,
-    isValid
-  } = useForm(
+  // ✅ Hook unificado para todo el formulario al validar
+  const { formData, errors, handleChange, handleBlur, validateForm, isValid } = useForm(
     {
       email: '',
       password: '',
-      confirmPassword: ''
+      confirmPassword: '',
     },
     VALIDATION_RULES
   );
@@ -47,12 +42,10 @@ export default function FormCreate() {
       });
 
       await createUser(formDataToSubmit);
-
     } catch (error) {
       console.error('Error al crear usuario:', error);
     }
   };
-
 
   return (
     <>
@@ -61,7 +54,7 @@ export default function FormCreate() {
         subtitle="Ingresa la información del nuevo usuario"
         maxWidth="4xl"
       >
-        <form onSubmit={handleSubmit} >
+        <form onSubmit={handleSubmit}>
           <ResponsiveGrid cols={{ sm: 1, md: 2, lg: 2 }}>
             {/* Email User */}
             <ResponsiveField span={{ sm: 1, md: 2 }}>
@@ -106,12 +99,9 @@ export default function FormCreate() {
                 placeholder="Confirme la contraseña del usuario"
               />
             </ResponsiveField>
-            <ResponsiveField span={{ sm: 1, md: 2 }} >
+            <ResponsiveField span={{ sm: 1, md: 2 }}>
               <FooterForm>
-                <Link
-                  href="/dashboard/user"
-                  className="btn-form-cancel"
-                >
+                <Link href="/dashboard/user" className="btn-form-cancel">
                   Cancelar
                 </Link>
                 <Button
@@ -129,4 +119,3 @@ export default function FormCreate() {
     </>
   );
 }
-

@@ -1,5 +1,5 @@
-import { GlobeAltIcon } from "@heroicons/react/24/outline";
-import { nunito } from "@/app/ui/fonts";
+import { GlobeAltIcon } from '@heroicons/react/24/outline';
+import { nunito } from '@/app/ui/fonts';
 
 export default function Logo() {
   return (

@@ -1,10 +1,10 @@
 export const authConfig = {
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
     maxAge: 2 * 60 * 60, // 2 hours
   },
   pages: {
-    signIn: "/login",
+    signIn: '/login',
   },
   secret: process.env.NEXTAUTH_SECRET,
 
@@ -18,15 +18,22 @@ export const authConfig = {
       if (url.startsWith(`${baseUrl}/login`)) {
         return `${baseUrl}/dashboard`;
       }
-console.log("Redirigiendo a:", url);
+      console.log('Redirigiendo a:', url);
       // De lo contrario, regresa a la URL original
       return url;
     },
 
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
-console.log("isLoggedIn:", isLoggedIn, "isOnDashboard:", isOnDashboard, "nextUrl:", nextUrl.pathname);
+      const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
+      console.log(
+        'isLoggedIn:',
+        isLoggedIn,
+        'isOnDashboard:',
+        isOnDashboard,
+        'nextUrl:',
+        nextUrl.pathname
+      );
       // Si el usuario intenta acceder al dashboard y no ha iniciado sesión, redirige al login
       if (isOnDashboard) {
         if (isLoggedIn) return true;

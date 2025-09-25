@@ -1,6 +1,6 @@
-import Breadcrumbs from "@/app/ui/breadcrumbs";
-import Form from "@/app/ui/user/edit-user";
-import { fetchUserById } from "@/app/dashboard/user/actions";
+import Breadcrumbs from '@/app/ui/breadcrumbs';
+import Form from '@/app/ui/user/edit-user';
+import { fetchUserById } from '@/app/dashboard/user/actions';
 
 async function page({ params }) {
   const id = params.id;
@@ -11,9 +11,9 @@ async function page({ params }) {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: "User", href: "/dashboard/user", active: false },
+          { label: 'User', href: '/dashboard/user', active: false },
           {
-            label: "Editar Usuario",
+            label: 'Editar Usuario',
             href: `/dashboard/user/${id}/edit`,
             active: true,
           },

@@ -1,14 +1,8 @@
-import clsx from "clsx";
+import clsx from 'clsx';
 
 export default function Button({ children, className, ...props }) {
   return (
-    <button
-      {...props}
-      className={clsx(
-        "btn-form-submit",
-        className
-      )}
-    >
+    <button {...props} className={clsx('btn-form-submit', className)}>
       {children}
     </button>
   );

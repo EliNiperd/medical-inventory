@@ -1,6 +1,6 @@
 //import AcmeLogo from "@/app/ui/acme-logo";
-import LoginForm from "@/app/ui/login-form";
-import ModeToggle from "@/components/theme-toggle";
+import LoginForm from '@/app/ui/login-form';
+import ModeToggle from '@/components/theme-toggle';
 
 export default function LoginPage() {
   return (

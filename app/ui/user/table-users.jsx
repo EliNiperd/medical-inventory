@@ -36,11 +36,9 @@ function UsersTableError() {
 }
 */
 
-
 export default function TableUsersPage({ searchParams }) {
   return (
     <div className="p-4 sm:p-6 lg:p-8">
-      
       {/* Header */}
       <div className="mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
@@ -52,7 +50,7 @@ export default function TableUsersPage({ searchParams }) {
               Gestiona los usuarios del sistema
             </p>
           </div>
-          
+
           <div className="mt-4 sm:mt-0">
             {/*TODO: revisar si hay que hacer referencia al botón genérico o crear uno especial*/}
             {/*
@@ -73,11 +71,11 @@ export default function TableUsersPage({ searchParams }) {
       </div>
 
       {/* Tabla con Suspense */}
-      <Suspense 
+      <Suspense
         key={JSON.stringify(searchParams)} // Re-suspense cuando cambien los parámetros
         fallback={<UsersTableSkeleton />}
       >
-        <UsersTableWrapper 
+        <UsersTableWrapper
           query={searchParams?.query || ''}
           page={Number(searchParams?.page) || 1}
           limit={Number(searchParams?.limit) || 10}
@@ -85,10 +83,12 @@ export default function TableUsersPage({ searchParams }) {
           order={searchParams?.order || 'asc'}
         />
       </Suspense>
-      
+
       {/* Footer info */}
       <div className="mt-6 text-xs text-gray-500 dark:text-gray-400">
-        <p>💡 <strong>Tip:</strong> Usa la búsqueda para filtrar usuarios en tiempo real.</p>
+        <p>
+          💡 <strong>Tip:</strong> Usa la búsqueda para filtrar usuarios en tiempo real.
+        </p>
       </div>
     </div>
   );

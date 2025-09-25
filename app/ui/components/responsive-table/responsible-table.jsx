@@ -6,7 +6,6 @@ import { useState, useMemo, createContext, useContext } from 'react';
 // Contexto para compartir configuración
 const TableContext = createContext();
 
-
 // Hook para acceder al contexto
 function useTable() {
   const context = useContext(TableContext);
@@ -17,8 +16,8 @@ function useTable() {
 }
 
 // 🏗️ COMPONENTE PRINCIPAL
-export default function ResponsiveTable({ 
-  data = [], 
+export default function ResponsiveTable({
+  data = [],
   columns = [],
   loading = false,
   searchable = true,
@@ -26,7 +25,7 @@ export default function ResponsiveTable({
   emptyState,
   className = '',
   children, // Para componentes custom
-  ...props 
+  ...props
 }) {
   const [sortBy, setSortBy] = useState('');
   const [sortOrder, setSortOrder] = useState('asc');
@@ -38,9 +37,9 @@ export default function ResponsiveTable({
 
     // Búsqueda
     if (searchQuery && searchable) {
-      result = result.filter(item =>
-        Object.values(item).some(value =>
-          value && String(value).toLowerCase().includes(searchQuery.toLowerCase())
+      result = result.filter((item) =>
+        Object.values(item).some(
+          (value) => value && String(value).toLowerCase().includes(searchQuery.toLowerCase())
         )
       );
     }
@@ -50,16 +49,22 @@ export default function ResponsiveTable({
       result.sort((a, b) => {
         const aVal = a[sortBy] || '';
         const bVal = b[sortBy] || '';
-        
+
         if (typeof aVal === 'string' && typeof bVal === 'string') {
-          return sortOrder === 'asc' 
-            ? aVal.localeCompare(bVal)
-            : bVal.localeCompare(aVal);
+          return sortOrder === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
         }
-        
-        return sortOrder === 'asc' 
-          ? (aVal < bVal ? -1 : aVal > bVal ? 1 : 0)
-          : (aVal > bVal ? -1 : aVal < bVal ? 1 : 0);
+
+        return sortOrder === 'asc'
+          ? aVal < bVal
+            ? -1
+            : aVal > bVal
+              ? 1
+              : 0
+          : aVal > bVal
+            ? -1
+            : aVal < bVal
+              ? 1
+              : 0;
       });
     }
 
@@ -68,7 +73,7 @@ export default function ResponsiveTable({
 
   const handleSort = (key) => {
     if (!sortable) return;
-    
+
     if (sortBy === key) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     } else {
@@ -87,7 +92,7 @@ export default function ResponsiveTable({
     searchQuery,
     setSearchQuery,
     searchable,
-    sortable
+    sortable,
   };
 
   if (loading) {
@@ -101,7 +106,11 @@ export default function ResponsiveTable({
   }
 
   if (!processedData || processedData.length === 0) {
-    return emptyState || <DefaultEmptyState searchQuery={searchQuery} onClearSearch={() => setSearchQuery('')} />;
+    return (
+      emptyState || (
+        <DefaultEmptyState searchQuery={searchQuery} onClearSearch={() => setSearchQuery('')} />
+      )
+    );
   }
 
   return (
@@ -114,9 +123,9 @@ export default function ResponsiveTable({
 }
 
 // 🔍 COMPONENTE DE BÚSQUEDA REUTILIZABLE
-function TableSearch({ placeholder = "Buscar...", className = "" }) {
+function TableSearch({ placeholder = 'Buscar...', className = '' }) {
   const { searchQuery, setSearchQuery, searchable } = useTable();
-  
+
   if (!searchable) return null;
 
   return (
@@ -129,8 +138,18 @@ function TableSearch({ placeholder = "Buscar...", className = "" }) {
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full px-3 py-2 pl-10 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <svg className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        <svg
+          className="absolute left-3 top-2.5 h-4 w-4 text-gray-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          />
         </svg>
       </div>
       {searchQuery && (
@@ -146,7 +165,7 @@ function TableSearch({ placeholder = "Buscar...", className = "" }) {
 }
 
 // 📊 VISTA DESKTOP MODULAR
-function DesktopTable({ className = "" }) {
+function DesktopTable({ className = '' }) {
   const { data, columns, sortBy, sortOrder, handleSort, sortable } = useTable();
 
   return (
@@ -172,12 +191,14 @@ function DesktopTable({ className = "" }) {
 }
 
 // 📱 VISTA TABLET MODULAR
-function TabletTable({ className = "" }) {
+function TabletTable({ className = '' }) {
   const { data, columns } = useTable();
-  
-  const primaryColumn = columns.find(col => col.primary) || columns[0];
-  const secondaryColumns = columns.filter(col => col.showOnTablet && col.key !== primaryColumn?.key);
-  const actionsColumn = columns.find(col => col.type === 'actions');
+
+  const primaryColumn = columns.find((col) => col.primary) || columns[0];
+  const secondaryColumns = columns.filter(
+    (col) => col.showOnTablet && col.key !== primaryColumn?.key
+  );
+  const actionsColumn = columns.find((col) => col.type === 'actions');
 
   return (
     <div className={`hidden md:block lg:hidden ${className}`}>
@@ -219,8 +240,8 @@ function TabletTable({ className = "" }) {
   );
 }
 
-// 📱 VISTA MOBILE MODULAR 
-function MobileCards({ cardComponent: Card, className = "" }) {
+// 📱 VISTA MOBILE MODULAR
+function MobileCards({ cardComponent: Card, className = '' }) {
   const { data } = useTable();
 
   if (Card) {
@@ -247,14 +268,14 @@ function MobileCards({ cardComponent: Card, className = "" }) {
 // Header de tabla con ordenamiento
 function TableHeader({ column }) {
   const { sortBy, sortOrder, handleSort, sortable } = useTable();
-  
+
   if (!column) return null;
 
   const isSorted = sortBy === column.key;
   const canSort = column.sortable && sortable;
 
   return (
-    <th 
+    <th
       className={`px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider ${
         canSort ? 'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800' : ''
       }`}
@@ -263,9 +284,7 @@ function TableHeader({ column }) {
       <div className="flex items-center space-x-1">
         <span>{column.header}</span>
         {canSort && isSorted && (
-          <span className="text-blue-500">
-            {sortOrder === 'asc' ? '↑' : '↓'}
-          </span>
+          <span className="text-blue-500">{sortOrder === 'asc' ? '↑' : '↓'}</span>
         )}
       </div>
     </th>
@@ -278,7 +297,7 @@ function TableCell({ column, row, inline = false }) {
 
   const value = row[column.key];
   const content = column.render ? column.render(value, row) : value;
-  
+
   if (inline) {
     return content;
   }
@@ -291,7 +310,7 @@ function TableCell({ column, row, inline = false }) {
 }
 
 // Fila de tabla reutilizable
-function TableRow({ row, className = "" }) {
+function TableRow({ row, className = '' }) {
   const { columns } = useTable();
 
   return (
@@ -306,27 +325,32 @@ function TableRow({ row, className = "" }) {
 // Card por defecto para mobile
 function DefaultCard({ data }) {
   const { columns } = useTable();
-  
+
   return (
     <div className="bg-white dark:bg-gray-800 shadow-sm rounded-lg border border-gray-200 dark:border-gray-700 p-4">
       <div className="space-y-2">
-        {columns.filter(col => col.type !== 'actions').map((column) => (
-          <div key={column.key} className="flex justify-between items-center text-sm">
-            <span className="text-gray-500 dark:text-gray-400 font-medium">
-              {column.header}:
-            </span>
-            <span className="text-gray-900 dark:text-gray-100">
-              {column.render ? column.render(data[column.key], data) : data[column.key]}
-            </span>
-          </div>
-        ))}
-        
+        {columns
+          .filter((col) => col.type !== 'actions')
+          .map((column) => (
+            <div key={column.key} className="flex justify-between items-center text-sm">
+              <span className="text-gray-500 dark:text-gray-400 font-medium">{column.header}:</span>
+              <span className="text-gray-900 dark:text-gray-100">
+                {column.render ? column.render(data[column.key], data) : data[column.key]}
+              </span>
+            </div>
+          ))}
+
         {/* Acciones al final */}
-        {columns.filter(col => col.type === 'actions').map((column) => (
-          <div key={column.key} className="pt-3 border-t border-gray-200 dark:border-gray-700 flex justify-end">
-            {column.render ? column.render(data[column.key], data) : data[column.key]}
-          </div>
-        ))}
+        {columns
+          .filter((col) => col.type === 'actions')
+          .map((column) => (
+            <div
+              key={column.key}
+              className="pt-3 border-t border-gray-200 dark:border-gray-700 flex justify-end"
+            >
+              {column.render ? column.render(data[column.key], data) : data[column.key]}
+            </div>
+          ))}
       </div>
     </div>
   );
@@ -339,11 +363,21 @@ function DefaultEmptyState({ searchQuery, onClearSearch }) {
       <div className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500 mb-4">
         {searchQuery ? (
           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
           </svg>
         ) : (
           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2 2v-5m16 0h-2M4 13h2m8-8V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v1M9 7h6" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2 2v-5m16 0h-2M4 13h2m8-8V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v1M9 7h6"
+            />
           </svg>
         )}
       </div>
@@ -351,10 +385,9 @@ function DefaultEmptyState({ searchQuery, onClearSearch }) {
         {searchQuery ? 'Sin resultados' : 'No hay datos'}
       </h3>
       <p className="text-gray-500 dark:text-gray-400 mb-4">
-        {searchQuery 
+        {searchQuery
           ? `No se encontraron resultados para "${searchQuery}"`
-          : 'No hay elementos para mostrar.'
-        }
+          : 'No hay elementos para mostrar.'}
       </p>
       {searchQuery && onClearSearch && (
         <button
@@ -377,38 +410,49 @@ function TableSkeleton() {
           <table className="min-w-full">
             <thead className="bg-gray-50 dark:bg-gray-900">
               <tr>
-                {Array(5).fill(0).map((_, i) => (
-                  <th key={i} className="px-6 py-3">
-                    <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded animate-pulse"></div>
-                  </th>
-                ))}
+                {Array(5)
+                  .fill(0)
+                  .map((_, i) => (
+                    <th key={i} className="px-6 py-3">
+                      <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded animate-pulse"></div>
+                    </th>
+                  ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-              {Array(5).fill(0).map((_, rowIndex) => (
-                <tr key={rowIndex}>
-                  {Array(5).fill(0).map((_, colIndex) => (
-                    <td key={colIndex} className="px-6 py-4">
-                      <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded animate-pulse"></div>
-                    </td>
-                  ))}
-                </tr>
-              ))}
+              {Array(5)
+                .fill(0)
+                .map((_, rowIndex) => (
+                  <tr key={rowIndex}>
+                    {Array(5)
+                      .fill(0)
+                      .map((_, colIndex) => (
+                        <td key={colIndex} className="px-6 py-4">
+                          <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded animate-pulse"></div>
+                        </td>
+                      ))}
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
       </div>
 
       <div className="block lg:hidden space-y-3">
-        {Array(5).fill(0).map((_, index) => (
-          <div key={index} className="bg-white dark:bg-gray-800 shadow-sm rounded-lg border border-gray-200 dark:border-gray-700 p-4">
-            <div className="space-y-3">
-              <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-3/4 animate-pulse"></div>
-              <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-1/2 animate-pulse"></div>
-              <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-2/3 animate-pulse"></div>
+        {Array(5)
+          .fill(0)
+          .map((_, index) => (
+            <div
+              key={index}
+              className="bg-white dark:bg-gray-800 shadow-sm rounded-lg border border-gray-200 dark:border-gray-700 p-4"
+            >
+              <div className="space-y-3">
+                <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-3/4 animate-pulse"></div>
+                <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-1/2 animate-pulse"></div>
+                <div className="h-3 bg-gray-200 dark:bg-gray-600 rounded w-2/3 animate-pulse"></div>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );
@@ -417,15 +461,19 @@ function TableSkeleton() {
 // 📊 COMPONENTE DE ESTADÍSTICAS REUTILIZABLE
 function TableStats({ className = '' }) {
   const { data, searchQuery } = useTable();
-  
+
   //<div className={`flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 ${className}`}>
   return (
     <div className={`flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 `}>
       <p>
         {searchQuery ? (
-          <>Mostrando {data.length} resultado{data.length !== 1 ? 's' : ''} para {searchQuery}</>
+          <>
+            Mostrando {data.length} resultado{data.length !== 1 ? 's' : ''} para {searchQuery}
+          </>
         ) : (
-          <>Mostrando {data.length} elemento{data.length !== 1 ? 's' : ''}</>
+          <>
+            Mostrando {data.length} elemento{data.length !== 1 ? 's' : ''}
+          </>
         )}
       </p>
     </div>
@@ -433,13 +481,13 @@ function TableStats({ className = '' }) {
 }
 
 // Exportar componentes para uso externo
-export { 
-  TableSearch, 
-  DesktopTable, 
-  TabletTable, 
-  MobileCards, 
+export {
+  TableSearch,
+  DesktopTable,
+  TabletTable,
+  MobileCards,
   TableStats,
   TableHeader,
   TableCell,
-  TableRow
+  TableRow,
 };

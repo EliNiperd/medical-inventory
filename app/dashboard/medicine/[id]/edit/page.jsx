@@ -1,9 +1,9 @@
-import Breadcrumbs from "@/app/ui/breadcrumbs";
-import Form from "@/app/ui/medicine/edit-medicine";
-import { fetchCategories } from "@/app/dashboard/category/actions";
-import { fetchForms } from "@/app/dashboard/form/actions";
-import { fetchLocations } from "@/app/dashboard/location/actions";
-import { fetchMedicineById } from "@/app/dashboard/medicine/actions";
+import Breadcrumbs from '@/app/ui/breadcrumbs';
+import Form from '@/app/ui/medicine/edit-medicine';
+import { fetchCategories } from '@/app/dashboard/category/actions';
+import { fetchForms } from '@/app/dashboard/form/actions';
+import { fetchLocations } from '@/app/dashboard/location/actions';
+import { fetchMedicineById } from '@/app/dashboard/medicine/actions';
 
 export default async function Page({ params }) {
   const id = params.id;
@@ -19,20 +19,15 @@ export default async function Page({ params }) {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: "Medicine", href: "/dashboard/medicine", active: false },
+          { label: 'Medicine', href: '/dashboard/medicine', active: false },
           {
-            label: "Editar Medicamento",
+            label: 'Editar Medicamento',
             href: `/dashboard/medicine/${id}/edit`,
             active: true,
           },
         ]}
       ></Breadcrumbs>
-      <Form
-        medicine={medicine}
-        categories={categories}
-        forms={forms}
-        locations={locations}
-      />
+      <Form medicine={medicine} categories={categories} forms={forms} locations={locations} />
     </main>
   );
 }

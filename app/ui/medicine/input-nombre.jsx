@@ -1,18 +1,17 @@
-"use client";
+'use client';
 
-import { useState, useCallback, useRef, useEffect, use } from "react";
-import { useDebounceCallback } from "usehooks-ts";
+import { useState, useCallback, useRef, useEffect, use } from 'react';
+import { useDebounceCallback } from 'usehooks-ts';
 //import { fetchSuggestData } from "@/app/api/gemini/api-medical-name-data";
-import { Command } from "cmdk";
-import { MagnifyingGlassIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
-
+import { Command } from 'cmdk';
+import { MagnifyingGlassIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 
 // Tipos para mejorar TypeScript (opcional)
 const SEARCH_STATES = {
-  IDLE: "idle",
-  LOADING: "loading",
-  ERROR: "error",
-  SUCCESS: "success",
+  IDLE: 'idle',
+  LOADING: 'loading',
+  ERROR: 'error',
+  SUCCESS: 'success',
 };
 
 // Custom hook para manejar la lógica de búsqueda
@@ -39,12 +38,15 @@ function useMedicineSearch() {
     setError(null);
 
     try {
-      const response = await fetch(`/api/gemini/medicines/suggestions?q=${encodeURIComponent(query)}`, {
-        signal: abortControllerRef.current.signal,
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `/api/gemini/medicines/suggestions?q=${encodeURIComponent(query)}`,
+        {
+          signal: abortControllerRef.current.signal,
+          headers: {
+            'Content-Type': 'application/json',
+          },
         }
-      });
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -54,8 +56,8 @@ function useMedicineSearch() {
       setSearchState(SEARCH_STATES.SUCCESS);
     } catch (error) {
       if (error.name !== 'AbortError') {
-        console.error("Error searching medicines:", error);
-        setError("No se pudieron cargar las sugerencias. Intente de nuevo más tarde.");
+        console.error('Error searching medicines:', error);
+        setError('No se pudieron cargar las sugerencias. Intente de nuevo más tarde.');
         setSuggestions([]);
         setSearchState(SEARCH_STATES.ERROR);
       }
@@ -81,12 +83,10 @@ function useMedicineSearch() {
   };
 }
 
-
-
 export default function InputNombre({
   onSuggestionSelected,
-  initialValue = "",
-  placeholder = "Escribe el nombre del medicamento...",
+  initialValue = '',
+  placeholder = 'Escribe el nombre del medicamento...',
   minSearchLength = 3,
   debounceMs = 500,
 }) {
@@ -95,51 +95,51 @@ export default function InputNombre({
   const [isSelected, setIsSelected] = useState(false);
   const inputRef = useRef(null);
 
-  const {
-    suggestions,
-    searchState,
-    error,
-    searchMedicines,
-    clearSearch,
-  } = useMedicineSearch();
+  const { suggestions, searchState, error, searchMedicines, clearSearch } = useMedicineSearch();
 
   const debouncedSearch = useDebounceCallback(searchMedicines, debounceMs);
 
   const isLoading = searchState === SEARCH_STATES.LOADING;
   const hasError = searchState === SEARCH_STATES.ERROR;
 
-  const handleInputChange = useCallback((value) => {
-    setInputValue(value);
+  const handleInputChange = useCallback(
+    (value) => {
+      setInputValue(value);
 
-    // Si había una selección previa y el usuario está escribiendo, Limpia la selección
-    if (isSelected && value !== inputValue) {
-      setIsSelected(false);
-      onSuggestionSelected?.(null); // Notificar al padre que se limpió la selección
-    }
-
-    // Solo buscar si no hay selección activa
-    if (!isSelected) {
-      if (value.length >= minSearchLength) {
-        debouncedSearch(value);
-      } else {
-        clearSearch();
-        setIsListOpen(false);
+      // Si había una selección previa y el usuario está escribiendo, Limpia la selección
+      if (isSelected && value !== inputValue) {
+        setIsSelected(false);
+        onSuggestionSelected?.(null); // Notificar al padre que se limpió la selección
       }
-    }
-  }, [inputValue, isSelected, minSearchLength, debouncedSearch, clearSearch, onSuggestionSelected]);
 
-  const handleSelectSuggestion = useCallback((suggestion) => {
-    setInputValue(suggestion.nombre);
-    setIsSelected(true);
-    setIsListOpen(false);
-    clearSearch();
+      // Solo buscar si no hay selección activa
+      if (!isSelected) {
+        if (value.length >= minSearchLength) {
+          debouncedSearch(value);
+        } else {
+          clearSearch();
+          setIsListOpen(false);
+        }
+      }
+    },
+    [inputValue, isSelected, minSearchLength, debouncedSearch, clearSearch, onSuggestionSelected]
+  );
 
-    // Notificar al componente padre sobre la selección
-    onSuggestionSelected?.(suggestion);
+  const handleSelectSuggestion = useCallback(
+    (suggestion) => {
+      setInputValue(suggestion.nombre);
+      setIsSelected(true);
+      setIsListOpen(false);
+      clearSearch();
 
-    // Enfocar el input después de seleccionar
-    setTimeout(() => inputRef.current?.focus(), 100);
-  }, [onSuggestionSelected, clearSearch]);
+      // Notificar al componente padre sobre la selección
+      onSuggestionSelected?.(suggestion);
+
+      // Enfocar el input después de seleccionar
+      setTimeout(() => inputRef.current?.focus(), 100);
+    },
+    [onSuggestionSelected, clearSearch]
+  );
 
   const handleFocus = useCallback(() => {
     if (suggestions.length > 0 && !isSelected) {
@@ -153,7 +153,7 @@ export default function InputNombre({
   }, []);
 
   const clearInput = useCallback(() => {
-    setInputValue("");
+    setInputValue('');
     setIsSelected(false);
     setIsListOpen(false);
     clearSearch();
@@ -173,11 +173,7 @@ export default function InputNombre({
 
   return (
     <div className="relative w-full">
-      <Command
-        label="Búsqueda de medicamentos"
-        className="relative"
-        shouldFilter={false}
-      >
+      <Command label="Búsqueda de medicamentos" className="relative" shouldFilter={false}>
         <div className="relative">
           <Command.Input
             ref={inputRef}
@@ -228,7 +224,8 @@ export default function InputNombre({
         {shouldShowList && (
           <Command.List className="absolute z-50 mt-1 max-h-60 w-full overflow-auto bg-white border border-gray-200 rounded-md shadow-lg dark:bg-gray-800 dark:border-gray-600">
             <div className="p-2 text-xs text-gray-500 border-b">
-              {suggestions.length} resultado{suggestions.length !== 1 ? 's' : ''} encontrado{suggestions.length !== 1 ? 's' : ''}
+              {suggestions.length} resultado{suggestions.length !== 1 ? 's' : ''} encontrado
+              {suggestions.length !== 1 ? 's' : ''}
             </div>
 
             {suggestions.map((suggestion, index) => (
@@ -243,8 +240,8 @@ export default function InputNombre({
                     {suggestion.nombre}
                   </div>
                   <div className="text-sm text-gray-600 dark:text-gray-300">
-                    Dosis: {suggestion.dosis} - {suggestion.presentacion},
-                    Contenido: {suggestion.packsize}
+                    Dosis: {suggestion.dosis} - {suggestion.presentacion}, Contenido:{' '}
+                    {suggestion.packsize}
                   </div>
                   {suggestion.laboratorio && (
                     <div className="text-xs text-gray-500 dark:text-gray-400">

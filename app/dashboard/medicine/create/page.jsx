@@ -1,8 +1,8 @@
-import Breadcrumbs from "@/app/ui/breadcrumbs";
-import Form from "@/app/ui/medicine/create-medicine";
-import { fetchCategories } from "@/app/dashboard/category/actions";
-import { fetchForms } from "@/app/dashboard/form/actions";
-import { fetchLocations } from "@/app/dashboard/location/actions";
+import Breadcrumbs from '@/app/ui/breadcrumbs';
+import Form from '@/app/ui/medicine/create-medicine';
+import { fetchCategories } from '@/app/dashboard/category/actions';
+import { fetchForms } from '@/app/dashboard/form/actions';
+import { fetchLocations } from '@/app/dashboard/location/actions';
 
 const categories = await fetchCategories();
 const forms = await fetchForms();
@@ -15,10 +15,10 @@ export default async function Page() {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: "Medicine", href: "/dashboard/medicine", active: false },
+          { label: 'Medicine', href: '/dashboard/medicine', active: false },
           {
-            label: "Crear Medicamento",
-            href: "/dashboard/medicine/create",
+            label: 'Crear Medicamento',
+            href: '/dashboard/medicine/create',
             active: true,
           },
         ]}

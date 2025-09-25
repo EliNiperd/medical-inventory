@@ -1,15 +1,12 @@
-import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
-import { deleteMedicine } from "@/app/dashboard/medicine/actions";
+import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import Link from 'next/link';
+import { deleteMedicine } from '@/app/dashboard/medicine/actions';
 
 export function CreateMedicine() {
   return (
-    <Link
-      href="/dashboard/medicine/create"
-      className="btn-primary"
-    >
+    <Link href="/dashboard/medicine/create" className="btn-primary">
       <span className="hidden md:block">Crear medicina</span>
-      {""}
+      {''}
       <PlusIcon className="h-5 md:ml-2" />
     </Link>
   );
@@ -17,10 +14,7 @@ export function CreateMedicine() {
 
 export function UpdateMedicine({ id }) {
   return (
-    <Link
-      href={`/dashboard/medicine/${id}/edit`}
-      className="btn-primary"
-    >
+    <Link href={`/dashboard/medicine/${id}/edit`} className="btn-primary">
       <span className="hidden md:block">Editar</span>
       <PencilIcon className="h-5 md:ml-2" />
     </Link>
