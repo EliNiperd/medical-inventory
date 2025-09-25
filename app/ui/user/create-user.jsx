@@ -2,49 +2,58 @@
 import Link from "next/link";
 import Button from "@/app/ui/button";
 import { createUser } from "@/app/dashboard/user/actions";
-import ResponsiveFormWrapper, { ResponsiveGrid, ResponsiveField } from "@/app/ui/components/responsive-form-wrapper";
-import FooterForm from "@/app/ui/components/footer-form";
-import FormInput, { useFormInput } from "@/app/ui/components/form-input";
-import { useState } from "react";
+import ResponsiveFormWrapper, { ResponsiveGrid, ResponsiveField } from "@/app/ui/components/form/responsive-form-wrapper";
+import FooterForm from "@/app/ui/components/form/footer-form";
+import FormInput from "@/app/ui/components/form/form-input";
+import { useForm, useSchemaValidation } from "@/app/hooks/useFormValidation";
+
+export default function FormCreate() {
+
+  const VALIDATION_RULES = useSchemaValidation("user");
+  //console.log(VALIDATION_RULES.password);
+
+  // ✅ Hook unificado para todo el formulario al validar 
+  const {
+    formData,
+    errors,
+    handleChange,
+    handleBlur,
+    validateForm,
+    isValid
+  } = useForm(
+    {
+      email: '',
+      password: '',
+      confirmPassword: ''
+    },
+    VALIDATION_RULES
+  );
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const isFormValid = validateForm();
+    if (!isFormValid) {
+      console.log('❌ Formulario inválido:', errors);
+      return;
+    }
+
+    console.log('✅ Enviando formulario:', formData);
+
+    try {
+      const formDataToSubmit = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        formDataToSubmit.append(key, value);
+      });
+
+      await createUser(formDataToSubmit);
+
+    } catch (error) {
+      console.error('Error al crear usuario:', error);
+    }
+  };
 
 
-//Esquema de validación user
-/*
-const VALIDATION_RULES = {
-  email: { required: true, email: true, type: 'email' },
-  password: { required: true, min: 6 },
-  confirmPassword: {
-    required: true,
-    min: 6,
-    validate: (value, formData) => value === formData.password || "Las contraseñas no coinciden"
-  },
-};
-*/
-
-function FormCreate() {
- const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: ''
-  });
-
-  // Usando useFormInput individual con validaciones
-  const emailInput = useFormInput('', {
-    required: true,
-    email: true
-  });
-
-   const passwordInput = useFormInput('', {
-    required: true,
-    min: 6
-  });
-
-  const confirmPasswordInput = useFormInput('', {
-    required: true,
-    min: 6,
-    validate: (value) => value === passwordInput.value || "Las contraseñas no coinciden"
-  }, formData);
- 
   return (
     <>
       <ResponsiveFormWrapper
@@ -52,7 +61,7 @@ function FormCreate() {
         subtitle="Ingresa la información del nuevo usuario"
         maxWidth="4xl"
       >
-        <form  action={createUser}  >
+        <form onSubmit={handleSubmit} >
           <ResponsiveGrid cols={{ sm: 1, md: 2, lg: 2 }}>
             {/* Email User */}
             <ResponsiveField span={{ sm: 1, md: 2 }}>
@@ -61,7 +70,10 @@ function FormCreate() {
                 name="email"
                 type="email"
                 required
-                {...emailInput}
+                value={formData.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.email}
                 placeholder="Ingrese el email del usuario"
                 className="sm:w-full md:w-1/2 lg:w-1/2"
               />
@@ -73,8 +85,11 @@ function FormCreate() {
                 name="password"
                 type="password"
                 required
-                {...passwordInput}
-                placeholder="Ingrese la contraseña del usuario"
+                value={formData.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.password}
+                placeholder="Ingrese la contraseña del usuarioxx"
               />
             </ResponsiveField>
             <ResponsiveField span={{ sm: 1, md: 1 }}>
@@ -84,7 +99,10 @@ function FormCreate() {
                 name="confirmPassword"
                 type="password"
                 required
-                {...confirmPasswordInput}
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.confirmPassword}
                 placeholder="Confirme la contraseña del usuario"
               />
             </ResponsiveField>
@@ -96,12 +114,12 @@ function FormCreate() {
                 >
                   Cancelar
                 </Link>
-                <Button 
-                  type="submit" 
-                   disabled={!emailInput.isValid || !passwordInput.isValid || !confirmPasswordInput.isValid}
-                  
-                  >
-                  Guardar 
+                <Button
+                  type="submit"
+                  disabled={!isValid}
+                  className={!isValid ? 'opacity-50 cursor-not-allowed' : ''}
+                >
+                  Guardar
                 </Button>
               </FooterForm>
             </ResponsiveField>
@@ -111,4 +129,4 @@ function FormCreate() {
     </>
   );
 }
-export default FormCreate;
+

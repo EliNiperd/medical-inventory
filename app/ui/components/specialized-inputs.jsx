@@ -1,5 +1,5 @@
 import { useFormState } from "react-dom";
-import FormInput from "./form-input";
+import FormInput from "./form/form-input";
 import { forwardRef, useState } from "react";
 import { EyeSlashIcon, EyeIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 

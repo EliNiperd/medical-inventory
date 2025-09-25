@@ -1,5 +1,5 @@
 import Breadcrumbs from "@/app/ui/breadcrumbs";
-import Form from "@/app/ui/location/edit-location";
+import FormLocationEdit from "@/app/ui/location/edit-location";
 import { fetchLocationById } from "@/app/dashboard/location/actions";
 
 async function page({ params }) {
@@ -19,7 +19,7 @@ async function page({ params }) {
           },
         ]}
       ></Breadcrumbs>
-      <Form location={location} />
+      <FormLocationEdit location={location} />
     </main>
   );
 }

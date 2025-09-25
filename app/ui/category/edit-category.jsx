@@ -3,9 +3,9 @@
 import Link from "next/link";
 import Button from "@/app/ui/button";
 import { updateCategory } from "@/app/dashboard/category/actions";
-import ResponsiveFormWrapper, { ResponsiveGrid, ResponsiveField } from "@/app/ui/components/responsive-form-wrapper";
-import FooterForm from "@/app/ui/components/footer-form";
-import FormInput, { useFormInput } from "@/app/ui/components/form-input";
+import ResponsiveFormWrapper, { ResponsiveGrid, ResponsiveField } from "@/app/ui/components/form/responsive-form-wrapper";
+import FooterForm from "@/app/ui/components/form/footer-form";
+import FormInput, { useFormInput } from "@/app/ui/components/form/form-input";
 import { useState } from "react";
 import { SquaresPlusIcon, Bars3BottomLeftIcon } from "@heroicons/react/24/outline";
 

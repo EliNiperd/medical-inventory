@@ -1,284 +1,265 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useMemo, useRef } from 'react';
 
-// Funciones de validación reutilizables
-const validators = {
-  required: (value) => {
-    if (!value || (typeof value === 'string' && value.trim() === '')) {
-      return 'Este campo es obligatorio';
-    }
-    return null;
-  },
 
-  email: (value) => {
-    if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-      return 'Ingresa un email válido';
-    }
-    return null;
-  },
-
-  min: (value, minLength) => {
-    if (value && value.length < minLength) {
-      return `Debe tener al menos ${minLength} caracteres`;
-    }
-    return null;
-  },
-
-  max: (value, maxLength) => {
-    if (value && value.length > maxLength) {
-      return `No puede tener más de ${maxLength} caracteres`;
-    }
-    return null;
-  },
-
-  minValue: (value, min) => {
-    const num = parseFloat(value);
-    if (!isNaN(num) && num < min) {
-      return `El valor mínimo es ${min}`;
-    }
-    return null;
-  },
-
-  maxValue: (value, max) => {
-    const num = parseFloat(value);
-    if (!isNaN(num) && num > max) {
-      return `El valor máximo es ${max}`;
-    }
-    return null;
-  },
-
-  pattern: (value, regex, message = 'Formato no válido') => {
-    if (value && !regex.test(value)) {
-      return message;
-    }
-    return null;
-  },
-
-  phone: (value) => {
-    if (value && !/^\+?[\d\s\-\(\)]{10,}$/.test(value.replace(/\s/g, ''))) {
-      return 'Ingresa un número de teléfono válido';
-    }
-    return null;
-  },
-
-  url: (value) => {
-    if (value && !/^https?:\/\/.+\..+/.test(value)) {
-      return 'Ingresa una URL válida';
-    }
-    return null;
-  },
-
-  date: (value) => {
-    if (value && isNaN(Date.parse(value))) {
-      return 'Ingresa una fecha válida';
-    }
-    return null;
-  },
-
-  futureDate: (value) => {
-    if (value) {
-      const date = new Date(value);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      if (date <= today) {
-        return 'La fecha debe ser futura';
-      }
-    }
-    return null;
+export function useSchemaValidation(nameSchema) {
+  let VALIDATION_RULES = {};
+  switch (String(nameSchema).toLocaleLowerCase()) {
+    case 'user':
+      VALIDATION_RULES = {
+        email: {
+          required: true,
+          email: true
+        },
+        password: {
+          required: true,
+          min: 6,
+          validate: (value) => {
+            if (!/(?=.*[a-z])(?=.*[A-Z])/.test(value)) {
+              return "Debe contener al menos una mayúscula y una minúscula";
+            }
+            return null;
+          }
+        },
+        confirmPassword: {
+          required: true,
+          min: 6,
+          validate: (value, formData) => {
+            if (value !== formData.password) {
+              return "Las contraseñas no coinciden";
+            }
+            return null;
+          }
+        }
+      };
+      break;
+    case 'useredit':
+      VALIDATION_RULES = {
+        user_name_full: {
+          required: true,
+          min: 5
+        },
+        email: {
+          required: true,
+          email: true
+        },
+        password: {
+          min: 6,
+          validate: (value) => {
+            if (!/(?=.*[a-z])(?=.*[A-Z])/.test(value)) {
+              return "Debe contener al menos una mayúscula y una minúscula";
+            }
+            return null;
+          }
+        },
+        confirmPassword: {
+          required: true,
+          min: 6,
+          validate: (value, formData) => {
+            if (value !== formData.password) {
+              return "Las contraseñas no coinciden";
+            }
+            return null;
+          }
+        }
+      };
+      break;
+      case 'location':
+        VALIDATION_RULES = {
+          location_name: {
+            required: true,
+            min: 3
+          },
+          location_description: {
+            required: true,
+            min: 5
+          }
+        };
+      break;
   }
-};
 
-// Hook mejorado useFormInput
+  if (!VALIDATION_RULES.length === 0) {
+    console.log('No se encontraron validaciones para el formulario');
+  }
+
+  return VALIDATION_RULES
+}
+
+// Hook mejorado useFormInput con soporte para submit status
 export function useFormInput(initialValue = '', rules = {}, formData = {}) {
   const [value, setValue] = useState(initialValue);
   const [error, setError] = useState('');
   const [touched, setTouched] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submitTimeoutRef = useRef(null);
 
-  // Función de validación
+  // Validación (igual que antes)
   const validate = useCallback((val, allFormData = formData) => {
     if (!rules || Object.keys(rules).length === 0) return null;
 
-    // Ejecutar validaciones en orden
-    for (const [rule, ruleConfig] of Object.entries(rules)) {
-      let errorMessage = null;
+    // Validaciones básicas
+    if (rules.required && (!val || (typeof val === 'string' && val.trim() === ''))) {
+      return 'Este campo es obligatorio';
+    }
 
-      switch (rule) {
-        case 'required':
-          if (ruleConfig) errorMessage = validators.required(val);
-          break;
+    if (rules.email && val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+      return 'Ingresa un email válido';
+    }
 
-        case 'email':
-          if (ruleConfig) errorMessage = validators.email(val);
-          break;
+    if (rules.min && val && val.length < rules.min) {
+      return `Debe tener al menos ${rules.min} caracteres`;
+    }
 
-        case 'min':
-          errorMessage = validators.min(val, ruleConfig);
-          break;
+    if (rules.max && val && val.length > rules.max) {
+      return `No puede tener más de ${rules.max} caracteres`;
+    }
 
-        case 'max':
-          errorMessage = validators.max(val, ruleConfig);
-          break;
-
-        case 'minValue':
-          errorMessage = validators.minValue(val, ruleConfig);
-          break;
-
-        case 'maxValue':
-          errorMessage = validators.maxValue(val, ruleConfig);
-          break;
-
-        case 'pattern':
-          if (Array.isArray(ruleConfig)) {
-            errorMessage = validators.pattern(val, ruleConfig[0], ruleConfig[1]);
-          }
-          break;
-
-        case 'phone':
-          if (ruleConfig) errorMessage = validators.phone(val);
-          break;
-
-        case 'url':
-          if (ruleConfig) errorMessage = validators.url(val);
-          break;
-
-        case 'date':
-          if (ruleConfig) errorMessage = validators.date(val);
-          break;
-
-        case 'futureDate':
-          if (ruleConfig) errorMessage = validators.futureDate(val);
-          break;
-
-        case 'validate':
-          // Validación personalizada
-          if (typeof ruleConfig === 'function') {
-            errorMessage = ruleConfig(val, allFormData);
-          }
-          break;
-
-        default:
-          break;
-      }
-
-      if (errorMessage) {
-        setError(errorMessage);
-        return errorMessage;
+    if (rules.minValue !== undefined) {
+      const num = parseFloat(val);
+      if (!isNaN(num) && num < rules.minValue) {
+        return `El valor mínimo es ${rules.minValue}`;
       }
     }
 
-    setError('');
+    if (rules.validate && typeof rules.validate === 'function') {
+      const customError = rules.validate(val, allFormData);
+      if (customError && customError !== true) {
+        return customError;
+      }
+    }
+
     return null;
   }, [rules, formData]);
-
-  // Re-validar cuando cambie formData (para validaciones cruzadas)
-  useEffect(() => {
-    if (touched && value) {
-      validate(value, formData);
-    }
-  }, [formData, touched, value, validate]);
 
   const onChange = useCallback((e) => {
     const newValue = e.target.value;
     setValue(newValue);
     
-    // Validar en tiempo real si ya se tocó el campo
     if (touched) {
-      validate(newValue, formData);
+      const errorMsg = validate(newValue, formData);
+      setError(errorMsg || "");
     }
   }, [touched, validate, formData]);
 
   const onBlur = useCallback(() => {
     setTouched(true);
-    validate(value, formData);
+    const errorMsg = validate(value, formData);
+    setError(errorMsg || "");
   }, [value, validate, formData]);
 
   const reset = useCallback(() => {
     setValue(initialValue);
-    setError('');
+    setError("");
     setTouched(false);
+    setIsSubmitting(false);
+    if (submitTimeoutRef.current) {
+      clearTimeout(submitTimeoutRef.current);
+    }
   }, [initialValue]);
 
   const forceValidate = useCallback((allFormData = formData) => {
     setTouched(true);
-    return validate(value, allFormData);
+    const errorMsg = validate(value, allFormData);
+    setError(errorMsg || "");
+    return !errorMsg;
   }, [value, validate, formData]);
+
+  // Nuevas funciones para manejo de submit
+  const startSubmitting = useCallback(() => {
+    setIsSubmitting(true);
+    // Auto-reset después de 30 segundos como medida de seguridad
+    submitTimeoutRef.current = setTimeout(() => {
+      setIsSubmitting(false);
+    }, 30000);
+  }, []);
+
+  const stopSubmitting = useCallback(() => {
+    setIsSubmitting(false);
+    if (submitTimeoutRef.current) {
+      clearTimeout(submitTimeoutRef.current);
+      submitTimeoutRef.current = null;
+    }
+  }, []);
 
   return {
     value,
     onChange,
     onBlur,
-    error: touched ? error : '',
+    error: touched ? error : "",
     setValue,
     setError,
     isValid: !error,
     touched,
     reset,
-    forceValidate
+    forceValidate,
+    // Nuevas propiedades para submit status
+    isSubmitting,
+    startSubmitting,
+    stopSubmitting,
+    isPending: isSubmitting // Alias para compatibilidad con useFormStatus
   };
 }
 
-// Hook para manejar múltiples campos
+// Hook useForm mejorado con submit status global
 export function useForm(initialData = {}, validationRules = {}) {
   const [formData, setFormData] = useState(initialData);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitCount, setSubmitCount] = useState(0);
+  const submitTimeoutRef = useRef(null);
+  const lastSubmitTimeRef = useRef(0);
 
   // Crear validadores para cada campo
-  const fieldValidators = {};
-  Object.keys(validationRules).forEach(fieldName => {
-    fieldValidators[fieldName] = (value) => {
-      const rules = validationRules[fieldName];
-      
-      for (const [rule, ruleConfig] of Object.entries(rules)) {
-        let errorMessage = null;
+  const fieldValidators = useMemo(() => {
+    const validators = {};
+    Object.keys(validationRules).forEach(fieldName => {
+      validators[fieldName] = (value) => {
+        const rules = validationRules[fieldName];
+        
+        for (const [rule, ruleConfig] of Object.entries(rules)) {
+          let errorMessage = null;
 
-        switch (rule) {
-          case 'required':
-            if (ruleConfig) errorMessage = validators.required(value);
-            break;
-          case 'email':
-            if (ruleConfig) errorMessage = validators.email(value);
-            break;
-          case 'min':
-            errorMessage = validators.min(value, ruleConfig);
-            break;
-          case 'max':
-            errorMessage = validators.max(value, ruleConfig);
-            break;
-          case 'minValue':
-            errorMessage = validators.minValue(value, ruleConfig);
-            break;
-          case 'maxValue':
-            errorMessage = validators.maxValue(value, ruleConfig);
-            break;
-          case 'pattern':
-            if (Array.isArray(ruleConfig)) {
-              errorMessage = validators.pattern(value, ruleConfig[0], ruleConfig[1]);
-            }
-            break;
-          case 'phone':
-            if (ruleConfig) errorMessage = validators.phone(value);
-            break;
-          case 'url':
-            if (ruleConfig) errorMessage = validators.url(value);
-            break;
-          case 'date':
-            if (ruleConfig) errorMessage = validators.date(value);
-            break;
-          case 'futureDate':
-            if (ruleConfig) errorMessage = validators.futureDate(value);
-            break;
-          case 'validate':
-            if (typeof ruleConfig === 'function') {
-              errorMessage = ruleConfig(value, formData);
-            }
-            break;
+          switch (rule) {
+            case 'required':
+              if (ruleConfig && (!value || (typeof value === 'string' && value.trim() === ''))) {
+                errorMessage = 'Este campo es obligatorio';
+              }
+              break;
+            case 'email':
+              if (ruleConfig && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                errorMessage = 'Ingresa un email válido';
+              }
+              break;
+            case 'min':
+              if (value && value.length < ruleConfig) {
+                errorMessage = `Debe tener al menos ${ruleConfig} caracteres`;
+              }
+              break;
+            case 'max':
+              if (value && value.length > ruleConfig) {
+                errorMessage = `No puede tener más de ${ruleConfig} caracteres`;
+              }
+              break;
+            case 'minValue':
+              const num = parseFloat(value);
+              if (!isNaN(num) && num < ruleConfig) {
+                errorMessage = `El valor mínimo es ${ruleConfig}`;
+              }
+              break;
+            case 'validate':
+              if (typeof ruleConfig === 'function') {
+                errorMessage = ruleConfig(value, formData);
+              }
+              break;
+          }
+
+          if (errorMessage) return errorMessage;
         }
-
-        if (errorMessage) return errorMessage;
-      }
-      return null;
-    };
-  });
+        return null;
+      };
+    });
+    return validators;
+  }, [validationRules, formData]);
 
   const validateField = useCallback((fieldName, value) => {
     if (fieldValidators[fieldName]) {
@@ -290,7 +271,7 @@ export function useForm(initialData = {}, validationRules = {}) {
       return !error;
     }
     return true;
-  }, [fieldValidators, formData]);
+  }, [fieldValidators]);
 
   const validateForm = useCallback(() => {
     let isValid = true;
@@ -317,7 +298,6 @@ export function useForm(initialData = {}, validationRules = {}) {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     
-    // Validar si el campo ya se tocó
     if (touched[name]) {
       validateField(name, value);
     }
@@ -333,6 +313,11 @@ export function useForm(initialData = {}, validationRules = {}) {
     setFormData(initialData);
     setErrors({});
     setTouched({});
+    setIsSubmitting(false);
+    setSubmitCount(0);
+    if (submitTimeoutRef.current) {
+      clearTimeout(submitTimeoutRef.current);
+    }
   }, [initialData]);
 
   const setFieldValue = useCallback((fieldName, value) => {
@@ -342,16 +327,128 @@ export function useForm(initialData = {}, validationRules = {}) {
     }
   }, [touched, validateField]);
 
+  // Función de submit con protección contra múltiples envíos
+  const handleSubmit = useCallback(async (submitFunction, options = {}) => {
+    const {
+      preventDuplicates = true,
+      duplicateWindow = 2000, // 2 segundos por defecto
+      onStart,
+      onSuccess,
+      onError,
+      onFinish
+    } = options;
+
+    // Prevenir múltiples submits
+    if (isSubmitting) {
+      console.warn('Formulario ya está siendo enviado...');
+      return { success: false, error: 'Ya está siendo enviado' };
+    }
+
+    // Prevenir clicks muy rápidos
+    const now = Date.now();
+    if (preventDuplicates && (now - lastSubmitTimeRef.current) < duplicateWindow) {
+      console.warn('Envío muy rápido, espera un momento...');
+      return { success: false, error: 'Envío muy rápido' };
+    }
+
+    lastSubmitTimeRef.current = now;
+
+    // Validar antes de enviar
+    const isFormValid = validateForm();
+    if (!isFormValid) {
+      return { success: false, error: 'Formulario inválido', errors };
+    }
+
+    setIsSubmitting(true);
+    setSubmitCount(prev => prev + 1);
+    
+    // Auto-reset después de 30 segundos como medida de seguridad
+    submitTimeoutRef.current = setTimeout(() => {
+      setIsSubmitting(false);
+      console.warn('Submit timeout - reseteando estado');
+    }, 30000);
+
+    try {
+      onStart?.(formData);
+      
+      const result = await submitFunction(formData);
+      
+      onSuccess?.(result, formData);
+      return { success: true, data: result };
+      
+    } catch (error) {
+      console.error('Error en submit:', error);
+      onError?.(error, formData);
+      return { success: false, error: error.message || 'Error desconocido' };
+      
+    } finally {
+      setIsSubmitting(false);
+      if (submitTimeoutRef.current) {
+        clearTimeout(submitTimeoutRef.current);
+        submitTimeoutRef.current = null;
+      }
+      onFinish?.(formData);
+    }
+  }, [formData, errors, validateForm, isSubmitting]);
+
+  // Función simplificada para usar con Server Actions
+  const handleServerAction = useCallback(async (serverAction, options = {}) => {
+    return handleSubmit(async (data) => {
+      const formDataToSubmit = new FormData();
+      Object.entries(data).forEach(([key, value]) => {
+        formDataToSubmit.append(key, value);
+      });
+      return await serverAction(formDataToSubmit);
+    }, options);
+  }, [handleSubmit]);
+
   return {
+    // Datos
     formData,
     errors,
     touched,
+    
+    // Estados
+    isValid: Object.keys(errors).length === 0 || Object.values(errors).every(error => !error),
+    isSubmitting,
+    isPending: isSubmitting, // Alias para compatibilidad con useFormStatus
+    submitCount,
+    
+    // Funciones
     handleChange,
     handleBlur,
     validateForm,
     validateField,
     reset,
     setFieldValue,
-    isValid: Object.keys(errors).length === 0 || Object.values(errors).every(error => !error)
+    handleSubmit,
+    handleServerAction,
+    
+    // Utilidades
+    clearFilters: () => {
+      setFormData(initialData);
+      setErrors({});
+      setTouched({});
+    }
+  };
+}
+
+// Hook personalizado que combina validación con submit status
+export function useFormWithStatus(initialData = {}, validationRules = {}) {
+  const form = useForm(initialData, validationRules);
+  
+  // Crear un objeto que simule useFormStatus
+  const formStatus = useMemo(() => ({
+    pending: form.isSubmitting,
+    data: form.isSubmitting ? new FormData() : null,
+    method: form.isSubmitting ? 'POST' : null,
+    action: form.isSubmitting ? 'submitting' : null
+  }), [form.isSubmitting]);
+
+  return {
+    ...form,
+    formStatus,
+    // Función helper para componentes que esperan useFormStatus
+    useFormStatus: () => formStatus
   };
 }
