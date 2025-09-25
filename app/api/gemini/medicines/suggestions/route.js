@@ -141,7 +141,7 @@ export async function GET(request) {
       ];
 
       let text = '';
-      let modelUsed = '';
+      // let modelUsed = ''; //🔍Solo para Debug
 
       for (const modelName of modelsToTry) {
         try {
@@ -186,16 +186,16 @@ export async function GET(request) {
 
             // Verificar si fue bloqueado por seguridad
             if (candidate.finishReason === 'SAFETY') {
-              console.log('⚠️ Content blocked by safety filters');
+              //console.log('⚠️ Content blocked by safety filters');
               continue; // Probar siguiente modelo
             }
           }
 
           text = result.response.text();
-          modelUsed = modelName;
+          //modelUsed = modelName;
 
           if (text && text.length > 0) {
-            console.log(`✅ Success with ${modelName}, response length: ${text.length}`);
+            // console.log(`✅ Success with ${modelName}, response length: ${text.length}`);// 🔍Solo para Debug
             break;
           }
         } catch (modelError) {
@@ -209,7 +209,7 @@ export async function GET(request) {
       //console.log('📄 Response preview:', text.substring(0, 200));
 
       if (!text || text.length === 0) {
-        console.log('⚠️ All models returned empty, using mock data');
+        // console.log('⚠️ All models returned empty, using mock data'); // 🔍Solo para Debug
         const mockData = getMockData(cleanQuery);
         return NextResponse.json({
           suggestions: mockData,
@@ -276,7 +276,7 @@ function parseResponse(text) {
 
       // Intentar reparar JSON incompleto
       if (cleanText.includes('[') && !cleanText.includes(']')) {
-        console.log('🔧 Attempting to close incomplete array');
+        // console.log('🔧 Attempting to close incomplete array'); // 🔍Solo para Debug
         cleanText = cleanText + ']}]';
         arrayMatch = cleanText.match(/\[[\s\S]*?\]/);
       }
@@ -295,7 +295,7 @@ function parseResponse(text) {
     try {
       parsed = JSON.parse(jsonStr);
     } catch (parseError) {
-      console.log('🔧 JSON parse failed, attempting repair...');
+      console.log('🔧 JSON parse failed, attempting repair...', parseError);
 
       // Reparaciones comunes
       jsonStr = jsonStr

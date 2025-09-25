@@ -387,14 +387,14 @@ export function useForm(initialData = {}, validationRules = {}) {
 
       // Prevenir múltiples submits
       if (isSubmitting) {
-        console.warn('Formulario ya está siendo enviado...');
+        // console.warn('Formulario ya está siendo enviado...'); // 🔍 Solo para Debuggear
         return { success: false, error: 'Ya está siendo enviado' };
       }
 
       // Prevenir clicks muy rápidos
       const now = Date.now();
       if (preventDuplicates && now - lastSubmitTimeRef.current < duplicateWindow) {
-        console.warn('Envío muy rápido, espera un momento...');
+        //console.warn('Envío muy rápido, espera un momento...'); // 🔍 Solo para Debuggear
         return { success: false, error: 'Envío muy rápido' };
       }
 
@@ -412,7 +412,7 @@ export function useForm(initialData = {}, validationRules = {}) {
       // Auto-reset después de 30 segundos como medida de seguridad
       submitTimeoutRef.current = setTimeout(() => {
         setIsSubmitting(false);
-        console.warn('Submit timeout - reseteando estado');
+        // console.warn('Submit timeout - reseteando estado'); // 🔍 Solo para Debuggear
       }, 30000);
 
       try {
@@ -423,7 +423,7 @@ export function useForm(initialData = {}, validationRules = {}) {
         onSuccess?.(result, formData);
         return { success: true, data: result };
       } catch (error) {
-        console.error('Error en submit:', error);
+        // console.error('Error en submit:', error); // 🔍 Solo para Debuggear
         onError?.(error, formData);
         return { success: false, error: error.message || 'Error desconocido' };
       } finally {

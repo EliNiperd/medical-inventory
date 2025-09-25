@@ -1,7 +1,7 @@
 {
   "*.{js,jsx,ts,tsx}": [
     "prettier --write",
-    "eslint --fix --max-warnings=80"
+    "eslint --fix --max-warnings=13"
   ],
   "*.{json,md,mdx,css,html,yml,yaml}": [
     "prettier --write"

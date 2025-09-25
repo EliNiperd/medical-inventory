@@ -9,7 +9,7 @@ export async function signOutAction() {
     await signOut();
     redirect('/login');
   } catch (error) {
-    console.error('Error signing out:', error);
+    // console.error('Error signing out:', error); // 🔍 Solo para Debuggear
     throw error;
   }
 }

@@ -14,8 +14,8 @@ async function getUser(email) {
     return user[0];
   } catch (error) {
     //pool.end();
-    console.error('Failed to fetch user:', error);
-    throw new Error('Failed to fetch user.');
+    // console.error('Failed to fetch user:', error); // 🔍Usar solo para Debug
+    throw new Error('Failed to fetch user.', error);
   }
 }
 export const { auth, signIn, signOut } = NextAuth(
@@ -61,11 +61,3 @@ export const { auth, signIn, signOut } = NextAuth(
     },
   })
 );
-/*
-          //const parsedCredentials = z
-          //  .object({ email: z.string().email(), password: z.string().min(6) })
-          //  .safeParse(credentials);
-          //if (parsedCredentials.success) {
-          //  const { email, password } = parsedCredentials.data;
-
-*/

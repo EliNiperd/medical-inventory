@@ -5,7 +5,7 @@ const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 const DEEPSEEK_BASE_URL = process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com/v1';
 
 // Añade este console.log para debugging
-console.log('API Key loaded:', DEEPSEEK_API_KEY ? 'Yes' : 'No');
+// console.log('API Key loaded:', DEEPSEEK_API_KEY ? 'Yes' : 'No'); // 🔍 Solo para Debuggear
 
 const deepseekClient = axios.create({
   baseURL: DEEPSEEK_BASE_URL,
@@ -39,7 +39,7 @@ export async function fetchSuggestData(nameMedical) {
     });
     return response.data;
   } catch (error) {
-    console.error('Error searching with DeepSeek:', error);
+    // console.error('Error searching with DeepSeek:', error); // 🔍 Solo para Debuggear
     return [];
   }
 }
