@@ -1,8 +1,13 @@
-import Database from 'better-sqlite3';
+import sqllite3 from 'sqlite3';
+import util from 'util';
 import path from 'path';
 
 const dbPath = path.join(process.cwd(), 'metrics.db');
-const db = new Database(dbPath);
+const db = new sqllite3.Database(dbPath);
+
+// Promisify the database methods so we can use async/await
+const dbAll = util.promisify(db.all).bind(db);
+const dbClose = util.promisify(db.close).bind(db);
 
 // Definimos umbrales (puedes ajustarlos según tu VPS)
 const LIMITS = {
@@ -11,8 +16,9 @@ const LIMITS = {
   heapMb: 200, // 200 MB
 };
 
-function analyze() {
-  const rows = db.prepare('SELECT * FROM request_metrics ORDER BY created_at DESC LIMIT 50').all();
+async function analyze() {
+  // Use await with the promisified dbAll method
+  const rows = await dbAll('SELECT * FROM request_metrics ORDER BY created_at DESC LIMIT 50');
 
   const analyzed = rows.map((row) => {
     const flags = [];
@@ -43,6 +49,8 @@ function analyze() {
   console.log('\n📈 Promedios:');
   console.log(`⏱️ Duración promedio: ${avgDuration.toFixed(0)} ms`);
   console.log(`💾 Memoria promedio: ${avgMem.toFixed(1)} MB`);
+  // Close the database connection
+  await dbClose();
 }
 
 analyze();
