@@ -17,6 +17,7 @@ import Button from '@/app/ui/button';
 import { useState, useCallback, useEffect } from 'react';
 import InputNombre from '../medicine/input-nombre';
 import { createMedicine } from '@/app/dashboard/medicine/actions';
+import OCRUploader from '@/app/ui/components/form/OCRUploader';
 
 // Esquema de validación
 const VALIDATION_RULES = {
@@ -337,6 +338,10 @@ export default function CreateMedicineForm({ categories = [], forms = [], locati
 
       <form onSubmit={handleSubmit}>
         <div className="form-basic grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="md:col-span-2">
+            <label>OCR: </label>
+            <OCRUploader />
+          </div>
           {/* Búsqueda de Medicamento */}
           <div className="md:col-span-2">
             <label>Buscar Medicamento</label>

@@ -49,3 +49,6 @@ public/workbox-*.js.map
 # Archivos de Visual Studio Code
 /.vscode
 
+# BD para métricas
+ metrics.db
+

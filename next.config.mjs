@@ -6,6 +6,10 @@ const nextConfig = {
   experimental: {
     externalDir: true,
     outputFileTracingRoot: process.cwd(),
+    serverComponentsExternalPackages: ['tesseract.js'],
+    outputFileTracingIncludes: {
+      '/api/**/*': ['./node_modules/**/*.wasm', './node_modules/**/*.proto'],
+    },
   },
 
   // Excluir específicamente el problema de tracing
