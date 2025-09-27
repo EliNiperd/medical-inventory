@@ -1,32 +1,18 @@
-# Usa una imagen oficial de Node (no Alpine, porque better-sqlite3 compila más fácil en Debian/Ubuntu)
-FROM node:20-bullseye
+# Elige la imagen base que necesites, pero es importante que sea una versión completa o que puedas instalar paquetes
+FROM node:18-bullseye-slim
 
-# Crea directorio de la app
-WORKDIR /app
-
-# Instala dependencias del sistema necesarias para compilar better-sqlite3
+# Instala las herramientas de compilación
 RUN apt-get update && apt-get install -y \
     python3 \
     make \
     g++ \
     build-essential \
-    libsqlite3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copia package.json y package-lock.json
-COPY package*.json ./
-
-# Instala dependencias
+# El resto de tu Dockerfile
+WORKDIR /app
+COPY package.json package-lock.json ./
 RUN npm install
-
-# Copia el resto del código
 COPY . .
-
-# Construye la app Next.js
-RUN npm run build
-
-# Expone el puerto
 EXPOSE 3000
-
-# Comando de inicio
 CMD ["npm", "start"]
