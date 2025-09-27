@@ -1,8 +1,4 @@
-import { CreateMedicine } from '@/app/ui/medicine/button';
-import Table from '@/app/ui/medicine/table';
-import Search from '@/app/ui/search';
-import { MedicineTableSkeleton } from '@/app/ui/medicine/skeletons';
-import { Suspense } from 'react';
+import TableMedicine from '@/app/ui/medicine/table-medicine';
 
 const page = ({
   searchParams = {
@@ -14,20 +10,11 @@ const page = ({
   },
 }) => {
   const query = searchParams?.query?.toString() || '';
-  const page = searchParams?.page?.toString() || '1';
+  //const page = searchParams?.page?.toString() || '1';
 
   return (
     <div className="w-full">
-      <div className="flex w-full items-center justify-between">
-        <h1 className="text-2xl">Medicines</h1>
-      </div>
-      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Search medicine..."></Search>
-        <CreateMedicine />
-      </div>
-      <Suspense key={query} fullback={<MedicineTableSkeleton />}>
-        <Table query={query} />
-      </Suspense>
+      <TableMedicine query={query} />
     </div>
   );
 };
