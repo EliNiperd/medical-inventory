@@ -134,6 +134,8 @@ export default function ModularLocationTable({ locations, loading = false }) {
       loading={loading}
       searchable={true}
       sortable={true}
+      // Ordenamiento inicial por location_name, orden descendente
+      initialSort={{ key: 'location_name', order: 'asc' }}
     >
       {/* Barra de búsqueda */}
       <TableSearch placeholder="Buscar ubicaciones por nombre, descripción..." />

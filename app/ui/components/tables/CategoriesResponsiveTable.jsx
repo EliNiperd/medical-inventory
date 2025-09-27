@@ -143,6 +143,8 @@ export default function ModularCategoryTable({ categories, loading = false }) {
       loading={loading}
       searchable={true}
       sortable={true}
+      // Ordenamiento inicial por category_name, orden descendente
+      initialSort={{ key: 'category_name', order: 'asc' }}
     >
       {/* Barra de búsqueda */}
       <TableSearch
@@ -161,72 +163,73 @@ export default function ModularCategoryTable({ categories, loading = false }) {
 }
 
 // ✅ EJEMPLO 2: TABLA SIMPLE SIN PERSONALIZACIÓN
-export function SimpleCategoriesTable({ categories, loading }) {
-  const columns = useCategoryColumns();
 
-  return (
-    <ResponsiveTable data={categories} columns={columns} loading={loading}>
-      <TableSearch />
-      <DesktopTable />
-      <TabletTable />
-      <MobileCards /> {/* Sin cardComponent usa el default */}
-      <TableStats />
-    </ResponsiveTable>
-  );
-}
+// export function SimpleCategoriesTable({ categories, loading }) {
+//   const columns = useCategoryColumns();
+
+//   return (
+//     <ResponsiveTable data={categories} columns={columns} loading={loading}>
+//       <TableSearch />
+//       <DesktopTable />
+//       <TabletTable />
+//       <MobileCards /> {/* Sin cardComponent usa el default */}
+//       <TableStats />
+//     </ResponsiveTable>
+//   );
+// }
 
 // ✅ EJEMPLO 3: TABLA CON LAYOUT PERSONALIZADO
-export function CustomLayoutCategoriesTable({ categories, loading }) {
-  const columns = useCategoryColumns();
+// export function CustomLayoutCategoriesTable({ categories, loading }) {
+//   const columns = useCategoryColumns();
 
-  return (
-    <div className="space-y-6">
-      {/* Header personalizado */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-            Gestión de presentaciones
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Administra leees presentaciones del sistema
-          </p>
-        </div>
+//   return (
+//     <div className="space-y-6">
+//       {/* Header personalizado */}
+//       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+//         <div>
+//           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+//             Gestión de presentaciones
+//           </h2>
+//           <p className="text-sm text-gray-500 dark:text-gray-400">
+//             Administra leees presentaciones del sistema
+//           </p>
+//         </div>
 
-        <button className="mt-4 sm:mt-0 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-          Nueva Presentación
-        </button>
-      </div>
-      {/* Tabla modular */}
-      <ResponsiveTable data={categories} columns={columns} loading={loading}>
-        {/* Búsqueda con estilo personalizado */}
-        <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-          <TableSearch placeholder="🔍 Buscar categorías..." />
-        </div>
-        {/* Solo mostrar desktop y mobile (saltar tablet) */}
-        <DesktopTable />
-        <MobileCards cardComponent={CategoryMobileCard} />
-        {/* Estadísticas con información adicional */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-          <TableStats />
-        </div>
-      </ResponsiveTable>
-    </div>
-  );
-}
+//         <button className="mt-4 sm:mt-0 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+//           Nueva Presentación
+//         </button>
+//       </div>
+//       {/* Tabla modular */}
+//       <ResponsiveTable data={categories} columns={columns} loading={loading}>
+//         {/* Búsqueda con estilo personalizado */}
+//         <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+//           <TableSearch placeholder="🔍 Buscar categorías..." />
+//         </div>
+//         {/* Solo mostrar desktop y mobile (saltar tablet) */}
+//         <DesktopTable />
+//         <MobileCards cardComponent={CategoryMobileCard} />
+//         {/* Estadísticas con información adicional */}
+//         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+//           <TableStats />
+//         </div>
+//       </ResponsiveTable>
+//     </div>
+//   );
+// }
 
 // ✅ EJEMPLO 4: TABLA PARA DIFERENTES TIPOS DE DATOS
-export function GenericTable({ data, columns, title, loading, cardComponent }) {
-  return (
-    <div className="space-y-4">
-      {title && <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h2>}
+// export function GenericTable({ data, columns, title, loading, cardComponent }) {
+//   return (
+//     <div className="space-y-4">
+//       {title && <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h2>}
 
-      <ResponsiveTable data={data} columns={columns} loading={loading}>
-        <TableSearch />
-        <DesktopTable />
-        <TabletTable />
-        <MobileCards cardComponent={cardComponent} />
-        <TableStats />
-      </ResponsiveTable>
-    </div>
-  );
-}
+//       <ResponsiveTable data={data} columns={columns} loading={loading}>
+//         <TableSearch />
+//         <DesktopTable />
+//         <TabletTable />
+//         <MobileCards cardComponent={cardComponent} />
+//         <TableStats />
+//       </ResponsiveTable>
+//     </div>
+//   );
+// }

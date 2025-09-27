@@ -1,7 +1,7 @@
 {
     "name": "medical-inventory",
     "short_name": "medical-inventory",
-    "description": "Descripción de tu aplicación",
+    "description": "Aplicación para el control de inventario de medicamentos en casa y consulta del uso del medicamento para cada padecimiento",
     "start_url": "/login",
     "display": "standalone",
     "background_color": "#ffffff",

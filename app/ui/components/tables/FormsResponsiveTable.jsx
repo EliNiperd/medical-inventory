@@ -137,6 +137,8 @@ export default function ModularFormTable({ forms, loading = false }) {
       loading={loading}
       searchable={true}
       sortable={true}
+      // Ordenamiento inicial por form_name, orden descendente
+      initialSort={{ key: 'form_name', order: 'asc' }}
     >
       {/* Barra de búsqueda */}
       <TableSearch

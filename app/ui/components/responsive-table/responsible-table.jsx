@@ -22,13 +22,14 @@ export default function ResponsiveTable({
   loading = false,
   searchable = true,
   sortable = true,
+  initialSort = { key: '', order: 'asc' }, // ← NUEVA PROP
   emptyState,
   className = '',
   children, // Para componentes custom
   ...props
 }) {
-  const [sortBy, setSortBy] = useState('');
-  const [sortOrder, setSortOrder] = useState('asc');
+  const [sortBy, setSortBy] = useState(initialSort.key);
+  const [sortOrder, setSortOrder] = useState(initialSort.order);
   const [searchQuery, setSearchQuery] = useState('');
 
   // Procesar datos

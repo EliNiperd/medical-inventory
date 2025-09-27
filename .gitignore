@@ -46,3 +46,6 @@ public/sw.js.map
 public/workbox-*.js
 public/workbox-*.js.map
 
+# Archivos de Visual Studio Code
+/.vscode
+
