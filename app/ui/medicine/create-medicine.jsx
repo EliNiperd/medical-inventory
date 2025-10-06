@@ -61,6 +61,11 @@ export default function CreateMedicineForm({ categories = [], forms = [], locati
   const [submitError, setSubmitError] = useState(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
+  // State for OCR
+  const [ocrResult, setOcrResult] = useState(null);
+  const [isOcrLoading, setIsOcrLoading] = useState(false);
+  const [ocrError, setOcrError] = useState(null);
+
   const findCategoryByName = useCallback(
     (name) => {
       const category = categories.find((cat) =>
@@ -138,6 +143,48 @@ export default function CreateMedicineForm({ categories = [], forms = [], locati
     }
   };
 
+  // OCR Handlers
+  const handleOcrStart = () => {
+    setIsOcrLoading(true);
+    setOcrError(null);
+    setOcrResult(null);
+  };
+
+  const handleOcrSuccess = async (data) => {
+    setIsOcrLoading(false);
+    setOcrResult(data);
+
+    try {
+      // Use the correct suggestions API
+      const response = await fetch(
+        `/api/gemini/medicines/suggestions?q=${encodeURIComponent(data.text)}`
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to fetch medicine suggestions');
+      }
+
+      const result = await response.json();
+
+      // The API returns an object with a `suggestions` array.
+      // We take the first one as the most likely match.
+      const suggestion = result.suggestions?.[0];
+
+      if (suggestion) {
+        handleMedicineSelected(suggestion);
+      }
+    } catch (error) {
+      console.error('Error fetching suggestions from OCR text:', error);
+      setOcrError(error.message);
+    }
+  };
+
+  const handleOcrError = (error) => {
+    setIsOcrLoading(false);
+    setOcrError(error);
+  };
+
   return (
     <>
       <ResponsiveFormWrapper
@@ -150,21 +197,37 @@ export default function CreateMedicineForm({ categories = [], forms = [], locati
         <form onSubmit={handleFormSubmit}>
           <ResponsiveGrid cols={{ sm: 1, md: 2, lg: 2 }}>
             <ResponsiveField span={{ sm: 1, md: 2 }}>
-              <OCRUploader />
-            </ResponsiveField>
-
-            <ResponsiveField span={{ sm: 1, md: 2 }}>
-              <div className="md:col-span-2">
-                <label>Buscar Medicamento</label>
+              <label
+                htmlFor="search-medicine"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                Buscar Medicamento
+              </label>
+              <div className="relative flex items-center gap-x-2">
                 <InputNombre
+                  id="search-medicine"
                   onSuggestionSelected={handleMedicineSelected}
-                  placeholder="Busca por nombre comercial del medicamento..."
+                  placeholder="Busca por nombre comercial o escanea con OCR..."
                   initialValue={formData.name}
+                  className="flex-grow"
                 />
-                <p className="mt-1 text-sm text-gray-500">
-                  Busca el medicamento para autocompletar la información básica
-                </p>
+                <OCRUploader
+                  onUploadStart={handleOcrStart}
+                  onSuccess={handleOcrSuccess}
+                  onError={handleOcrError}
+                  className="flex-shrink-0 md:order-2"
+                  variant="discreet"
+                />
               </div>
+              {isOcrLoading && (
+                <p className="mt-1 text-sm text-blue-600">Procesando imagen OCR...</p>
+              )}
+              {ocrError && <p className="mt-1 text-sm text-red-600">Error de OCR: {ocrError}</p>}
+              {ocrResult && (
+                <p className="hidden md:block mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  Texto escaneado: "{ocrResult.text.substring(0, 50)}..."
+                </p>
+              )}
             </ResponsiveField>
 
             <ResponsiveField span={{ sm: 1, md: 2 }}>
@@ -178,7 +241,7 @@ export default function CreateMedicineForm({ categories = [], forms = [], locati
                 onChange={handleChange}
                 onBlur={handleBlur}
                 placeholder="Nombre comercial del medicamento"
-                disabled={selectedMedicine !== null}
+                //disabled={selectedMedicine !== null}
                 error={touched.name && errors.name}
               />
             </ResponsiveField>
