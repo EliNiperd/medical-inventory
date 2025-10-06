@@ -350,9 +350,9 @@ export function useForm(initialData = {}, validationRules = {}) {
   );
 
   // Run validation on mount to set initial validity
-  useEffect(() => {
+  /*useEffect(() => {
     validateForm({ setTouchedFields: false });
-  }, []); // Empty dependency array ensures it runs only once
+  }, []);*/ // Empty dependency array ensures it runs only once
 
   const handleChange = useCallback(
     (e) => {

@@ -81,24 +81,24 @@ export async function createMedicine(formData) {
     price,
     quantity,
     expiration_date,
-    category,
-    form,
+    idCategory,
+    idForm,
     packsize,
     reorder_point,
-    location,
+    idLocation,
   } = {
     name: formData.name,
     description: formData.description,
     price: formData.price ? parseFloat(formData.price) : 0,
     quantity: formData.quantity ? parseInt(formData.quantity) : 1,
-    expiration_date: formData.expirationDate
-      ? parseISO(formData.expirationDate)
+    expiration_date: formData.expiration_date
+      ? parseISO(formData.expiration_date)
       : parseISO(new Date()),
-    category: formData.category ? parseInt(formData.category) : 1,
-    form: formData.form,
+    idCategory: formData.idCategory ? parseInt(formData.idCategory) : 1,
+    idForm: formData.idForm,
     packsize: formData.packsize ? parseInt(formData.packsize) : 1,
     reorder_point: formData.reorder_point ? parseInt(formData.reorder_point) : 0,
-    location: formData.location,
+    idLocation: formData.idLocation,
   };
 
   //console.log(formData);
@@ -110,11 +110,11 @@ export async function createMedicine(formData) {
       price,
       quantity,
       expiration_date,
-      idCategory: category,
-      idForm: form,
+      idCategory: idCategory,
+      idForm: idForm,
       packsize,
       reorder_point,
-      idLocation: location,
+      idLocation: idLocation,
       id_user_create: '5d743e4d-1724-4501-94d2-7d9de771cc66',
     },
   });
