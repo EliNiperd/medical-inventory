@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useRef } from 'react';
+import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 
 export function useSchemaValidation(nameSchema) {
   let VALIDATION_RULES = {};
@@ -98,10 +98,22 @@ export function useSchemaValidation(nameSchema) {
         },
       };
       break;
-  }
-
-  if (!VALIDATION_RULES.length === 0) {
-    console.log('No se encontraron validaciones para el formulario');
+    case 'medicine':
+      VALIDATION_RULES = {
+        name: { required: true, min: 2 },
+        description: { required: true, min: 10 },
+        idCategory: { required: true },
+        idForm: { required: true },
+        quantity: { required: true, minValue: 1, type: 'number' },
+        packsize: { required: true, minValue: 1, type: 'number' },
+        reorder_point: { required: true, minValue: 0, type: 'number' },
+        expiration_date: { required: true, type: 'date' },
+        idLocation: { required: true },
+        price: { required: true, minValue: 0, type: 'number' },
+      };
+      break;
+    default:
+    // console.log('No se encontraron validaciones para el formulario');
   }
 
   return VALIDATION_RULES;
@@ -308,32 +320,44 @@ export function useForm(initialData = {}, validationRules = {}) {
     [fieldValidators]
   );
 
-  const validateForm = useCallback(() => {
-    let isValid = true;
-    const newErrors = {};
+  const validateForm = useCallback(
+    (options = {}) => {
+      const { setTouchedFields = true } = options;
+      let isValid = true;
+      const newErrors = {};
 
-    Object.keys(validationRules).forEach((fieldName) => {
-      if (fieldValidators[fieldName]) {
-        const error = fieldValidators[fieldName](formData[fieldName]);
-        newErrors[fieldName] = error;
-        if (error) isValid = false;
+      Object.keys(validationRules).forEach((fieldName) => {
+        if (fieldValidators[fieldName]) {
+          const error = fieldValidators[fieldName](formData[fieldName]);
+          newErrors[fieldName] = error;
+          if (error) isValid = false;
+        }
+      });
+
+      setErrors(newErrors);
+      if (setTouchedFields) {
+        setTouched(
+          Object.keys(validationRules).reduce((acc, key) => {
+            acc[key] = true;
+            return acc;
+          }, {})
+        );
       }
-    });
 
-    setErrors(newErrors);
-    setTouched(
-      Object.keys(validationRules).reduce((acc, key) => {
-        acc[key] = true;
-        return acc;
-      }, {})
-    );
+      return isValid;
+    },
+    [formData, fieldValidators, validationRules]
+  );
 
-    return isValid;
-  }, [formData, fieldValidators, validationRules]);
+  // Run validation on mount to set initial validity
+  useEffect(() => {
+    validateForm({ setTouchedFields: false });
+  }, []); // Empty dependency array ensures it runs only once
 
   const handleChange = useCallback(
     (e) => {
       const { name, value } = e.target;
+      //console.log('🔄 Input change:', { name, value }); // Debug
       setFormData((prev) => ({ ...prev, [name]: value }));
 
       if (touched[name]) {
@@ -353,7 +377,13 @@ export function useForm(initialData = {}, validationRules = {}) {
   );
 
   const reset = useCallback(() => {
-    setFormData(initialData);
+    const formDataToClear = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      formDataToClear.append(key, '');
+      //console.log('✅ Key formData Posterior:', key, 'Value formData Posterior:', value);
+    });
+    setFormData(formDataToClear);
+    // console.log('🔄 Reset form:', formDataToClear, 'formData: ', formData);
     setErrors({});
     setTouched({});
     setIsSubmitting(false);
@@ -361,10 +391,11 @@ export function useForm(initialData = {}, validationRules = {}) {
     if (submitTimeoutRef.current) {
       clearTimeout(submitTimeoutRef.current);
     }
-  }, [initialData]);
+  }, [formData]);
 
   const setFieldValue = useCallback(
     (fieldName, value) => {
+      //console.log('🔄 Input change:', { fieldName, value });
       setFormData((prev) => ({ ...prev, [fieldName]: value }));
       if (touched[fieldName]) {
         validateField(fieldName, value);

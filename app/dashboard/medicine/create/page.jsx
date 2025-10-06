@@ -8,7 +8,7 @@ const categories = await fetchCategories();
 const forms = await fetchForms();
 const locations = await fetchLocations();
 //console.log("errores");
-//console.log(forms);
+//console.log(categories);
 
 export default async function Page() {
   return (
@@ -23,7 +23,7 @@ export default async function Page() {
           },
         ]}
       ></Breadcrumbs>
-      <Form categorys={categories} forms={forms} locations={locations} />
+      <Form categories={categories} forms={forms} locations={locations} />
     </main>
   );
 }

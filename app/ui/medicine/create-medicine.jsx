@@ -2,22 +2,30 @@
 
 import {
   DocumentTextIcon,
-  CurrencyDollarIcon,
-  CalendarIcon,
-  CalculatorIcon,
-  InboxStackIcon,
-  SwatchIcon,
-  GlobeAmericasIcon,
   ExclamationTriangleIcon,
-  CheckCircleIcon,
-  ArrowPathIcon,
-  QueueListIcon,
+  SquaresPlusIcon,
+  RectangleGroupIcon,
+  RectangleStackIcon,
+  BeakerIcon,
 } from '@heroicons/react/24/outline';
-import Button from '@/app/ui/button';
 import { useState, useCallback, useEffect } from 'react';
 import InputNombre from '../medicine/input-nombre';
 import { createMedicine } from '@/app/dashboard/medicine/actions';
 import OCRUploader from '@/app/ui/components/form/OCRUploader';
+import ResponsiveFormWrapper, {
+  ResponsiveGrid,
+  ResponsiveField,
+} from '@/app/ui/components/form/responsive-form-wrapper';
+import FooterForm from '@/app/ui/components/form/footer-form';
+import FormInput from '@/app/ui/components/form/form-input';
+import Link from 'next/link';
+import { SubmitButton } from '@/app/ui/components/form/button-form';
+
+// 1️⃣ Diccionario de títulos para el formulario
+const DICTIONARY_TITLE = {
+  nameSingular: 'Medicina',
+  namePlural: 'Medicinas',
+};
 
 // Esquema de validación
 const VALIDATION_RULES = {
@@ -160,6 +168,7 @@ export default function CreateMedicineForm({ categories = [], forms = [], locati
 
   // Manejar selección de medicamento del autocompletado
   const handleMedicineSelected = useCallback((suggestion) => {
+    //console.log('Medicamento seleccionado:', suggestion);
     if (suggestion) {
       setSelectedMedicine(suggestion);
       setFormData((prevData) => ({
@@ -208,7 +217,7 @@ export default function CreateMedicineForm({ categories = [], forms = [], locati
   const findCategoryByName = useCallback(
     (name) => {
       const category = categories.find((cat) =>
-        cat.name.toLowerCase().includes(name.toLowerCase())
+        cat.category_name.toLowerCase().includes(name.toLowerCase())
       );
       return category?.id_category || '';
     },
@@ -315,290 +324,209 @@ export default function CreateMedicineForm({ categories = [], forms = [], locati
         {error}
       </div>
     ) : null;
-
   return (
-    <div className="max-w-4xl p-6">
-      {submitSuccess && (
-        <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-md">
-          <div className="flex items-center">
-            <CheckCircleIcon className="h-5 w-5 text-green-400 mr-2" />
-            <span className="text-green-800">¡Medicamento guardado exitosamente!</span>
-          </div>
-        </div>
-      )}
-
-      {submitError && (
-        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
-          <div className="flex items-center">
-            <ExclamationTriangleIcon className="h-5 w-5 text-red-400 mr-2" />
-            <span className="text-red-800">{submitError}</span>
-          </div>
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit}>
-        <div className="form-basic grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="md:col-span-2">
-            <label>OCR: </label>
-            <OCRUploader />
-          </div>
-          {/* Búsqueda de Medicamento */}
-          <div className="md:col-span-2">
-            <label>Buscar Medicamento</label>
-            <InputNombre
-              onSuggestionSelected={handleMedicineSelected}
-              placeholder="Busca por nombre comercial del medicamento..."
-              initialValue={formData.name}
-            />
-            <p className="mt-1 text-sm text-gray-500">
-              Busca el medicamento para autocompletar la información básica
-            </p>
-          </div>
-
-          {/* Nombre del Medicamento */}
-          <div className="md:col-span-2">
-            <label htmlFor="name">Nombre del Medicamento *</label>
-            <div className="relative">
-              <input
+    <>
+      <ResponsiveFormWrapper
+        title={`Crear ${DICTIONARY_TITLE.nameSingular}`}
+        subtitle={`Ingresa la información de la nueva ${String(DICTIONARY_TITLE.nameSingular).toLowerCase()}`}
+        maxWidth="4xl"
+      >
+        <form onSubmit={handleSubmit}>
+          {/* 0️⃣ Contenedor de campos */}
+          <ResponsiveGrid cols={{ sm: 1, md: 2, lg: 2 }}>
+            {/* 1️⃣ Row 1 con 1 campo */}
+            <ResponsiveField span={{ sm: 1, md: 2 }}>
+              <OCRUploader />
+            </ResponsiveField>
+            {/* 2️⃣ Row 2 con 1 campo */}
+            <ResponsiveField span={{ sm: 1, md: 2 }}>
+              {/* Búsqueda de Medicamento */}
+              <div className="md:col-span-2">
+                <label>Buscar Medicamento</label>
+                <InputNombre
+                  onSuggestionSelected={handleMedicineSelected}
+                  placeholder="Busca por nombre comercial del medicamento..."
+                  initialValue={formData.name}
+                />
+                <p className="mt-1 text-sm text-gray-500">
+                  Busca el medicamento para autocompletar la información básica
+                </p>
+              </div>
+            </ResponsiveField>
+            {/* 3️⃣ Row 3 con 1 campo */}
+            <ResponsiveField span={{ sm: 1, md: 2 }}>
+              <FormInput
+                label="Nombre comercial"
                 type="text"
                 id="name"
                 name="name"
+                icon={BeakerIcon}
                 value={formData.name}
                 onChange={handleInputChange}
+                onBlur={formData.handleBlur}
                 placeholder="Nombre comercial del medicamento"
-                className={`input-form ${errors.name ? 'border-red-300 focus:border-red-500' : ''}`}
                 disabled={selectedMedicine !== null}
+                error={errors.name}
               />
-              <QueueListIcon className="icon-input " />
-            </div>
-            <FieldError error={errors.name} />
-          </div>
-
-          {/* Descripción */}
-          <div className="md:col-span-2">
-            <label htmlFor="description">Descripción *</label>
-            <div className="relative">
-              <textarea
+            </ResponsiveField>
+            {/* 4️⃣ Row 4 con 1 campo */}
+            <ResponsiveField span={{ sm: 1, md: 2 }}>
+              <FormInput
+                label="Descripción"
                 id="description"
                 name="description"
+                type="textarea"
+                required
+                icon={DocumentTextIcon}
                 value={formData.description}
                 onChange={handleInputChange}
-                placeholder="Descripción del medicamento (principio activo, uso, etc.)"
-                rows="4"
-                className={`input-form ${errors.description ? 'border-red-300 focus:border-red-500' : ''}`}
+                onBlur={formData.handleBlur}
+                error={errors.description}
+                placeholder="Descripción del medicamento"
               />
-              <DocumentTextIcon className="icon-input top-6" />
-            </div>
-            <FieldError error={errors.description} />
-          </div>
-
-          {/* Categoría */}
-          <div>
-            <label htmlFor="category">Categoría *</label>
-            <div className="relative">
-              <select
-                id="category"
+            </ResponsiveField>
+            {/* 5️⃣ Row 5 con 2 campos */}
+            <ResponsiveField span={{ sm: 1, md: 1 }}>
+              <FormInput
+                type="select"
                 name="category"
+                label="Categoría"
+                icon={SquaresPlusIcon}
+                options={categories}
+                optionValueKey="id_category" // Key para el valor en objetos
+                optionLabelKey="category_name" // Key para el label en objetos
                 value={formData.category}
                 onChange={handleInputChange}
-                className={`input-form cursor-pointer ${errors.category ? 'border-red-300 focus:border-red-500' : ''}`}
-              >
-                <option value="">Seleccionar categoría</option>
-                {categories.map((category) => (
-                  <option key={category.id_category} value={category.id_category}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-              <InboxStackIcon className="icon-input" />
-            </div>
-            <FieldError error={errors.category} />
-          </div>
-
-          {/* Presentación */}
-          <div>
-            <label htmlFor="form">Presentación *</label>
-            <div className="relative">
-              <select
-                id="form"
+                error={errors.category}
+                onBlur={formData.handleBlur}
+                required
+                placeholder="Seleccionar categoría"
+                //helperText="Categoría del medicamento"
+                //showEmptyOption
+                //emptyOptionLabel="-- Seleccione una categoría --"
+              />
+            </ResponsiveField>
+            <ResponsiveField span={{ sm: 1, md: 1 }}>
+              <FormInput
+                type="select"
                 name="form"
+                label="Forma/Tipo"
+                icon={RectangleGroupIcon}
+                options={forms}
+                optionValueKey="id_form" // Key para el valor en objetos
+                optionLabelKey="form_name" // Key para el label en objetos
                 value={formData.form}
                 onChange={handleInputChange}
-                className={`input-form cursor-pointer ${errors.form ? 'border-red-300 focus:border-red-500' : ''}`}
-              >
-                <option value="">Seleccionar presentación</option>
-                {forms.map((form) => (
-                  <option key={form.id_form} value={form.id_form}>
-                    {form.form_name}
-                  </option>
-                ))}
-              </select>
-              <SwatchIcon className="icon-input" />
-            </div>
-            <FieldError error={errors.form} />
-          </div>
-
-          {/* Cantidad */}
-          <div>
-            <label htmlFor="quantity">Cantidad en Stock *</label>
-            <div className="relative">
-              <input
-                id="quantity"
+                error={errors.form}
+                onBlur={formData.handleBlur}
+                required
+              />
+            </ResponsiveField>
+            {/* 6️⃣ Row 6 con 2 campos*/}
+            <ResponsiveField span={{ sm: 1, md: 1 }}>
+              <FormInput
+                label="Cantidad"
                 name="quantity"
                 type="number"
-                min="0"
-                step="1"
+                required
                 value={formData.quantity}
                 onChange={handleInputChange}
-                placeholder="0"
-                className={`input-form-number ${errors.quantity ? 'border-red-300 focus:border-red-500' : ''}`}
+                error={errors.quantity}
+                onBlur={formData.handleBlur}
+                placeholder="Cantidad en stock"
               />
-              <CalculatorIcon className="icon-input" />
-            </div>
-            <FieldError error={errors.quantity} />
-          </div>
-
-          {/* Tamaño del Paquete */}
-          <div>
-            <label htmlFor="packsize">Unidades por Paquete *</label>
-            <div className="relative">
-              <input
-                id="packsize"
+            </ResponsiveField>
+            <ResponsiveField span={{ sm: 1, md: 1 }}>
+              <FormInput
+                label="Unidades por paquete"
                 name="packsize"
                 type="number"
-                min="1"
-                step="1"
+                required
                 value={formData.packsize}
                 onChange={handleInputChange}
-                placeholder="1"
-                className={`input-form-number ${errors.packsize ? 'border-red-300 focus:border-red-500' : ''}`}
+                error={errors.packsize}
+                onBlur={formData.handleBlur}
+                placeholder="unidades"
               />
-              <CalculatorIcon className="icon-input" />
-            </div>
-            <FieldError error={errors.packsize} />
-          </div>
-
-          {/* Punto de Reorden */}
-          <div>
-            <label htmlFor="reorder_point">Punto de Reorden *</label>
-            <div className="relative">
-              <input
-                id="reorder_point"
+            </ResponsiveField>
+            {/* 7️⃣ Row 7 con 2 campos */}
+            <ResponsiveField span={{ sm: 1, md: 1 }}>
+              <FormInput
+                label="Punto de reposición"
                 name="reorder_point"
                 type="number"
-                min="0"
-                step="1"
+                required
                 value={formData.reorder_point}
                 onChange={handleInputChange}
-                placeholder="0"
-                className={`input-form-number ${errors.reorder_point ? 'border-red-300 focus:border-red-500' : ''}`}
+                error={errors.reorder_point}
+                onBlur={formData.handleBlur}
+                placeholder="reorder"
               />
-              <CalculatorIcon className="icon-input" />
-            </div>
-            <FieldError error={errors.reorder_point} />
-            <p className="mt-1 text-sm text-gray-500">
-              Cantidad mínima antes de hacer nuevo pedido
-            </p>
-          </div>
-
-          {/* Fecha de Caducidad */}
-          <div>
-            <label htmlFor="expirationDate">Fecha de Caducidad *</label>
-            <div className="relative">
-              <input
-                id="expirationDate"
+            </ResponsiveField>
+            <ResponsiveField span={{ sm: 1, md: 1 }}>
+              <FormInput
+                label="Fecha de caducidad"
                 name="expirationDate"
                 type="date"
+                required
+                min={new Date().toISOString().split('T')[0]}
                 value={formData.expirationDate}
                 onChange={handleInputChange}
-                min={new Date().toISOString().split('T')[0]}
-                className={`input-form-number ${errors.expirationDate ? 'border-red-300 focus:border-red-500' : ''}`}
+                error={errors.expirationDate}
+                onBlur={formData.handleBlur}
+                placeholder="Fecha de caducidad"
               />
-              <CalendarIcon className="icon-input" />
-            </div>
-            <FieldError error={errors.expirationDate} />
-          </div>
-
-          {/* Ubicación */}
-          <div>
-            <label htmlFor="location">Ubicación *</label>
-            <div className="relative">
-              <select
-                id="location"
+            </ResponsiveField>
+            {/* 8️⃣ Row 8 con 2 campos */}
+            <ResponsiveField span={{ sm: 1, md: 1 }}>
+              <FormInput
+                type="select"
                 name="location"
+                label="Ubicación"
+                icon={RectangleStackIcon}
+                options={locations}
+                optionValueKey="id_location" // Key para el valor en objetos
+                optionLabelKey="location_name" // Key para el label en objetos
                 value={formData.location}
                 onChange={handleInputChange}
-                className={`input-form cursor-pointer ${errors.location ? 'border-red-300 focus:border-red-500' : ''}`}
-              >
-                <option value="">Seleccionar ubicación</option>
-                {locations.map((location) => (
-                  <option key={location.id_location} value={location.id_location}>
-                    {location.location_name}
-                  </option>
-                ))}
-              </select>
-              <GlobeAmericasIcon className="icon-input" />
-            </div>
-            <FieldError error={errors.location} />
-          </div>
-
-          {/* Precio */}
-          <div>
-            <label htmlFor="price">Precio (MXN) *</label>
-            <div className="relative">
-              <input
-                id="price"
+                error={errors.location}
+                onBlur={formData.handleBlur}
+                required
+              />
+            </ResponsiveField>
+            <ResponsiveField span={{ sm: 1, md: 1 }}>
+              <FormInput
+                label="Precio(MXN)"
                 name="price"
                 type="number"
-                min="0"
-                step="0.01"
+                required
                 value={formData.price}
                 onChange={handleInputChange}
-                placeholder="0.00"
-                className={`input-form-number ${errors.price ? 'border-red-300 focus:border-red-500' : ''}`}
+                error={errors.price}
+                onBlur={formData.handleBlur}
+                placeholder="Precio del medicamento"
               />
-              <CurrencyDollarIcon className="icon-input" />
-            </div>
-            <FieldError error={errors.price} />
-          </div>
-          {/* Botones de Acción */}
-          <div className="col-span-2 flex justify-end gap-4 pt-2 border-t">
-            {/* Debug info - remover en producción 
-          <div className="text-xs text-gray-500 mr-4">
-            <div>Valid: {isValid ? '✅' : '❌'}</div>
-            <div>Errors: {Object.keys(errors).length}</div>
-            <div>Submitting: {isSubmitting ? '⏳' : '✅'}</div>
-          </div>
-          */}
-            <Button
-              type="button"
-              className="btn-form-cancel"
-              onClick={() => window.history.back()}
-              disabled={isSubmitting}
-            >
-              Cancelar
-            </Button>
-            <Button
-              type="submit"
-              className={`btn-primary ${!isValid || isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
-              disabled={!isValid || isSubmitting}
-              onClick={(e) => {
-                console.log('🔴 Button clicked!', { isValid, isSubmitting, errors });
-                // El handleSubmit se ejecutará automáticamente por el form
-              }}
-            >
-              {isSubmitting ? (
-                <>
-                  <ArrowPathIcon className="h-4 w-4 mr-2 animate-spin" />
-                  Guardando...
-                </>
-              ) : (
-                'Guardar Medicamento'
-              )}
-            </Button>
-          </div>
-        </div>
-      </form>
-    </div>
+            </ResponsiveField>
+            {/* 9️⃣ Row 9 con 1 campo - footer */}
+            <ResponsiveField span={{ sm: 1, md: 2 }}>
+              <FooterForm>
+                <Link href="/dashboard/medicine" className="btn-form-cancel">
+                  Cancelar
+                </Link>
+                <SubmitButton
+                  // Se recupera el estado 'isPending' del formulario, para desactivar el botón mientras se envía el formulario
+                  isPending={formData.isSubmitting}
+                  // El botón se deshabilita si el formulario no es válido o está en 'pending'
+                  disabled={!formData.isValid}
+                  loadingText="Guardando..."
+                >
+                  Guardar
+                </SubmitButton>
+              </FooterForm>
+            </ResponsiveField>
+          </ResponsiveGrid>
+        </form>
+      </ResponsiveFormWrapper>
+    </>
   );
 }

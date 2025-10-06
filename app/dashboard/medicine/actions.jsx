@@ -124,51 +124,26 @@ export async function createMedicine(formData) {
 }
 
 export async function updateMedicine(id, formData) {
-  //console.log(formData, id);
-  const {
-    name,
-    description,
-    price,
-    quantity,
-    expiration_date,
-    category,
-    form,
-    packsize,
-    reorder_point,
-    location,
-  } = {
+  const dataToUpdate = {
     name: formData.get('name'),
     description: formData.get('description'),
     price: formData.get('price') ? parseFloat(formData.get('price')) : 0,
     quantity: formData.get('quantity') ? parseInt(formData.get('quantity')) : 1,
-    expiration_date: formData.get('expirationDate')
-      ? parseISO(formData.get('expirationDate'))
-      : parseISO(new Date()),
-    category: formData.get('category') ? parseInt(formData.get('category')) : 1,
-    form: formData.get('form'),
+    expiration_date: formData.get('expiration_date')
+      ? parseISO(formData.get('expiration_date'))
+      : new Date(),
+    idCategory: formData.get('idCategory') ? parseInt(formData.get('idCategory')) : 1,
+    idForm: formData.get('idForm'),
     packsize: formData.get('packsize') ? parseInt(formData.get('packsize')) : 1,
     reorder_point: formData.get('reorder_point') ? parseInt(formData.get('reorder_point')) : 1,
-    location: formData.get('location'),
+    idLocation: formData.get('idLocation'),
   };
-  //console.log("formData: ", formData);
-  //console.log("form:", form);
 
   await prisma.medicines.update({
     where: {
       id: id,
     },
-    data: {
-      name,
-      description,
-      price,
-      quantity,
-      expiration_date,
-      idCategory: category,
-      idForm: form,
-      packsize,
-      reorder_point,
-      idLocation: location,
-    },
+    data: dataToUpdate,
   });
 
   revalidatePath('/dashboard/medicine');
