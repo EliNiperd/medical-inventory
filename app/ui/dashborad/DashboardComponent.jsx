@@ -9,6 +9,8 @@ import {
   CubeIcon as Package,
 } from '@heroicons/react/24/outline';
 
+import { fetchFilteredMedicines } from '@/app/dashboard/medicine/actions';
+
 // Card de Métrica Reutilizable
 const MetricCard = ({ title, value, icon: Icon, color = 'blue', subtitle, trend }) => {
   const colorClasses = {
@@ -54,7 +56,7 @@ function AlertItem({ type, medicine, daysUntilExpiry, action }) {
     expired: 'Vencido',
     critical: `Vence en ${daysUntilExpiry} dias`,
     warning: `Vence en${Math.ceil(daysUntilExpiry / 30)} meses`,
-    low_stock: `Quedan ${medicine.stock_actual} unidades`,
+    low_stock: `Quedan ${medicine.quantity_on_hans} unidades`,
   };
 
   return (
@@ -62,7 +64,7 @@ function AlertItem({ type, medicine, daysUntilExpiry, action }) {
       <div className="flex items-center gap-3 flex-1">
         <span className="text-2xl">{icons[type]}</span>
         <div>
-          <p className="font-medium text-gray-900 dark:text-white">{medicine.nombre}</p>
+          <p className="font-medium text-gray-900 dark:text-white">{medicine.name_medicine}</p>
           <p className="text-sm text-gray-600 dark:text-gray-400">{messages[type]}</p>
         </div>
       </div>
@@ -91,57 +93,73 @@ export default function DashboardComponent() {
     const mockMedicines = [
       {
         id: 1,
-        nombre: 'Paracetamol 500mg',
-        principio_activo: 'Paracetamol',
-        stock_actual: 3,
-        stock_minimo: 10,
-        expiry_date: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000), // 10 días
-        precio_referencia: 25.5,
+        name_medicine: 'Paracetamol 500mg',
+        name_medicine: 'Paracetamol',
+        quantity_on_hans: 3,
+        reorder_point: 10,
+        expiration_date: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000), // 10 días
+        price: 25.5,
       },
       {
         id: 2,
-        nombre: 'Ibuprofeno 400mg',
-        principio_activo: 'Ibuprofeno',
-        stock_actual: 20,
-        stock_minimo: 10,
-        expiry_date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // Vencido
-        precio_referencia: 45.0,
+        name_medicine: 'Ibuprofeno 400mg',
+        name_medicine: 'Ibuprofeno',
+        quantity_on_hans: 20,
+        reorder_point: 10,
+        expiration_date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // Vencido
+        price: 45.0,
       },
       {
         id: 3,
-        nombre: 'Loratadina 10mg',
-        principio_activo: 'Loratadina',
-        stock_actual: 15,
-        stock_minimo: 5,
-        expiry_date: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000), // 6 meses
-        precio_referencia: 89.5,
+        name_medicine: 'Loratadina 10mg',
+        name_medicine: 'Loratadina',
+        quantity_on_hans: 15,
+        reorder_point: 5,
+        expiration_date: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000), // 6 meses
+        price: 89.5,
       },
       {
         id: 4,
-        nombre: 'Amoxicilina 500mg',
-        principio_activo: 'Amoxicilina',
-        stock_actual: 8,
-        stock_minimo: 10,
-        expiry_date: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000), // 45 días
-        precio_referencia: 120.0,
+        name_medicine: 'Amoxicilina 500mg',
+        name_medicine: 'Amoxicilina',
+        quantity_on_hans: 8,
+        reorder_point: 10,
+        expiration_date: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000), // 45 días
+        price: 120.0,
       },
       {
         id: 5,
-        nombre: 'Metformina 850mg',
-        principio_activo: 'Metformina',
-        stock_actual: 25,
-        stock_minimo: 15,
-        expiry_date: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 año
-        precio_referencia: 180.0,
+        name_medicine: 'Metformina 850mg',
+        name_medicine: 'Metformina',
+        quantity_on_hans: 25,
+        reorder_point: 15,
+        expiration_date: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 año
+        price: 180.0,
       },
     ];
 
-    setTimeout(() => {
-      setMedicines(mockMedicines);
-      calculateMetrics(mockMedicines);
-      generateAlerts(mockMedicines);
-      setLoading(false);
-    }, 800);
+    const fetchData = async () => {
+      try {
+        const response = await fetchFilteredMedicines('');
+        setTimeout(() => {
+          setMedicines(response);
+          calculateMetrics(response);
+          generateAlerts(response);
+          setLoading(false);
+          //console.log(response);
+        }, 800);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+    //console.log('👉🏻 Medicamentos cargados:', mockMedicines);
+    // setTimeout(() => {
+    //   setMedicines(mockMedicines);
+    //   calculateMetrics(mockMedicines);
+    //   generateAlerts(mockMedicines);
+    //   setLoading(false);
+    // }, 800);
   }, []);
 
   // Calcular métricas
@@ -150,13 +168,13 @@ export default function DashboardComponent() {
     const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
 
     const expiringSoon = meds.filter((m) => {
-      const expiryDate = new Date(m.expiry_date);
+      const expiryDate = new Date(m.expiration_date);
       return expiryDate <= thirtyDaysFromNow && expiryDate > now;
     }).length;
 
-    const lowStock = meds.filter((m) => m.stock_actual < m.stock_minimo).length;
+    const lowStock = meds.filter((m) => m.quantity_on_hans < m.reorder_point).length;
 
-    const totalValue = meds.reduce((sum, m) => sum + m.precio_referencia * m.stock_actual, 0);
+    const totalValue = meds.reduce((sum, m) => sum + m.price * m.quantity_on_hans, 0);
 
     setMetrics({
       total: meds.length,
@@ -172,7 +190,7 @@ export default function DashboardComponent() {
     const alertsList = [];
 
     meds.forEach((med) => {
-      const expiryDate = new Date(med.expiry_date);
+      const expiryDate = new Date(med.expiration_date);
       const daysUntilExpiry = Math.ceil((expiryDate - now) / (1000 * 60 * 60 * 24));
 
       // Vencidos
@@ -194,7 +212,7 @@ export default function DashboardComponent() {
         });
       }
       // Stock bajo
-      if (med.stock_actual < med.stock_minimo) {
+      if (med.quantity_on_hans < med.reorder_point) {
         alertsList.push({
           type: 'low_stock',
           medicine: med,

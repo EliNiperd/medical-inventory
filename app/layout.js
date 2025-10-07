@@ -1,13 +1,14 @@
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
+import { ToasterProvider } from '@/components/providers/ToasterProvider';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
-  title: 'medical-inventory',
-  description: 'A simple medical inventory management system',
+  title: 'Medical Inventory',
+  description: 'Sistema de gestión de inventario de medicamentos',
 };
 
 export default function RootLayout({ children }) {
@@ -24,6 +25,7 @@ export default function RootLayout({ children }) {
           >
             <main>{children}</main>
             <Toaster />
+            <ToasterProvider />
           </ThemeProvider>
         </body>
       </html>

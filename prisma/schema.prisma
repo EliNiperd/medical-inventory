@@ -68,6 +68,52 @@ model Categories {
   create_at            DateTime? @default(now()) @db.Timestamp(6)
 }
 
+model Alert {
+  id           String    @id
+  medicine_id  String
+  type         String
+  severity     String
+  message      String
+  is_read      Boolean   @default(false)
+  is_dismissed Boolean   @default(false)
+  created_at   DateTime  @default(now())
+  read_at      DateTime?
+  dismissed_at DateTime?
+
+  @@index([created_at])
+  @@index([is_read])
+  @@index([medicine_id])
+}
+
+model InventoryMovement {
+  id             String   @id
+  medicine_id    String
+  type           String
+  quantity       Int
+  reason         String?
+  notes          String?
+  previous_stock Int
+  new_stock      Int
+  created_at     DateTime @default(now())
+
+  @@index([created_at])
+  @@index([medicine_id])
+  @@index([type])
+}
+
+model UserPreferences {
+  id                   String   @id
+  enable_expiry_alerts Boolean  @default(true)
+  expiry_warning_days  Int      @default(30)
+  enable_stock_alerts  Boolean  @default(true)
+  user_location        String?
+  user_latitude        Float?
+  user_longitude       Float?
+  theme                String   @default("light")
+  created_at           DateTime @default(now())
+  updated_at           DateTime @default(now())
+}
+
 view Medicines_Table {
   id               String    @unique @db.Uuid
   name_medicine    String?

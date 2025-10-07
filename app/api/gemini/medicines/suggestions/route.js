@@ -423,7 +423,7 @@ Format: [{"nombre": "...", "principio_activo": "...", ...}]
       modelUsed: modelUsed || extractModelUsed,
     });
   } catch (error) {
-    console.error('❌ API Error:', error);
+    //console.error('❌ API Error:', error);
     return NextResponse.json(
       {
         error: 'Internal server error',
