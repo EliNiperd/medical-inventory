@@ -2,8 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { UserIcon, EnvelopeIcon, ShieldCheckIcon, CalendarIcon } from '@heroicons/react/24/outline';
-import { UpdateUser } from '@/app/ui/user/button-user';
-import { DeleteButton } from '@/app/ui/components/tables/button-delete';
+import { DeleteButton, UpdateButton } from '@/app/ui/components/tables/table-actions';
 import { deleteUser } from '@/app/dashboard/user/actions';
 
 // ✅ SOLUCIÓN: Todo dentro del Client Component
@@ -79,7 +78,7 @@ function UsersResponsiveTable({ users, loading = false }) {
         align: 'right',
         render: (_, row) => (
           <div className="flex items-center space-x-2">
-            <UpdateUser id={row.id_user} />
+            <UpdateButton id={row.id_user} basePath="user" />
             <DeleteButton
               id={row.id_user}
               deleteAction={deleteUser}
@@ -299,7 +298,7 @@ function UsersResponsiveTable({ users, loading = false }) {
                   </td>
                   <td className="px-4 py-4 text-right">
                     <div className="flex items-center justify-end space-x-2">
-                      <UpdateUser id={user.id_user} />
+                      <UpdateButton id={user.id_user} basePath="user" />
                       <DeleteButton
                         id={user.id_user}
                         deleteAction={deleteUser}
@@ -335,7 +334,7 @@ function UsersResponsiveTable({ users, loading = false }) {
                 </div>
 
                 <div className="flex items-center space-x-1">
-                  <UpdateUser id={user.id_user} />
+                  <UpdateButton id={user.id_user} basePath="user" />
                   <DeleteButton
                     id={user.id_user}
                     deleteAction={deleteUser}

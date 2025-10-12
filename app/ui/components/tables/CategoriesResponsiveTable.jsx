@@ -2,8 +2,7 @@
 
 import { useMemo } from 'react';
 import { SquaresPlusIcon, CalendarIcon } from '@heroicons/react/24/outline';
-import { UpdateCategory } from '@/app/ui/category/button-category';
-import { DeleteButton } from '@/app/ui/components/tables/button-delete';
+import { UpdateButton, DeleteButton } from '@/app/ui/components/tables/table-actions';
 import { deleteCategory } from '@/app/dashboard/category/actions';
 
 // Importar el sistema modular para la tabla
@@ -71,7 +70,7 @@ function useCategoryColumns() {
         align: 'right',
         render: (_, row) => (
           <div className="flex items-center space-x-2">
-            <UpdateCategory id_category={row.id_category} />
+            <UpdateButton id={row.id_category} basePath="category" />
             <DeleteButton
               deleteAction={deleteCategory}
               id_category={row.id_category}
@@ -109,7 +108,7 @@ function CategoryMobileCard({ data: category }) {
         </div>
 
         <div className="flex items-center space-x-1">
-          <UpdateCategory id_category={category.id_category} />
+          <UpdateButton id={category.id_category} basePath="category" />
           <DeleteButton
             deleteAction={deleteCategory}
             id={category.id_category}

@@ -2,8 +2,7 @@
 
 import { useMemo } from 'react';
 import { RectangleGroupIcon, CalendarIcon } from '@heroicons/react/24/outline';
-import { UpdateForm } from '@/app/ui/form/button-form';
-import { DeleteButton } from '@/app/ui/components/tables/button-delete';
+import { UpdateButton, DeleteButton } from '@/app/ui/components/tables/table-actions';
 import { deleteForm } from '@/app/dashboard/form/actions';
 
 // Importar el sistema modular para la tabla
@@ -72,7 +71,7 @@ function useFormColumns() {
 
         render: (_, row) => (
           <div className="flex items-center space-x-2">
-            <UpdateForm id_form={row.id_form} />
+            <UpdateButton id={row.id_form} basePath="form" />
             <DeleteButton
               deleteAction={deleteForm}
               id={row.id_form}
@@ -108,7 +107,7 @@ function FormMobileCard({ data: form }) {
         </div>
 
         <div className="flex items-center space-x-1">
-          <UpdateForm id_form={form.id_form} />
+          <UpdateButton id={form.id_form} basePath="form" />
           <DeleteButton
             deleteAction={deleteForm}
             id={form.id_form}

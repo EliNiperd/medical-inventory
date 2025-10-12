@@ -13,7 +13,7 @@ import ResponsiveTable, {
   MobileCards,
   TableStats,
 } from '@/app/ui/components/responsive-table/responsible-table';
-import { UpdateMedicine } from '../../medicine/button-medicine';
+import { UpdateButton } from '@/app/ui/components/tables/table-actions';
 
 const DICTIONARY_TITLE = {
   nameSingular: 'Medicina',
@@ -113,7 +113,7 @@ function useMedicineColumns() {
         header: 'Acciones',
         render: (_, row) => (
           <div className="flex items-center space-x-2">
-            <UpdateMedicine id={row.id} />
+            <UpdateButton id={row.id} basePath="medicine" />
             <DeleteButton
               deleteAction={deleteMedicine}
               id={row.id}
@@ -181,7 +181,7 @@ function MedicineMobileCard({ data: medicine }) {
           </h3>
         </div>
         <div className="flex items-center space-x-1">
-          <UpdateMedicine id={medicine.id} className="w-2 h-2" />
+          <UpdateButton id={medicine.id} basePath="medicine" className="w-2 h-2" />
           <DeleteButton
             deleteAction={deleteMedicine}
             id={medicine.id}
