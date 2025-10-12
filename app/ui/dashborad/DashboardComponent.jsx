@@ -86,6 +86,11 @@ export default function DashboardComponent() {
     lowStock: 0,
     totalValue: 0,
   });
+  const locales = {
+    es: { locale: 'es-MX', currency: 'MXN' },
+    en: { locale: 'en-US', currency: 'USD' },
+  };
+  //console.log(locales);
 
   // Simular carga de datos (reemplazar con API real)
   useEffect(() => {
@@ -140,16 +145,16 @@ export default function DashboardComponent() {
 
     const fetchData = async () => {
       try {
-        const response = await fetchFilteredMedicines('');
+        const response = await fetchFilteredMedicines();
         setTimeout(() => {
-          setMedicines(response);
-          calculateMetrics(response);
-          generateAlerts(response);
+          setMedicines(response.medicines);
+          calculateMetrics(response.medicines);
+          generateAlerts(response.medicines);
           setLoading(false);
           //console.log(response);
         }, 800);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
     fetchData();
@@ -288,7 +293,7 @@ export default function DashboardComponent() {
 
             <MetricCard
               title="Valor Total"
-              value={`$${metrics.totalValue}`}
+              value={`${metrics.totalValue ? Intl.NumberFormat(locales.es.locale, { style: 'currency', currency: locales.es.currency }).format(metrics.totalValue) : 0}`}
               icon={DollarSign}
               color="green"
               subtitle="Valor del inventario"

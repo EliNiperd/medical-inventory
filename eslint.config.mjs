@@ -13,6 +13,7 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
   {
+    files: ['**/*.{js,jsx,mjs}'], // Aplicar a todos los archivos JS, JSX, MJS
     plugins: {
       prettier: eslintPluginPrettier,
     },
@@ -20,7 +21,7 @@ const eslintConfig = [
       'prettier/prettier': 'error',
       'prefer-const': 'error',
       'no-unused-vars': 'warn',
-      'no-console': 'warn',
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
     },
   },
   {

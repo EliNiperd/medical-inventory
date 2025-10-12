@@ -1,5 +1,5 @@
 import Breadcrumbs from '@/app/ui/breadcrumbs';
-import Form from '@/app/ui/medicine/edit-medicine';
+import Form from '@/app/ui/medicine/medicine-form';
 import { fetchCategories } from '@/app/dashboard/category/actions';
 import { fetchForms } from '@/app/dashboard/form/actions';
 import { fetchLocations } from '@/app/dashboard/location/actions';
@@ -27,7 +27,12 @@ export default async function Page({ params }) {
           },
         ]}
       ></Breadcrumbs>
-      <Form medicine={medicine} categories={categories} forms={forms} locations={locations} />
+      <Form
+        medicine={medicine.medicine}
+        categories={categories}
+        forms={forms}
+        locations={locations}
+      />
     </main>
   );
 }

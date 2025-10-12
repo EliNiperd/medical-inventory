@@ -9,13 +9,14 @@ import ResponsiveFormWrapper, {
 } from '@/app/ui/components/form/responsive-form-wrapper';
 import FooterForm from '@/app/ui/components/form/footer-form';
 import FormInput from '@/app/ui/components/form/form-input';
-import { useForm, useSchemaValidation } from '@/app/hooks/useFormValidation';
+import { useForm } from '@/app/hooks/useFormValidation';
+import { userEditSchema as VALIDATION_RULES } from '@/lib/schemas/user';
 
 export default function Form({ user }) {
   const updateUserWithId = updateUser.bind(null, user.id_user);
 
   // 4️⃣ Importar las reglas de validación
-  const VALIDATION_RULES = useSchemaValidation('userEdit');
+  //const VALIDATION_RULES = useSchemaValidation('userEdit');
 
   // ✅ Se utiliza el hook useForm PERSONALIZADO para validar todo el formulario al enviarlo
   const { formData, errors, handleChange, handleBlur, validateForm, isValid } = useForm(

@@ -5,152 +5,364 @@ import { wakeUpDb } from '@/app/lib/db-wake-up';
 import prisma from '@/app/lib/prisma';
 import { parseISO } from 'date-fns';
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
+//import { redirect } from 'next/navigation';
+//import { z } from 'zod';
+import { medicineSchema } from '@/lib/schemas/medicine.js';
 
-export async function fetchFilteredMedicines(query, page, limit, sort, order) {
-  //console.log("fetchFilteredMedicines", query, page, limit, sort, order);
-  /* const res = await fetch(
-    getURL(
-      `/api/medicine?query=${query}&page=${page}&limit=${limit}&sort=${sort}&order=${order}`
-    )
-  );
-  const data = await res.json();
-  */
+// ============================================
+// SCHEMAS DE VALIDACIÓN
+// ============================================
+// const MedicineSchema = z.object({
+//   name: z.string({ required_error: 'Ingrese el nombre del medicamento' }),
+//   description: z
+//     .string({ required_error: 'Ingrese una descripción del medicamento' })
+//     .max(255, 'La descripción del medicamento debe tener menos de 255 caracteres'),
+//   idCategory: z.string({ required_error: 'Ingrese el nombre de la categoría' }),
+//   idForm: z.string({ required_error: 'Ingrese el nombre del formato' }),
+//   idLocation: z.string({ required_error: 'Ingrese el nombre de la ubicación' }),
+//   expiration_date: z
+//     .date({ required_error: 'Ingrese la fecha de vencimiento' })
+//     .min(new Date(), 'La fecha de vencimiento debe ser posterior a la fecha actual'),
+//   quantity: z
+//     .number({ required_error: 'Ingrese la cantidad de medicamentos' })
+//     .min(1, 'La cantidad de medicamentos debe ser mayor a 0'),
+//   price: z.number({ required_error: 'Ingrese el precio del medicamento' }),
+//   reorder_point: z
+//     .number({ required_error: 'Ingrese el punto de reorden del medicamento' })
+//     .min(1, 'El punto de reorden debe ser mayor a 0'),
+//   packsize: z
+//     .number({ required_error: 'Ingrese el tamaño del empaque del medicamento' })
+//     .min(1, 'El tamaño del empaque debe ser mayor a 0'),
+// });
 
+// ============================================
+// FETCH MEDICINES (READ)
+// ============================================
+export async function fetchFilteredMedicines(
+  query = '',
+  page = 1,
+  limit = 10,
+  sort = 'name_medicine',
+  order = 'asc'
+) {
   await wakeUpDb();
+  try {
+    // Asegurar que los valores numéricos y de ordenamiento sean válidos
+    const safePage = Number(page) || 1;
+    const safeLimit = Number(limit) || 10;
+    const safeSort = sort || 'name_medicine';
+    const safeOrder = order || 'asc';
 
-  const medicines = await prisma.medicines_Table.findMany({
-    where: {
-      OR: [
-        {
-          name_medicine: {
-            contains: query,
-            mode: 'insensitive',
-          },
-        },
-        {
-          description: {
-            contains: query,
-            mode: 'insensitive',
-          },
-        },
-        {
-          category_name: {
-            contains: query,
-            mode: 'insensitive',
-          },
-        },
-        {
-          form_name: {
-            contains: query,
-            mode: 'insensitive',
-          },
-        },
-        {
-          location_name: {
-            contains: query,
-            mode: 'insensitive',
-          },
-        },
-      ],
-    },
-  });
+    const skip = (safePage - 1) * safeLimit;
+    const orderBy = { [safeSort]: safeOrder };
 
+    // Query con paginación
+    const [medicines, total] = await Promise.all([
+      prisma.medicines_Table.findMany({
+        where: {
+          OR: [
+            {
+              name_medicine: {
+                contains: query,
+                mode: 'insensitive',
+              },
+            },
+            {
+              description: {
+                contains: query,
+                mode: 'insensitive',
+              },
+            },
+            {
+              category_name: {
+                contains: query,
+                mode: 'insensitive',
+              },
+            },
+            {
+              form_name: {
+                contains: query,
+                mode: 'insensitive',
+              },
+            },
+            {
+              location_name: {
+                contains: query,
+                mode: 'insensitive',
+              },
+            },
+          ],
+        },
+        skip: skip,
+        //take: safeLimit,
+        orderBy,
+      }),
+      prisma.medicines_Table.count({
+        where: {
+          OR: [
+            {
+              name_medicine: {
+                contains: query,
+                mode: 'insensitive',
+              },
+            },
+            {
+              description: {
+                contains: query,
+                mode: 'insensitive',
+              },
+            },
+            {
+              category_name: {
+                contains: query,
+                mode: 'insensitive',
+              },
+            },
+            {
+              form_name: {
+                contains: query,
+                mode: 'insensitive',
+              },
+            },
+            {
+              location_name: {
+                contains: query,
+                mode: 'insensitive',
+              },
+            },
+          ],
+        },
+        skip: skip,
+        take: safeLimit,
+      }),
+    ]);
+    return {
+      success: true,
+      medicines,
+      pagination: {
+        total,
+        safePage,
+        safeLimit,
+        pagination: Math.ceil(total / safeLimit),
+      },
+    };
+  } catch (error) {
+    //console.log('error fetchFilteredMedicines', error);
+    return {
+      success: false,
+      error: `error al obtener medicamentos: ${error.message}`,
+      medicines: [],
+      pagination: {
+        total: 0,
+        page: 1,
+        limit: 0,
+        totalPages: 0,
+      },
+    };
+  }
   //const medicines = data.medicines;
   //console.log(medicines);
-  return medicines;
+  //return medicines;
 }
 
+// ============================================
+// FETCH MEDICINE BY ID (READ ONE)
+// ============================================
 export async function fetchMedicineById(id) {
   //console.log(id);
-  const medicine = await prisma.medicines.findUnique({
-    where: {
-      id: id,
-    },
-  });
+  try {
+    if (!id) {
+      return {
+        success: false,
+        error: 'error al obtener medicamento: id no proporcionado',
+        medicine: [],
+      };
+    }
+    const medicine = await prisma.medicines.findUnique({
+      where: {
+        id: id,
+      },
+      // include: {
+      //   categories: true,
+      //   forms: true,
+      //   locations: true,
+      // },
+    });
 
-  //console.log(medicine);
-  return medicine;
+    if (!medicine) {
+      return {
+        success: false,
+        error: 'error al obtener medicamento: medicamento no encontrado',
+        medicine: [],
+      };
+    }
+
+    return {
+      success: true,
+      medicine: medicine,
+    };
+
+    //console.log(medicine);
+    //return medicine;
+  } catch (error) {
+    //console.log('error fetchMedicineById', error);
+    return {
+      success: false,
+      error: `error al obtener medicamento: ${error.message}`,
+      medicine: [],
+    };
+  }
 }
 
 export async function createMedicine(formData) {
   //console.log(formData);
-  const {
-    name,
-    description,
-    price,
-    quantity,
-    expiration_date,
-    idCategory,
-    idForm,
-    packsize,
-    reorder_point,
-    idLocation,
-  } = {
-    name: formData.name,
-    description: formData.description,
-    price: formData.price ? parseFloat(formData.price) : 0,
-    quantity: formData.quantity ? parseInt(formData.quantity) : 1,
-    expiration_date: formData.expiration_date
-      ? parseISO(formData.expiration_date)
-      : parseISO(new Date()),
-    idCategory: formData.idCategory ? parseInt(formData.idCategory) : 1,
-    idForm: formData.idForm,
-    packsize: formData.packsize ? parseInt(formData.packsize) : 1,
-    reorder_point: formData.reorder_point ? parseInt(formData.reorder_point) : 0,
-    idLocation: formData.idLocation,
-  };
+  try {
+    // 1. Validar datos con Zod
+    const validatedFields = medicineSchema.safeParse({
+      name: formData.name,
+      description: formData.description,
+      price: formData.price,
+      quantity: formData.quantity,
+      expiration_date: formData.expiration_date,
+      idCategory: formData.idCategory,
+      idForm: formData.idForm,
+      packsize: formData.packsize,
+      reorder_point: formData.reorder_point,
+      idLocation: formData.idLocation,
+    });
 
-  //console.log(formData);
+    // 2. Si la validación falla, retornar errores
+    if (!validatedFields.success) {
+      const validationErrors = {};
+      validatedFields.error.errors.forEach((err) => {
+        if (err.path.length > 0) {
+          validationErrors[err.path[0]] = err.message;
+        }
+      });
+      return {
+        success: false,
+        error: 'Error de validación. Por favor revisa los campos.',
+        validationErrors,
+      };
+    }
 
-  await prisma.medicines.create({
-    data: {
-      name,
-      description,
-      price,
-      quantity,
-      expiration_date,
-      idCategory: idCategory,
-      idForm: idForm,
-      packsize,
-      reorder_point,
-      idLocation: idLocation,
-      id_user_create: '5d743e4d-1724-4501-94d2-7d9de771cc66',
-    },
-  });
+    const { data } = validatedFields;
 
-  revalidatePath('/dashboard/medicine');
-  redirect('/dashboard/medicine');
+    // 2. TODO: Obtener user ID de sesión en lugar de hardcoded
+    // const session = await auth();
+    // const userId = session?.user?.id;
+    const userId = '5d743e4d-1724-4501-94d2-7d9de771cc66'; // Temporal
+
+    // 3. Guardar en la base de datos
+    await prisma.medicines.create({
+      data: {
+        name: data.name,
+        description: data.description,
+        price: data.price,
+        quantity: data.quantity,
+        expiration_date: parseISO(data.expiration_date),
+        idCategory: data.idCategory,
+        idForm: data.idForm,
+        packsize: data.packsize,
+        reorder_point: data.reorder_point,
+        idLocation: data.idLocation,
+        id_user_create: userId,
+      },
+    });
+
+    // 4. Revalidar caché
+    revalidatePath('/dashboard/medicine');
+    //redirect('/dashboard/medicine');
+    // 5. Retornar éxito (no se redirecciona para mejorar la experiencia UX)
+    return {
+      success: true,
+      message: 'Medicamento creado correctamente',
+      //medicine,
+    };
+  } catch (error) {
+    // Otros errores
+    return {
+      success: false,
+      error: `error al crear medicamento: ${error.message}`,
+      //medicine: [],
+    };
+  }
 }
 
 export async function updateMedicine(id, formData) {
-  const dataToUpdate = {
-    name: formData.get('name'),
-    description: formData.get('description'),
-    price: formData.get('price') ? parseFloat(formData.get('price')) : 0,
-    quantity: formData.get('quantity') ? parseInt(formData.get('quantity')) : 1,
-    expiration_date: formData.get('expiration_date')
-      ? parseISO(formData.get('expiration_date'))
-      : new Date(),
-    idCategory: formData.get('idCategory') ? parseInt(formData.get('idCategory')) : 1,
-    idForm: formData.get('idForm'),
-    packsize: formData.get('packsize') ? parseInt(formData.get('packsize')) : 1,
-    reorder_point: formData.get('reorder_point') ? parseInt(formData.get('reorder_point')) : 1,
-    idLocation: formData.get('idLocation'),
-  };
+  //console.log('updateMedicine: ', id, formData);
+  try {
+    // 1. Validar datos con Zod
+    const validatedFields = medicineSchema.safeParse({
+      name: formData.name,
+      description: formData.description,
+      price: formData.price,
+      quantity: formData.quantity,
+      expiration_date: formData.expiration_date,
+      idCategory: formData.idCategory,
+      idForm: formData.idForm,
+      packsize: formData.packsize,
+      reorder_point: formData.reorder_point,
+      idLocation: formData.idLocation,
+    });
 
-  await prisma.medicines.update({
-    where: {
-      id: id,
-    },
-    data: dataToUpdate,
-  });
+    // 2. Si la validación falla, retornar errores
+    if (!validatedFields.success) {
+      const validationErrors = {};
+      validatedFields.error.errors.forEach((err) => {
+        if (err.path.length > 0) {
+          validationErrors[err.path[0]] = err.message;
+        }
+      });
+      return {
+        success: false,
+        error: 'Error de validación. Por favor revisa los campos.',
+        validationErrors,
+      };
+    }
 
-  revalidatePath('/dashboard/medicine');
-  redirect('/dashboard/medicine');
+    const { data } = validatedFields;
+
+    const dataToUpdate = {
+      name: data.name,
+      description: data.description,
+      price: data.price,
+      quantity: data.quantity,
+      expiration_date: data.expiration_date ? parseISO(data.expiration_date) : new Date(),
+      idCategory: data.idCategory,
+      idForm: data.idForm,
+      packsize: data.packsize,
+      reorder_point: data.reorder_point,
+      idLocation: data.idLocation,
+    };
+
+    await prisma.medicines.update({
+      where: {
+        id: id,
+      },
+      data: dataToUpdate,
+    });
+
+    revalidatePath('/dashboard/medicine');
+    //redirect('/dashboard/medicine');
+    // 5. Retornar éxito (no se redirecciona para mejorar la experiencia UX)
+    return {
+      success: true,
+      message: 'Medicamento actualizado correctamente',
+      //medicine,
+    };
+  } catch (error) {
+    // Otros errores
+    return {
+      success: false,
+      error: `error al actualizar medicamento: ${error.message}`,
+      //medicine: [],
+    };
+  }
 }
 
 export async function deleteMedicine(id) {
+  //console.log('deleteMedicine: ', id);
   await prisma.medicines.delete({
     where: {
       id: id,

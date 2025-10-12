@@ -9,13 +9,11 @@ import ResponsiveFormWrapper, {
 } from '@/app/ui/components/form/responsive-form-wrapper';
 import FooterForm from '@/app/ui/components/form/footer-form';
 import FormInput from '@/app/ui/components/form/form-input';
-import { useForm, useSchemaValidation } from '@/app/hooks/useFormValidation';
+import { useForm } from '@/app/hooks/useFormValidation';
 import { SubmitButton } from '@/app/ui/components/form/button-form';
+import { locationSchema as VALIDATION_RULES } from '@/lib/schemas/location';
 
 export default function FormLocationEdit({ location }) {
-  // 4️⃣ Importar las reglas de validación
-  const VALIDATION_RULES = useSchemaValidation('location');
-
   // 1️⃣ Diccionario de títulos para el formulario
   const DICTIONARY_TITLE = {
     nameSingular: 'Ubicación',

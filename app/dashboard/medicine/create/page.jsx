@@ -1,5 +1,5 @@
 import Breadcrumbs from '@/app/ui/breadcrumbs';
-import Form from '@/app/ui/medicine/create-medicine';
+import Form from '@/app/ui/medicine/medicine-form';
 import { fetchCategories } from '@/app/dashboard/category/actions';
 import { fetchForms } from '@/app/dashboard/form/actions';
 import { fetchLocations } from '@/app/dashboard/location/actions';

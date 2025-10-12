@@ -10,12 +10,12 @@ const nextConfig = {
     outputFileTracingIncludes: {
       '/api/**/*': ['./node_modules/**/*.wasm', './node_modules/**/*.proto'],
     },
+    outputFileTracingExcludes: {
+      '*': ['node_modules/@swc/core', 'node_modules/@next/swc'],
+    },
   },
 
   // Excluir específicamente el problema de tracing
-  outputFileTracingExcludes: {
-    '*': ['node_modules/@swc/core', 'node_modules/@next/swc'],
-  },
 
   images: {
     domains: [],

@@ -124,6 +124,7 @@ function useMedicineColumns() {
 // ✅ Componente principal
 export default function MedicineResponsiveTable({ medicines, loading = false }) {
   const columns = useMedicineColumns();
+  //console.log(medicines.medicines);
 
   return (
     <ResponsiveTable

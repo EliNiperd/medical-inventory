@@ -35,7 +35,7 @@ export default async function TableMedicine({ searchParams }) {
           query={searchParams?.query || ''}
           page={searchParams?.page || '1'}
           limit={searchParams?.limit || '10'}
-          sort={searchParams?.sort || 'name'}
+          sort={searchParams?.sort || 'name_medicine'}
           order={searchParams?.order || 'asc'}
         />
       </Suspense>

@@ -31,6 +31,7 @@ export default function ResponsiveTable({
   const [sortBy, setSortBy] = useState(initialSort.key);
   const [sortOrder, setSortOrder] = useState(initialSort.order);
   const [searchQuery, setSearchQuery] = useState('');
+  //console.log('arrive data: ', data);
 
   // Procesar datos
   const processedData = useMemo(() => {
@@ -167,7 +168,8 @@ function TableSearch({ placeholder = 'Buscar...', className = '' }) {
 
 // 📊 VISTA DESKTOP MODULAR
 function DesktopTable({ className = '' }) {
-  const { data, columns, sortBy, sortOrder, handleSort, sortable } = useTable();
+  //, sortBy, sortOrder, handleSort, sortable
+  const { data, columns } = useTable();
 
   return (
     <div className={`hidden lg:block ${className}`}>
@@ -460,7 +462,8 @@ function TableSkeleton() {
 }
 
 // 📊 COMPONENTE DE ESTADÍSTICAS REUTILIZABLE
-function TableStats({ className = '' }) {
+// { className = '' } //como parámetro de la función
+function TableStats() {
   const { data, searchQuery } = useTable();
 
   //<div className={`flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 ${className}`}>

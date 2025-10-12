@@ -8,10 +8,11 @@ import ResponsiveFormWrapper, {
 } from '@/app/ui/components/form/responsive-form-wrapper';
 import FooterForm from '@/app/ui/components/form/footer-form';
 import FormInput from '@/app/ui/components/form/form-input';
-import { useForm, useSchemaValidation } from '@/app/hooks/useFormValidation';
+import { useForm } from '@/app/hooks/useFormValidation';
+import { userCreateSchema } from '@/lib/schemas/user';
 
 export default function FormCreate() {
-  const VALIDATION_RULES = useSchemaValidation('user');
+  //const VALIDATION_RULES = useSchemaValidation('user');
   //console.log(VALIDATION_RULES.password);
 
   // ✅ Hook unificado para todo el formulario al validar
@@ -21,7 +22,7 @@ export default function FormCreate() {
       password: '',
       confirmPassword: '',
     },
-    VALIDATION_RULES
+    userCreateSchema
   );
 
   const handleSubmit = async (e) => {

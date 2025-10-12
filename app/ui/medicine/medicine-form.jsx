@@ -7,11 +7,11 @@ import {
   RectangleStackIcon,
   BeakerIcon,
 } from '@heroicons/react/24/outline';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import Link from 'next/link';
-import { useForm, useSchemaValidation } from '@/app/hooks/useFormValidation';
-import { createMedicine } from '@/app/dashboard/medicine/actions';
-
+import { useForm } from '@/app/hooks/useFormValidation';
+import { medicineSchema } from '@/lib/schemas/medicine';
+import { createMedicine, updateMedicine } from '@/app/dashboard/medicine/actions';
 import InputNombre from '../medicine/input-nombre';
 import OCRUploader from '@/app/ui/components/form/OCRUploader';
 import ResponsiveFormWrapper, {
@@ -21,14 +21,50 @@ import ResponsiveFormWrapper, {
 import FooterForm from '@/app/ui/components/form/footer-form';
 import FormInput from '@/app/ui/components/form/form-input';
 import { SubmitButton } from '@/app/ui/components/form/button-form';
+import { toast } from 'sonner';
 
-const DICTIONARY_TITLE = {
-  nameSingular: 'Medicina',
-  namePlural: 'Medicinas',
-};
+export default function MedicineForm({ medicine, categories = [], forms = [], locations = [] }) {
+  const isEditMode = Boolean(medicine);
 
-export default function CreateMedicineForm({ categories = [], forms = [], locations = [] }) {
-  const VALIDATION_RULES = useSchemaValidation('medicine');
+  const DICTIONARY_TITLE = {
+    nameSingular: 'Medicina',
+    create: `Crear ${'Medicina'}`,
+    edit: `Editar ${'Medicina'}`,
+    createSubtitle: `Ingresa la información de la nueva ${'Medicina'.toLowerCase()}`,
+    editSubtitle: `Actualiza la información de la ${'Medicina'.toLowerCase()}`,
+  };
+
+  // Formatear los datos iniciales para el hook, asegurando que los valores sean strings
+  const getInitialData = () => {
+    if (isEditMode) {
+      return {
+        name: medicine.name || '',
+        description: medicine.description || '',
+        idCategory: String(medicine.idCategory || ''),
+        idForm: medicine.idForm || '',
+        quantity: String(medicine.quantity || '0'),
+        packsize: String(medicine.packsize || '1'),
+        reorder_point: String(medicine.reorder_point || '0'),
+        expiration_date: medicine.expiration_date
+          ? new Date(medicine.expiration_date).toISOString().split('T')[0]
+          : '',
+        idLocation: medicine.idLocation || '',
+        price: String(medicine.price || '0'),
+      };
+    }
+    return {
+      name: '',
+      description: '',
+      idCategory: '',
+      idForm: '',
+      quantity: '',
+      packsize: '',
+      reorder_point: '',
+      expiration_date: '',
+      idLocation: '',
+      price: '',
+    };
+  };
 
   const {
     formData,
@@ -40,28 +76,13 @@ export default function CreateMedicineForm({ categories = [], forms = [], locati
     handleBlur,
     handleSubmit,
     setFieldValue,
+    setErrors,
     reset,
-  } = useForm(
-    {
-      name: '',
-      description: '',
-      idCategory: '',
-      idForm: '',
-      quantity: '',
-      packsize: '',
-      reorder_point: '',
-      expiration_date: '',
-      idLocation: '',
-      price: '',
-    },
-    VALIDATION_RULES
-  );
+  } = useForm(getInitialData(), medicineSchema);
 
   const [selectedMedicine, setSelectedMedicine] = useState(null);
-  const [submitError, setSubmitError] = useState(null);
+  //const [submitError, setSubmitError] = useState(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
-
-  // State for OCR
   const [ocrResult, setOcrResult] = useState(null);
   const [isOcrLoading, setIsOcrLoading] = useState(false);
   const [ocrError, setOcrError] = useState(null);
@@ -71,7 +92,7 @@ export default function CreateMedicineForm({ categories = [], forms = [], locati
       const category = categories.find((cat) =>
         cat.category_name.toLowerCase().includes(name.toLowerCase())
       );
-      return category?.id_category || '';
+      return category ? String(category.id_category) : '';
     },
     [categories]
   );
@@ -96,25 +117,28 @@ export default function CreateMedicineForm({ categories = [], forms = [], locati
       suggestion.tipo_receta && `Tipo receta: ${suggestion.tipo_receta}`,
       `Precio referencia: ${suggestion.precio_referencia || 'N/A'}`,
     ].filter(Boolean);
-
     return parts.join('. ') + '.';
   }, []);
 
   const handleMedicineSelected = useCallback(
     (suggestion) => {
       if (suggestion) {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
         setSelectedMedicine(suggestion);
         setFieldValue('name', suggestion.nombre);
         setFieldValue('description', formatMedicineDescription(suggestion));
         setFieldValue(
           'price',
-          suggestion.precio_referencia ? parseFloat(suggestion.precio_referencia) : ''
+          suggestion.precio_referencia ? String(parseFloat(suggestion.precio_referencia)) : '0'
         );
         setFieldValue('quantity', '1');
         setFieldValue('reorder_point', '1');
         setFieldValue('packsize', suggestion.packsize || '1');
         setFieldValue('idCategory', findCategoryByName('Medicamento') || '');
         setFieldValue('idForm', findFormByName(suggestion.presentacion) || '');
+        setFieldValue('expiration_date', tomorrow.toISOString().split('T')[0]);
+        setFieldValue('idLocation', '');
       } else {
         setSelectedMedicine(null);
         reset();
@@ -125,61 +149,55 @@ export default function CreateMedicineForm({ categories = [], forms = [], locati
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
+    const actionToExecute = isEditMode
+      ? (data) => updateMedicine(medicine.id, data)
+      : createMedicine;
 
-    const result = await handleSubmit(async (data) => {
-      return createMedicine(data);
-    });
-
+    const result = await handleSubmit(actionToExecute);
+    //console.log(result, 'handleFormSubmit', formData);
     if (result.success) {
+      toast.success(
+        result.message || `✅ Medicina ${isEditMode ? 'actualizada' : 'creada'} correctamente`
+      );
       setSubmitSuccess(true);
-      setSubmitError(null);
-      setTimeout(() => {
+      if (!isEditMode) {
         reset();
         setSelectedMedicine(null);
-        setSubmitSuccess(false);
-      }, 2000);
+      }
     } else {
-      setSubmitError(result.error || 'Error al guardar el medicamento.');
+      if (result.errors) {
+        toast.error('Por favor, corrige los errores en el formulario.');
+        setErrors(result.errors);
+      } else {
+        toast.error(result.error || '❌ Ocurrió un error inesperado.');
+      }
+      setSubmitSuccess(false);
     }
   };
 
-  // OCR Handlers
-  const handleOcrStart = () => {
-    setIsOcrLoading(true);
-    setOcrError(null);
-    setOcrResult(null);
-  };
-
+  // OCR Handlers (solo para modo creación)
+  const handleOcrStart = () => setIsOcrLoading(true);
   const handleOcrSuccess = async (data) => {
     setIsOcrLoading(false);
     setOcrResult(data);
-
     try {
-      // Use the correct suggestions API
       const response = await fetch(
         `/api/gemini/medicines/suggestions?q=${encodeURIComponent(data.text)}`
       );
-
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to fetch medicine suggestions');
       }
-
       const result = await response.json();
-
-      // The API returns an object with a `suggestions` array.
-      // We take the first one as the most likely match.
       const suggestion = result.suggestions?.[0];
-
       if (suggestion) {
         handleMedicineSelected(suggestion);
       }
     } catch (error) {
-      console.error('Error fetching suggestions from OCR text:', error);
+      //console.error('Error fetching suggestions from OCR text:', error);
       setOcrError(error.message);
     }
   };
-
   const handleOcrError = (error) => {
     setIsOcrLoading(false);
     setOcrError(error);
@@ -188,49 +206,49 @@ export default function CreateMedicineForm({ categories = [], forms = [], locati
   return (
     <>
       <ResponsiveFormWrapper
-        title={`Crear ${DICTIONARY_TITLE.nameSingular}`}
-        subtitle={`Ingresa la información de la nueva ${String(
-          DICTIONARY_TITLE.nameSingular
-        ).toLowerCase()}`}
+        title={isEditMode ? DICTIONARY_TITLE.edit : DICTIONARY_TITLE.create}
+        subtitle={isEditMode ? DICTIONARY_TITLE.editSubtitle : DICTIONARY_TITLE.createSubtitle}
         maxWidth="4xl"
       >
         <form onSubmit={handleFormSubmit}>
           <ResponsiveGrid cols={{ sm: 1, md: 2, lg: 2 }}>
-            <ResponsiveField span={{ sm: 1, md: 2 }}>
-              <label
-                htmlFor="search-medicine"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-              >
-                Buscar Medicamento
-              </label>
-              <div className="relative flex items-center gap-x-2">
-                <InputNombre
-                  id="search-medicine"
-                  onSuggestionSelected={handleMedicineSelected}
-                  placeholder="Busca por nombre comercial o escanea con OCR..."
-                  initialValue={formData.name}
-                  className="flex-grow"
-                />
-                <OCRUploader
-                  onUploadStart={handleOcrStart}
-                  onSuccess={handleOcrSuccess}
-                  onError={handleOcrError}
-                  className="flex-shrink-0 md:order-2"
-                  variant="discreet"
-                />
-              </div>
-              {isOcrLoading && (
-                <p className="mt-1 text-sm text-blue-600">Procesando imagen OCR...</p>
-              )}
-              {ocrError && <p className="mt-1 text-sm text-red-600">Error de OCR: {ocrError}</p>}
-              {ocrResult && (
-                <p className="hidden md:block mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  Texto escaneado: "{ocrResult.text.substring(0, 50)}..."
-                </p>
-              )}
-            </ResponsiveField>
+            {!isEditMode && (
+              <ResponsiveField span={{ sm: 1, md: 2, lg: 2 }}>
+                <label
+                  htmlFor="search-medicine"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
+                  Buscar Medicamento
+                </label>
+                <div className="relative flex items-center gap-x-2">
+                  <InputNombre
+                    id="search-medicine"
+                    onSuggestionSelected={handleMedicineSelected}
+                    placeholder="Busca por nombre comercial o escanea con OCR..."
+                    initialValue={formData.name}
+                    className="flex-grow"
+                  />
+                  <OCRUploader
+                    onUploadStart={handleOcrStart}
+                    onSuccess={handleOcrSuccess}
+                    onError={handleOcrError}
+                    className="flex-shrink-0 md:order-2"
+                    variant="discreet"
+                  />
+                </div>
+                {isOcrLoading && (
+                  <p className="mt-1 text-sm text-blue-600">Procesando imagen OCR...</p>
+                )}
+                {ocrError && <p className="mt-1 text-sm text-red-600">Error de OCR: {ocrError}</p>}
+                {ocrResult && (
+                  <p className="hidden md:block mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    Texto escaneado: &quot;{ocrResult.text.substring(0, 50)}...&quot;
+                  </p>
+                )}
+              </ResponsiveField>
+            )}
 
-            <ResponsiveField span={{ sm: 1, md: 2 }}>
+            <ResponsiveField span={{ sm: 1, md: 2, lg: 2 }}>
               <FormInput
                 label="Nombre comercial"
                 type="text"
@@ -241,12 +259,13 @@ export default function CreateMedicineForm({ categories = [], forms = [], locati
                 onChange={handleChange}
                 onBlur={handleBlur}
                 placeholder="Nombre comercial del medicamento"
-                //disabled={selectedMedicine !== null}
                 error={touched.name && errors.name}
+                disabled={isEditMode} // Deshabilitado en modo edición para evitar cambios en el nombre buscado
               />
             </ResponsiveField>
 
-            <ResponsiveField span={{ sm: 1, md: 2 }}>
+            {/* Resto de los campos del formulario... */}
+            <ResponsiveField span={{ sm: 1, md: 2, lg: 2 }}>
               <FormInput
                 label="Descripción"
                 id="description"
@@ -261,8 +280,7 @@ export default function CreateMedicineForm({ categories = [], forms = [], locati
                 placeholder="Descripción del medicamento"
               />
             </ResponsiveField>
-
-            <ResponsiveField span={{ sm: 1, md: 1 }}>
+            <ResponsiveField span={{ sm: 1, md: 1, lg: 1 }}>
               <FormInput
                 type="select"
                 name="idCategory"
@@ -279,8 +297,7 @@ export default function CreateMedicineForm({ categories = [], forms = [], locati
                 placeholder="Seleccionar categoría"
               />
             </ResponsiveField>
-
-            <ResponsiveField span={{ sm: 1, md: 1 }}>
+            <ResponsiveField span={{ sm: 1, md: 1, lg: 1 }}>
               <FormInput
                 type="select"
                 name="idForm"
@@ -296,8 +313,7 @@ export default function CreateMedicineForm({ categories = [], forms = [], locati
                 required
               />
             </ResponsiveField>
-
-            <ResponsiveField span={{ sm: 1, md: 1 }}>
+            <ResponsiveField span={{ sm: 1, md: 1, lg: 1 }}>
               <FormInput
                 label="Cantidad"
                 name="quantity"
@@ -310,8 +326,7 @@ export default function CreateMedicineForm({ categories = [], forms = [], locati
                 placeholder="Cantidad en stock"
               />
             </ResponsiveField>
-
-            <ResponsiveField span={{ sm: 1, md: 1 }}>
+            <ResponsiveField span={{ sm: 1, md: 1, lg: 1 }}>
               <FormInput
                 label="Unidades por paquete"
                 name="packsize"
@@ -324,8 +339,7 @@ export default function CreateMedicineForm({ categories = [], forms = [], locati
                 placeholder="unidades"
               />
             </ResponsiveField>
-
-            <ResponsiveField span={{ sm: 1, md: 1 }}>
+            <ResponsiveField span={{ sm: 1, md: 1, lg: 1 }}>
               <FormInput
                 label="Punto de reposición"
                 name="reorder_point"
@@ -338,14 +352,13 @@ export default function CreateMedicineForm({ categories = [], forms = [], locati
                 placeholder="reorder"
               />
             </ResponsiveField>
-
-            <ResponsiveField span={{ sm: 1, md: 1 }}>
+            <ResponsiveField span={{ sm: 1, md: 1, lg: 1 }}>
               <FormInput
                 label="Fecha de caducidad"
                 name="expiration_date"
                 type="date"
                 required
-                min={new Date().toISOString().split('T')[0]}
+                min={!isEditMode ? new Date().toISOString().split('T')[0] : null}
                 value={formData.expiration_date}
                 onChange={handleChange}
                 error={touched.expiration_date && errors.expiration_date}
@@ -353,8 +366,7 @@ export default function CreateMedicineForm({ categories = [], forms = [], locati
                 placeholder="Fecha de caducidad"
               />
             </ResponsiveField>
-
-            <ResponsiveField span={{ sm: 1, md: 1 }}>
+            <ResponsiveField span={{ sm: 1, md: 1, lg: 1 }}>
               <FormInput
                 type="select"
                 name="idLocation"
@@ -370,8 +382,7 @@ export default function CreateMedicineForm({ categories = [], forms = [], locati
                 required
               />
             </ResponsiveField>
-
-            <ResponsiveField span={{ sm: 1, md: 1 }}>
+            <ResponsiveField span={{ sm: 1, md: 1, lg: 1 }}>
               <FormInput
                 label="Precio(MXN)"
                 name="price"
@@ -393,9 +404,9 @@ export default function CreateMedicineForm({ categories = [], forms = [], locati
                 <SubmitButton
                   isPending={isSubmitting}
                   disabled={!isValid || isSubmitting}
-                  loadingText="Guardando..."
+                  loadingText={isEditMode ? 'Actualizando...' : 'Guardando...'}
                 >
-                  Guardar
+                  {isEditMode ? 'Actualizar' : 'Guardar'}
                 </SubmitButton>
               </FooterForm>
             </ResponsiveField>

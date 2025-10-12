@@ -5,7 +5,7 @@ const page = ({
     query: '',
     page: '1',
     limit: '10',
-    sort: 'name',
+    sort: 'name_medicine',
     order: 'asc',
   },
 }) => {

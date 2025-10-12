@@ -64,36 +64,80 @@ export function useScreenSize() {
   return screenSize;
 }
 
-// Componente para grids responsivos
-export function ResponsiveGrid({ children, cols = { sm: 1, md: 2, lg: 3, xl: 4 } }) {
-  return (
-    <div
-      className={`
-      grid gap-4 sm:gap-6
-      grid-cols-${cols.sm} 
-      sm:grid-cols-${cols.sm} 
-      md:grid-cols-${cols.md} 
-      lg:grid-cols-${cols.lg} 
-      xl:grid-cols-${cols.xl}
-    `}
-    >
-      {children}
-    </div>
+import { cn } from '@/lib/utils';
+
+// Componente para grids responsivos - CORRECCIÓN DEFINITIVA PARA TAILWIND JIT
+export function ResponsiveGrid({ children, cols = { sm: 1, md: 2 } }) {
+  const classMap = {
+    sm: {
+      1: 'sm:grid-cols-1',
+      2: 'sm:grid-cols-2',
+      3: 'sm:grid-cols-3',
+      4: 'sm:grid-cols-4',
+    },
+    md: {
+      1: 'md:grid-cols-1',
+      2: 'md:grid-cols-2',
+      3: 'md:grid-cols-3',
+      4: 'md:grid-cols-4',
+    },
+    lg: {
+      1: 'lg:grid-cols-1',
+      2: 'lg:grid-cols-2',
+      3: 'lg:grid-cols-3',
+      4: 'lg:grid-cols-4',
+    },
+    xl: {
+      1: 'xl:grid-cols-1',
+      2: 'xl:grid-cols-2',
+      3: 'xl:grid-cols-3',
+      4: 'xl:grid-cols-4',
+    },
+  };
+
+  const className = cn(
+    'grid grid-cols-1 gap-4 sm:gap-6', // Base y default para móvil
+    cols.sm && classMap.sm[cols.sm],
+    cols.md && classMap.md[cols.md],
+    cols.lg && classMap.lg[cols.lg],
+    cols.xl && classMap.xl[cols.xl]
   );
+
+  return <div className={className}>{children}</div>;
 }
 
-// Componente para campos de formulario responsivos
-export function ResponsiveField({ children, span = { sm: 1, md: 1, lg: 1 } }) {
-  return (
-    <div
-      className={`
-      col-span-${span.sm}
-      sm:col-span-${span.sm}
-      md:col-span-${span.md}
-      lg:col-span-${span.lg}
-    `}
-    >
-      {children}
-    </div>
+// Componente para campos de formulario responsivos - CORRECCIÓN DEFINITIVA PARA TAILWIND JIT
+export function ResponsiveField({ children, span = { sm: 1, md: 1 } }) {
+  const classMap = {
+    sm: {
+      1: 'sm:col-span-1',
+      2: 'sm:col-span-2',
+      3: 'sm:col-span-3',
+      4: 'sm:col-span-4',
+      full: 'sm:col-span-full',
+    },
+    md: {
+      1: 'md:col-span-1',
+      2: 'md:col-span-2',
+      3: 'md:col-span-3',
+      4: 'md:col-span-4',
+      full: 'md:col-span-full',
+    },
+    lg: {
+      1: 'lg:col-span-1',
+      2: 'lg:col-span-2',
+      3: 'lg:col-span-3',
+      4: 'lg:col-span-4',
+      full: 'lg:col-span-full',
+    },
+  };
+
+  const className = cn(
+    span.sm === 'full' ? 'col-span-full' : `col-span-${span.sm || 1}`,
+    span.sm && classMap.sm[span.sm],
+    span.md && classMap.md[span.md],
+    span.lg && classMap.lg[span.lg]
   );
+
+  return <div className={className}>{children}</div>;
 }

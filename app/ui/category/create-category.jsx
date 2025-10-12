@@ -9,15 +9,13 @@ import ResponsiveFormWrapper, {
 } from '@/app/ui/components/form/responsive-form-wrapper';
 import FooterForm from '@/app/ui/components/form/footer-form';
 import FormInput from '@/app/ui/components/form/form-input';
-import { useForm, useSchemaValidation } from '@/app/hooks/useFormValidation';
+import { useForm } from '@/app/hooks/useFormValidation';
 import { SubmitButton } from '@/app/ui/components/form/button-form';
+import { categorySchema as VALIDATION_RULES } from '@/lib/schemas/category';
 
 //import { ButtonActionGuardar } from "@/components/ui/button-action";
 
 function CategoryCreate() {
-  // 4️⃣ Importar las reglas de validación
-  const VALIDATION_RULES = useSchemaValidation('category');
-
   // 1️⃣ Diccionario de títulos para el formulario
   const DICTIONARY_TITLE = {
     nameSingular: 'Presentación',
