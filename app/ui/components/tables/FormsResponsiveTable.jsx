@@ -3,7 +3,8 @@
 import { useMemo } from 'react';
 import { RectangleGroupIcon, CalendarIcon } from '@heroicons/react/24/outline';
 import { UpdateForm } from '@/app/ui/form/button-form';
-import { DeleteButtonForm } from '@/app/ui/form/button-delete';
+import { DeleteButton } from '@/app/ui/components/tables/button-delete';
+import { deleteForm } from '@/app/dashboard/form/actions';
 
 // Importar el sistema modular para la tabla
 import ResponsiveTable, {
@@ -72,7 +73,12 @@ function useFormColumns() {
         render: (_, row) => (
           <div className="flex items-center space-x-2">
             <UpdateForm id_form={row.id_form} />
-            <DeleteButtonForm id_form={row.id_form} form_name={row.form_name} />
+            <DeleteButton
+              deleteAction={deleteForm}
+              id={row.id_form}
+              itemName={row.form_name}
+              itemType="Forma/Tipo"
+            />
           </div>
         ),
       },
@@ -103,7 +109,12 @@ function FormMobileCard({ data: form }) {
 
         <div className="flex items-center space-x-1">
           <UpdateForm id_form={form.id_form} />
-          <DeleteButtonForm id_form={form.id_form} form_name={form.form_name} />
+          <DeleteButton
+            deleteAction={deleteForm}
+            id={form.id_form}
+            itemName={form.form_name}
+            itemType="Forma/Tipo"
+          />
         </div>
       </div>
 

@@ -1,6 +1,6 @@
-import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+'use client';
+import { PencilIcon, PlusIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { deleteMedicine } from '@/app/dashboard/medicine/actions';
 
 export function CreateMedicine() {
   return (
@@ -18,18 +18,5 @@ export function UpdateMedicine({ id }) {
       <span className="hidden md:block">Editar</span>
       <PencilIcon className="h-5 md:ml-2" />
     </Link>
-  );
-}
-
-export function DeleteMedicine({ id }) {
-  return (
-    <>
-      <form action={deleteMedicine}>
-        <button className="btn-delete">
-          <span className="hidden md:block">Eliminar</span>
-          <TrashIcon className="w-5" />
-        </button>
-      </form>
-    </>
   );
 }

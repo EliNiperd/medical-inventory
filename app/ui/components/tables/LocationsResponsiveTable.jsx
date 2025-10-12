@@ -2,7 +2,9 @@
 
 import { useMemo } from 'react';
 import { RectangleStackIcon, CalendarIcon } from '@heroicons/react/24/outline';
-import { UpdateLocation, DeleteLocation } from '@/app/ui/location/button-location';
+import { UpdateLocation } from '@/app/ui/location/button-location';
+import { DeleteButton } from '@/app/ui/components/tables/button-delete';
+import { deleteLocation } from '@/app/dashboard/location/actions';
 
 // Importar el sistema modular para la tabla
 import ResponsiveTable, {
@@ -65,7 +67,12 @@ function useLocationColumns() {
         render: (_, row) => (
           <div className="flex items-center space-x-2">
             <UpdateLocation id_location={row.id_location} />
-            <DeleteLocation id_location={row.id_location} />
+            <DeleteButton
+              deleteAction={deleteLocation}
+              id={row.id_location}
+              itemName={row.location_name}
+              itemType="Ubicación"
+            />
           </div>
         ),
       },
@@ -98,7 +105,12 @@ function LocationMobileCard({ data: location }) {
 
         <div className="flex items-center space-x-1">
           <UpdateLocation id_location={location.id_location} />
-          <DeleteLocation id_location={location.id_location} />
+          <DeleteButton
+            deleteAction={deleteLocation}
+            id={location.id_location}
+            itemName={location.location_name}
+            itemType="Ubicación"
+          />
         </div>
       </div>
 

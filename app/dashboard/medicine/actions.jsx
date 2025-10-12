@@ -362,12 +362,38 @@ export async function updateMedicine(id, formData) {
 }
 
 export async function deleteMedicine(id) {
-  //console.log('deleteMedicine: ', id);
-  await prisma.medicines.delete({
-    where: {
-      id: id,
-    },
-  });
+  try {
+    const medicine = await prisma.medicines.findUnique({
+      where: {
+        id: id,
+      },
+    });
 
-  revalidatePath('/dashboard/medicine');
+    if (!medicine) {
+      return JSON.stringify({
+        status: 404,
+        success: false,
+        error: 'error al eliminar medicamento: medicamento no encontrado',
+      });
+    } else {
+      await prisma.medicines.delete({
+        where: {
+          id: id,
+        },
+      });
+
+      revalidatePath('/dashboard/medicine');
+      return JSON.stringify({
+        status: 200,
+        success: true,
+        message: 'Medicamento eliminado correctamente',
+      });
+    }
+  } catch (error) {
+    return JSON.stringify({
+      status: 500,
+      success: false,
+      message: `error al eliminar medicamento: ${error.message}`,
+    });
+  }
 }

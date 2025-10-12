@@ -2,7 +2,9 @@
 
 import { useState, useMemo } from 'react';
 import { UserIcon, EnvelopeIcon, ShieldCheckIcon, CalendarIcon } from '@heroicons/react/24/outline';
-import { UpdateUser, DeleteUser } from '@/app/ui/user/button';
+import { UpdateUser } from '@/app/ui/user/button-user';
+import { DeleteButton } from '@/app/ui/components/tables/button-delete';
+import { deleteUser } from '@/app/dashboard/user/actions';
 
 // ✅ SOLUCIÓN: Todo dentro del Client Component
 function UsersResponsiveTable({ users, loading = false }) {
@@ -78,7 +80,12 @@ function UsersResponsiveTable({ users, loading = false }) {
         render: (_, row) => (
           <div className="flex items-center space-x-2">
             <UpdateUser id={row.id_user} />
-            <DeleteUser id={row.id_user} />
+            <DeleteButton
+              id={row.id_user}
+              deleteAction={deleteUser}
+              itemName={row.email}
+              itemType="Usuario"
+            />
           </div>
         ),
       },
@@ -293,7 +300,12 @@ function UsersResponsiveTable({ users, loading = false }) {
                   <td className="px-4 py-4 text-right">
                     <div className="flex items-center justify-end space-x-2">
                       <UpdateUser id={user.id_user} />
-                      <DeleteUser id={user.id_user} />
+                      <DeleteButton
+                        id={user.id_user}
+                        deleteAction={deleteUser}
+                        itemName={user.email}
+                        itemType="Usuario"
+                      />
                     </div>
                   </td>
                 </tr>
@@ -324,7 +336,12 @@ function UsersResponsiveTable({ users, loading = false }) {
 
                 <div className="flex items-center space-x-1">
                   <UpdateUser id={user.id_user} />
-                  <DeleteUser id={user.id_user} />
+                  <DeleteButton
+                    id={user.id_user}
+                    deleteAction={deleteUser}
+                    itemName={user.email}
+                    itemType="Usuario"
+                  />
                 </div>
               </div>
 

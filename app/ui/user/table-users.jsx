@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import UsersTableWrapper from '@/app/ui/components/tables/UsersTableWrapper';
 import UsersResponsiveTable from '@/app/ui/components/tables/UsersResponsiveTable';
-import { CreateUser } from '@/app/ui/user/button';
+import { CreateUser } from '@/app/ui/user/button-user';
 
 // Componente de loading
 function UsersTableSkeleton() {

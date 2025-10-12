@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import MedicinesTableWrapper from '@/app/ui/components/tables/MedicinesTableWrapper';
 import MedicineResponsiveTable from '@/app/ui/components/tables/MedicinesResponsiveTable';
-import { CreateMedicine } from '@/app/ui/medicine/button';
+import { CreateMedicine } from '@/app/ui/medicine/button-medicine';
 
 function FormTableSkeleton() {
   return <MedicineResponsiveTable medicines={[]} loading={true} />;

@@ -2,7 +2,8 @@
 
 import { useMemo } from 'react';
 import { BeakerIcon } from '@heroicons/react/24/outline';
-import { UpdateMedicine, DeleteMedicine } from '@/app/ui/medicine/button';
+import { DeleteButton } from '@/app/ui/components/tables/button-delete';
+import { deleteMedicine } from '@/app/dashboard/medicine/actions';
 
 // Importar el sistema modular para la tabla
 import ResponsiveTable, {
@@ -12,6 +13,7 @@ import ResponsiveTable, {
   MobileCards,
   TableStats,
 } from '@/app/ui/components/responsive-table/responsible-table';
+import { UpdateMedicine } from '../../medicine/button-medicine';
 
 const DICTIONARY_TITLE = {
   nameSingular: 'Medicina',
@@ -112,7 +114,12 @@ function useMedicineColumns() {
         render: (_, row) => (
           <div className="flex items-center space-x-2">
             <UpdateMedicine id={row.id} />
-            <DeleteMedicine id={row.id} />
+            <DeleteButton
+              deleteAction={deleteMedicine}
+              id={row.id}
+              itemName={row.name_medicine}
+              itemType="Medicina"
+            />
           </div>
         ),
       },
@@ -175,7 +182,13 @@ function MedicineMobileCard({ data: medicine }) {
         </div>
         <div className="flex items-center space-x-1">
           <UpdateMedicine id={medicine.id} className="w-2 h-2" />
-          <DeleteMedicine id={medicine.id} className="w-2 h-2" />
+          <DeleteButton
+            deleteAction={deleteMedicine}
+            id={medicine.id}
+            itemName={medicine.name_medicine}
+            itemType="Medicina"
+            className="w-2 h-2"
+          />
         </div>
       </div>
       {/* Información */}

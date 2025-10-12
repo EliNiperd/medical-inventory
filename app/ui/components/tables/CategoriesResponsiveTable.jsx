@@ -3,7 +3,8 @@
 import { useMemo } from 'react';
 import { SquaresPlusIcon, CalendarIcon } from '@heroicons/react/24/outline';
 import { UpdateCategory } from '@/app/ui/category/button-category';
-import { DeleteButtonCategory } from '@/app/ui/category/button-delete';
+import { DeleteButton } from '@/app/ui/components/tables/button-delete';
+import { deleteCategory } from '@/app/dashboard/category/actions';
 
 // Importar el sistema modular para la tabla
 import ResponsiveTable, {
@@ -71,7 +72,12 @@ function useCategoryColumns() {
         render: (_, row) => (
           <div className="flex items-center space-x-2">
             <UpdateCategory id_category={row.id_category} />
-            <DeleteButtonCategory id_category={row.id_category} category_name={row.category_name} />
+            <DeleteButton
+              deleteAction={deleteCategory}
+              id_category={row.id_category}
+              itemName={row.category_name}
+              itemType="Presentación"
+            />
           </div>
         ),
       },
@@ -104,9 +110,11 @@ function CategoryMobileCard({ data: category }) {
 
         <div className="flex items-center space-x-1">
           <UpdateCategory id_category={category.id_category} />
-          <DeleteButtonCategory
-            id_category={category.id_category}
-            category_name={category.category_name}
+          <DeleteButton
+            deleteAction={deleteCategory}
+            id={category.id_category}
+            itemName={category.category_name}
+            itemType="Presentación"
           />
         </div>
       </div>
