@@ -5,7 +5,7 @@ import prisma from '@/app/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
-import { schemaCategory } from '@/lib/schemas/category';
+import { categorySchema } from '@/lib/schemas/category';
 import { wakeUpDb } from '@/app/lib/db-wake-up';
 
 export async function fetchCategories() {
@@ -30,8 +30,8 @@ export async function fetchCategoryById(id_category) {
   });
   return category;
 }
-
-export async function fetchFilteredCategories(query, page, limit, sort, order) {
+// , page, limit, sort, order
+export async function fetchFilteredCategories(query) {
   const categories = await prisma.categories.findMany({
     where: {
       OR: [

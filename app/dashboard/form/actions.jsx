@@ -4,7 +4,7 @@ import prisma from '@/app/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
-import { schemaForm } from '@/lib/schemas/form';
+import { formSchema } from '@/lib/schemas/form';
 import { wakeUpDb } from '@/app/lib/db-wake-up';
 
 export async function fetchForms() {
@@ -26,8 +26,8 @@ export async function fetchFormById(id_form) {
   });
   return form;
 }
-
-export async function fetchFilteredForms(query, page, limit, sort, order) {
+// , page, limit, sort, order
+export async function fetchFilteredForms(query) {
   const forms = await prisma.forms.findMany({
     where: {
       OR: [

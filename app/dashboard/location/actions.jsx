@@ -4,7 +4,7 @@ import prisma from '@/app/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
-import { schemaLocation } from '@/lib/schemas/location';
+import { locationSchema } from '@/lib/schemas/location';
 import { wakeUpDb } from '@/app/lib/db-wake-up';
 //import { parseISO } from "date-fns";
 
@@ -31,8 +31,8 @@ export async function fetchLocationById(id_location) {
   });
   return location;
 }
-
-export async function fetchFilteredLocations(query, page, limit, sort, order) {
+//, page, limit, sort, order
+export async function fetchFilteredLocations(query) {
   //console.log("fetchFilteredMedicines", query, page, limit, sort, order);
 
   const locations = await prisma.locations.findMany({
