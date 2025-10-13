@@ -10,6 +10,11 @@ import {
 } from '@heroicons/react/24/outline';
 
 import { fetchFilteredMedicines } from '@/app/dashboard/medicine/actions';
+import {
+  ActiveVsExpiredChart,
+  ExpiringMedicinesChart,
+  CategoryDistributionChart,
+} from '@/app/ui/dashborad/DashboardCharts';
 
 // Card de Métrica Reutilizable
 const MetricCard = ({ title, value, icon: Icon, color = 'blue', subtitle, trend }) => {
@@ -322,6 +327,23 @@ export default function DashboardComponent() {
               </div>
             </div>
           )}
+          {/* Gráficas */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            {/* Gráfica: Activos vs Vencidos */}
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <ActiveVsExpiredChart medicines={medicines} />
+            </div>
+
+            {/* Gráfica: Próximos a Vencer */}
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <ExpiringMedicinesChart medicines={medicines} />
+            </div>
+          </div>
+
+          {/* Gráfica: Distribución por Categoría (opcional) */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
+            <CategoryDistributionChart medicines={medicines} />
+          </div>
 
           {/* Acciones Rápidas */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
