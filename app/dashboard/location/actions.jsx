@@ -33,7 +33,7 @@ export async function fetchLocationById(id_location) {
 }
 //, page, limit, sort, order
 export async function fetchFilteredLocations(query) {
-  //console.log("fetchFilteredMedicines", query, page, limit, sort, order);
+  //console.log('fetchFilteredMedicines', query);
 
   const locations = await prisma.locations.findMany({
     where: {

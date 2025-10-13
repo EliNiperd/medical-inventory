@@ -1,15 +1,21 @@
 import { Suspense } from 'react';
-import CategoriesTableWrapper from '@/app/ui/components/tables/CategoriesTableWrapper';
-import CategoriesResponsiveTable from '@/app/ui/components/tables/CategoriesResponsiveTable';
 import { CreateButton } from '@/app/ui/components/tables/table-actions';
+import { fetchFilteredCategories } from '@/app/dashboard/category/actions';
+import ModularCategoryTable from '@/app/ui/components/tables/CategoriesResponsiveTable';
 
 function CategoryTableSkeleton() {
-  return <CategoriesResponsiveTable categories={[]} loading={true} />;
+  return <ModularCategoryTable categories={[]} loading={true} />;
 }
 
 const pluralName = 'Presentaciones';
 
 export default async function TableCategory({ searchParams }) {
+  const query = searchParams?.query?.toString() || '';
+  const page = parseInt(searchParams?.page?.toString() || '1', 10);
+  const limit = parseInt(searchParams?.limit?.toString() || '10', 10);
+  const sort = searchParams?.sort?.toString() || 'name_category';
+  const order = searchParams?.order?.toString() || 'desc';
+  const categories = await fetchFilteredCategories(query, page, limit, sort, order);
   return (
     <div className="p-4 sm:p-6 lg:p-8">
       {/* Header */}
@@ -31,13 +37,7 @@ export default async function TableCategory({ searchParams }) {
 
       {/* Table con Suspense*/}
       <Suspense key={JSON.stringify(searchParams)} fallback={<CategoryTableSkeleton />}>
-        <CategoriesTableWrapper
-          query={searchParams?.query || ''}
-          page={searchParams?.page || '1'}
-          limit={searchParams?.limit || '10'}
-          sort={searchParams?.sort || 'name_location'}
-          order={searchParams?.order || 'asc'}
-        />
+        <ModularCategoryTable categories={categories} loading={false} />
       </Suspense>
 
       {/* Footer info */}

@@ -1,15 +1,22 @@
 import { Suspense } from 'react';
-import MedicinesTableWrapper from '@/app/ui/components/tables/MedicinesTableWrapper';
-import MedicineResponsiveTable from '@/app/ui/components/tables/MedicinesResponsiveTable';
+import ModularMedicineTable from '@/app/ui/components/tables/MedicinesResponsiveTable';
 import { CreateButton } from '@/app/ui/components/tables/table-actions';
+import { fetchFilteredMedicines } from '@/app/dashboard/medicine/actions';
 
 function FormTableSkeleton() {
-  return <MedicineResponsiveTable medicines={[]} loading={true} />;
+  return <ModularMedicineTable medicines={[]} loading={true} />;
 }
 
 const pluralName = 'Medicamentos';
 
 export default async function TableMedicine({ searchParams }) {
+  const query = searchParams?.query?.toString() || '';
+  const page = parseInt(searchParams?.page?.toString() || '1', 1);
+  const limit = parseInt(searchParams?.limit?.toString() || '10', 10);
+  const sort = searchParams?.sort?.toString() || 'name_medicine';
+  const order = searchParams?.order?.toString() || 'asc';
+  //
+  const medicines = await fetchFilteredMedicines(query, page, limit, sort, order);
   return (
     <div className="p-4 sm:p-6 lg:p-8">
       {/* Header */}
@@ -31,13 +38,7 @@ export default async function TableMedicine({ searchParams }) {
 
       {/* Table con Suspense */}
       <Suspense key={JSON.stringify(searchParams)} fallback={<FormTableSkeleton />}>
-        <MedicinesTableWrapper
-          query={searchParams?.query || ''}
-          page={searchParams?.page || '1'}
-          limit={searchParams?.limit || '10'}
-          sort={searchParams?.sort || 'name_medicine'}
-          order={searchParams?.order || 'asc'}
-        />
+        <ModularMedicineTable medicines={medicines.medicines} loading={false} />
       </Suspense>
 
       {/* Footer info */}

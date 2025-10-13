@@ -2,13 +2,21 @@ import { Suspense } from 'react';
 import UsersTableWrapper from '@/app/ui/components/tables/UsersTableWrapper';
 import UsersResponsiveTable from '@/app/ui/components/tables/UsersResponsiveTable';
 import { CreateButton } from '@/app/ui/components/tables/table-actions';
+import { fetchFilteredUsers } from '@/app/dashboard/user/actions';
+import ModularUserTable from '@/app/ui/components/tables/UsersResponsiveTable';
 
 // Componente de loading
 function UsersTableSkeleton() {
-  return <UsersResponsiveTable users={[]} loading={true} />;
+  return <ModularUserTable users={[]} loading={true} />;
 }
 
-export default function TableUsersPage({ searchParams }) {
+export default async function TableUsersPage({ searchParams }) {
+  const query = searchParams?.query?.toString() || '';
+  const page = parseInt(searchParams?.page?.toString() || '1', 10);
+  const limit = parseInt(searchParams?.limit?.toString() || '10', 10);
+  const sort = searchParams?.sort?.toString() || 'email';
+  const order = searchParams?.order?.toString() || 'asc';
+  const users = await fetchFilteredUsers(query, page, limit, sort, order);
   return (
     <div className="p-4 sm:p-6 lg:p-8">
       {/* Header */}
@@ -34,13 +42,7 @@ export default function TableUsersPage({ searchParams }) {
         key={JSON.stringify(searchParams)} // Re-suspense cuando cambien los parámetros
         fallback={<UsersTableSkeleton />}
       >
-        <UsersTableWrapper
-          query={searchParams?.query || ''}
-          page={Number(searchParams?.page) || 1}
-          limit={Number(searchParams?.limit) || 10}
-          sort={searchParams?.sort || 'user_name_full'}
-          order={searchParams?.order || 'asc'}
-        />
+        <UsersResponsiveTable users={users} loading={false} />
       </Suspense>
 
       {/* Footer info */}

@@ -129,7 +129,7 @@ function useMedicineColumns() {
 }
 
 // ✅ Componente principal
-export default function MedicineResponsiveTable({ medicines, loading = false }) {
+export default function ModularMedicineTable({ medicines, loading = false }) {
   const columns = useMedicineColumns();
   //console.log(medicines.medicines);
 

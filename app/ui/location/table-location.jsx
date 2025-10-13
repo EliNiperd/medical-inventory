@@ -1,13 +1,19 @@
 import { Suspense } from 'react';
-import LocationsTableWrapper from '@/app/ui/components/tables/LocationsTableWrapper';
-import LocationsResponsiveTable from '@/app/ui/components/tables/LocationsResponsiveTable';
 import { CreateButton } from '@/app/ui/components/tables/table-actions';
+import { fetchFilteredLocations } from '@/app/dashboard/location/actions';
+import ModularLocationTable from '@/app/ui/components/tables/LocationsResponsiveTable';
 
 function LocationTableSkeleton() {
-  return <LocationsResponsiveTable locations={[]} loading={true} />;
+  return <ModularLocationTable locations={[]} loading={true} />;
 }
 
-export default function TableLocationsPage({ searchParams }) {
+export default async function TableLocations({ searchParams }) {
+  const query = searchParams?.query?.toString() || '';
+  const page = parseInt(searchParams?.page?.toString() || '1', 1);
+  const limit = parseInt(searchParams?.limit?.toString() || '10', 10);
+  const sort = searchParams?.sort?.toString() || 'location_name';
+  const order = searchParams?.order?.toString() || 'asc';
+  const locations = await fetchFilteredLocations(query, page, limit, sort, order);
   return (
     <div className="p-4 sm:p-6 lg:p-8">
       {/* Header */}
@@ -29,13 +35,7 @@ export default function TableLocationsPage({ searchParams }) {
 
       {/* Table con Suspense*/}
       <Suspense key={JSON.stringify(searchParams)} fallback={<LocationTableSkeleton />}>
-        <LocationsTableWrapper
-          query={searchParams?.query || ''}
-          page={searchParams?.page || '1'}
-          limit={searchParams?.limit || '10'}
-          sort={searchParams?.sort || 'name_location'}
-          order={searchParams?.order || 'asc'}
-        />
+        <ModularLocationTable locations={locations} loading={false} />
       </Suspense>
 
       {/* Footer info */}
@@ -47,76 +47,3 @@ export default function TableLocationsPage({ searchParams }) {
     </div>
   );
 }
-
-/** Versión antigua */
-/*
-export default async function TableLocations({ query, page, limit, sort, order }) {
-    const locations = await fetchFilteredLocations(query, page, limit, sort, order);
-    //console.log(locations);
-    return (
-        <div className="mt-6 flow-root">
-            <div className="inline-block min-w-full align-middle">
-                <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
-                    <table className="hidden min-m-full text-gray-900 md:table">
-                        <thead className="rounded-lg text-sm font-normal text-center border-b border-gray-200">
-                            <tr>
-                                <th scope="col" className="px-4 py-5 font-sm font normal">
-                                    Ubicación
-                                </th>
-                                <th scope="col" className="px-4 py-5 font-sm font normal">
-                                    Descripción
-                                </th>
-                                <th scope="col" className="px-4 py-5 font-sm font normal">
-                                    Fecha Alta
-                                </th>
-                                <th scope="col" className="relative py-3 pl-6 pr-3">
-                                    <span className="sr-only">Edit/Delete</span>
-                                </th>
-                            </tr>
-                        </thead>
-
-                        <tbody className="bg-white divide-y divide-gray-200 rounded-lg">
-                            {locations.length > 0 ? (
-                                locations.map((location) => (
-                                    <tr
-                                        key={location.id_location}
-                                        className="divide-x divide-gray-200 text-center md:table-row hover:bg-gray-50"
-                                    >
-                                        <td className="px-4 py-4 text-nowrap">
-                                            <div className="flex items-center space-x-3">
-                                                <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-primary-500"></div>
-                                                <p className="text-sm font-medium text-gray-900">
-                                                    {location.location_name}
-                                                </p>
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-4">
-                                            <p className="text-sm text-gray-500">{location.location_description}</p>
-                                        </td>
-                                        <td className="px-4 py-4">
-                                            <p className="text-sm text-gray-500">
-                                                {location.created_at?.toLocaleDateString() ?? "N/D"}
-                                            </p>
-                                        </td>
-                                        <td className="px-4 py-4 flex items-center space-x-4">
-                                            <UpdateLocation id_location={location.id_location} />
-                                            <DeleteLocation id_location={location.id_location} location_name={location.location_name} />
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="4" className="py-4 text-center text-gray-500">
-                                        <p>No hay ubicaciones</p>
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-
-                    </table>
-                </div>
-            </div>
-        </div>
-    );
-}
-*/
