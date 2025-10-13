@@ -1,5 +1,4 @@
 import { Suspense } from 'react';
-import UsersTableWrapper from '@/app/ui/components/tables/UsersTableWrapper';
 import UsersResponsiveTable from '@/app/ui/components/tables/UsersResponsiveTable';
 import { CreateButton } from '@/app/ui/components/tables/table-actions';
 import { fetchFilteredUsers } from '@/app/dashboard/user/actions';
