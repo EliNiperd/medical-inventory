@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import MedicinesTableWrapper from '@/app/ui/components/tables/MedicinesTableWrapper';
 import MedicineResponsiveTable from '@/app/ui/components/tables/MedicinesResponsiveTable';
-import { CreateMedicine } from '@/app/ui/medicine/button-medicine';
+import { CreateButton } from '@/app/ui/components/tables/table-actions';
 
 function FormTableSkeleton() {
   return <MedicineResponsiveTable medicines={[]} loading={true} />;
@@ -24,7 +24,7 @@ export default async function TableMedicine({ searchParams }) {
             </p>
           </div>
           <div className="mt-4 sm:mt-0">
-            <CreateMedicine />
+            <CreateButton basePath="medicine" label="Crear Medicina" />
           </div>
         </div>
       </div>

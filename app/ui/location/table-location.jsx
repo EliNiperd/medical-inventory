@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import LocationsTableWrapper from '@/app/ui/components/tables/LocationsTableWrapper';
 import LocationsResponsiveTable from '@/app/ui/components/tables/LocationsResponsiveTable';
-import { CreateLocation } from '@/app/ui/location/button-location';
+import { CreateButton } from '@/app/ui/components/tables/table-actions';
 
 function LocationTableSkeleton() {
   return <LocationsResponsiveTable locations={[]} loading={true} />;
@@ -22,7 +22,7 @@ export default function TableLocationsPage({ searchParams }) {
             </p>
           </div>
           <div className="mt-4 sm:mt-0">
-            <CreateLocation />
+            <CreateButton basePath="location" label="Crear Ubicación" />
           </div>
         </div>
       </div>

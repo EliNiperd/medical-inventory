@@ -1,9 +1,18 @@
 'use client';
 
-import { PencilIcon, TrashIcon, ViewfinderCircleIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, PlusIcon, TrashIcon, ViewfinderCircleIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { useState } from 'react';
+
+export function CreateButton({ basePath, label }) {
+  return (
+    <Link href={`/dashboard/${basePath}/create`} className="btn-primary">
+      <span className="hidden md:block">{label}</span>
+      <PlusIcon className="h-5 md:ml-2" />
+    </Link>
+  );
+}
 
 export function UpdateButton({ id, basePath }) {
   return (

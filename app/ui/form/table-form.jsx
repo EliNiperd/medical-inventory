@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import FormsTableWrapper from '@/app/ui/components/tables/FormsTableWrapper';
 import FormsResponsiveTable from '@/app/ui/components/tables/FormsResponsiveTable';
-import { CreateForm } from '@/app/ui/form/button-form';
+import { CreateButton } from '@/app/ui/components/tables/table-actions';
 
 function FormTableSkeleton() {
   return <FormsResponsiveTable forms={[]} loading={true} />;
@@ -24,7 +24,7 @@ export default async function TableForm({ searchParams }) {
             </p>
           </div>
           <div className="mt-4 sm:mt-0">
-            <CreateForm />
+            <CreateButton basePath="form" label="Crear Forma" />
           </div>
         </div>
       </div>

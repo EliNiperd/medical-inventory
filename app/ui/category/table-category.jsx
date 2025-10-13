@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import CategoriesTableWrapper from '@/app/ui/components/tables/CategoriesTableWrapper';
 import CategoriesResponsiveTable from '@/app/ui/components/tables/CategoriesResponsiveTable';
-import { CreateCategory } from '@/app/ui/category/button-category';
+import { CreateButton } from '@/app/ui/components/tables/table-actions';
 
 function CategoryTableSkeleton() {
   return <CategoriesResponsiveTable categories={[]} loading={true} />;
@@ -24,7 +24,7 @@ export default async function TableCategory({ searchParams }) {
             </p>
           </div>
           <div className="mt-4 sm:mt-0">
-            <CreateCategory />
+            <CreateButton basePath="category" label="Crear Presentación" />
           </div>
         </div>
       </div>

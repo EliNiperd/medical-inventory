@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import { BeakerIcon } from '@heroicons/react/24/outline';
-import { DeleteButton } from '@/app/ui/components/tables/button-delete';
+import { DeleteButton } from '@/app/ui/components/tables/table-actions';
 import { deleteMedicine } from '@/app/dashboard/medicine/actions';
 
 // Importar el sistema modular para la tabla
