@@ -13,9 +13,10 @@ import {
   ResponsiveContainer,
   Bar,
 } from 'recharts';
+import { useEffect, useState } from 'react';
 import { getExpiryStatus } from '@/lib/utils/expiryAlerts';
 
-// Colores para la gráficas
+// Colores para las gráficas
 const COLORS = {
   expired: '#ef4444', // red-500
   critical: '#f97316', // orange-500
@@ -24,17 +25,30 @@ const COLORS = {
   analgesic: '#3b82f6', // blue-500
   antibiotic: '#8b5cf6', // purple-500
   antihistamine: '#ec4899', // pink-500
-  //antiinflammatory: '#10b981', // emerald-500
-  //vitamin: '#f59e0b', // amber-500
   medicamento: '#10b981', // emerald-500
   'prueba 10': '#f59e0b', // amber-500
   other: '#6b7280', // gray-500
 };
 
+// Hook para detectar si el modo oscuro está activo
+function useDarkMode() {
+  const [isDark, setIsDark] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia('(prefers-color-scheme: dark)');
+    setIsDark(mql.matches);
+    const handler = (e) => setIsDark(e.matches);
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  }, []);
+  // Si usas Tailwind 'class' y asignas .dark en html puedes mejorar aquí, pero esto funcionará para la mayoría de SPAs.
+  return isDark;
+}
+
 /**
  * Gráfica de Dona - Medicamentos Activos vs Vencidos
  */
 export function ActiveVsExpiredChart({ medicines = [] }) {
+  const isDark = useDarkMode();
   const now = new Date();
 
   const stats = {
@@ -49,7 +63,7 @@ export function ActiveVsExpiredChart({ medicines = [] }) {
     { name: 'Vencidos', value: stats.expired, color: COLORS.expired },
   ];
 
-  //Si no hay datos
+  // Si no hay datos
   if (medicines.length === 0) {
     return (
       <div className="flex items-center justify-center h-64 text-gray-400 dark:text-gray-500">
@@ -57,6 +71,11 @@ export function ActiveVsExpiredChart({ medicines = [] }) {
       </div>
     );
   }
+
+  // Ajuste de colores para el tooltip y backgrounds
+  const tooltipBgColor = isDark ? 'rgba(30,41,59,0.95)' : 'rgba(255,255,255,0.95)'; // slate-800 o blanco
+  const tooltipTextColor = isDark ? '#f1f5f9' : '#1e293b'; // slate-100 o slate-800
+  const tooltipBorderColor = isDark ? '#334155' : '#e5e7eb'; // slate-700 o gray-200
 
   return (
     <div className="space-y-4">
@@ -88,29 +107,16 @@ export function ActiveVsExpiredChart({ medicines = [] }) {
           <Tooltip
             formatter={(value) => `${value} medicamentos`}
             contentStyle={{
-              backgroundColor: 'rgba(255, 255, 255, 0.8)',
-              border: '1px solid #e5e7eb',
+              backgroundColor: tooltipBgColor,
+              border: `1px solid ${tooltipBorderColor}`,
+              color: tooltipTextColor,
               borderRadius: '0.5rem',
               padding: '0.75rem',
             }}
-            content={({ active, payload }) => {
-              if (active && payload && payload.length) {
-                return (
-                  <div className="rounded-lg border bg-background p-2 shadow-sm">
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="flex flex-col">
-                        <span className="text-[0.70rem] uppercase text-muted-foreground">
-                          {payload[0].name}
-                        </span>
-                        <span className="font-bold text-muted-foreground">{payload[0].value}</span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              }
-
-              return null;
+            labelStyle={{
+              color: tooltipTextColor,
             }}
+            cursor={{ fill: isDark ? 'rgba(51,65,85,0.1)' : 'rgba(59,130,246,0.1)' }}
           />
         </PieChart>
       </ResponsiveContainer>
@@ -140,20 +146,16 @@ export function ActiveVsExpiredChart({ medicines = [] }) {
  * Gráfica de Barras - Próximos a Vencer (30 días)
  */
 export function ExpiringMedicinesChart({ medicines = [] }) {
+  const isDark = useDarkMode();
   const now = new Date();
-  const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
-
-  // Agrupar medicamentos por semana
   const weeklyData = [];
   for (let i = 0; i < 5; i++) {
     const weekStart = new Date(now.getTime() + i * 7 * 24 * 60 * 60 * 1000);
     const weekEnd = new Date(weekStart.getTime() + 7 * 24 * 60 * 60 * 1000);
-
     const medicinesInWeek = medicines.filter((med) => {
       const expiryDate = new Date(med.expiry_date || med.expiration_date);
       return expiryDate >= weekStart && expiryDate < weekEnd;
     });
-
     // Clasificar por estado
     const expired = medicinesInWeek.filter((med) => {
       const status = getExpiryStatus(med.expiry_date || med.expiration_date);
@@ -187,6 +189,9 @@ export function ExpiringMedicinesChart({ medicines = [] }) {
     );
   }
 
+  const gridColor = isDark ? '#334155' : '#e5e7eb';
+  const tickColor = isDark ? '#f1f5f9' : '#6b7280';
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -198,47 +203,58 @@ export function ExpiringMedicinesChart({ medicines = [] }) {
 
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={weeklyData}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" className="dark:stroke-gray-700" />
+          <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
           <XAxis
             dataKey="week"
-            tick={{ fill: '#6b7280', fontSize: 12 }}
-            axisLine={{ stroke: '#e5e7eb' }}
-            className="dark:stroke-gray-700"
+            tick={{ fill: tickColor, fontSize: 12 }}
+            axisLine={{ stroke: gridColor }}
           />
           <YAxis
-            tick={{ fill: '#6b7280', fontSize: 12 }}
-            axisLine={{ stroke: '#e5e7eb' }}
+            tick={{ fill: tickColor, fontSize: 12 }}
+            axisLine={{ stroke: gridColor }}
             allowDecimals={false}
-            className="dark:stroke-gray-700"
           />
           <Tooltip
+            contentStyle={{
+              backgroundColor: isDark ? 'rgba(30,41,59,0.95)' : 'rgba(255,255,255,0.95)',
+              color: tickColor,
+              border: `1px solid ${gridColor}`,
+              borderRadius: '0.5rem',
+              padding: '0.75rem',
+            }}
+            labelStyle={{
+              color: tickColor,
+            }}
             content={({ active, payload, label }) => {
               if (active && payload && payload.length) {
                 return (
-                  <div className="rounded-lg border bg-background p-2 shadow-sm">
-                    <div className="grid grid-cols-1 gap-2">
+                  <div
+                    style={{
+                      background: isDark ? 'rgba(30,41,59,0.95)' : 'white',
+                      border: `1px solid ${gridColor}`,
+                      borderRadius: '8px',
+                      padding: '0.75rem',
+                      color: tickColor,
+                    }}
+                  >
+                    <div className="flex flex-col">
+                      <span className="text-[0.80rem] uppercase">{label}</span>
                       <div className="flex flex-col">
-                        <span className="text-[0.70rem] uppercase text-muted-foreground">
-                          {label}
-                        </span>
-                        <div className="flex flex-col">
-                          {payload.map((entry, index) => (
-                            <span key={index} style={{ color: entry.color }}>
-                              {`${entry.name}: ${entry.value}`}
-                            </span>
-                          ))}
-                        </div>
+                        {payload.map((entry, idx) => (
+                          <span key={idx} style={{ color: entry.color }}>
+                            {`${entry.name}: ${entry.value}`}
+                          </span>
+                        ))}
                       </div>
                     </div>
                   </div>
                 );
               }
-
               return null;
             }}
-            cursor={{ fill: 'rgba(59, 130, 246, 0.1)' }}
+            cursor={{ fill: isDark ? 'rgba(51,65,85,0.1)' : 'rgba(59,130,246,0.1)' }}
           />
-          <Legend wrapperStyle={{ paddingTop: '1rem' }} iconType="circle" />
+          <Legend wrapperStyle={{ paddingTop: '1rem', color: tickColor }} iconType="circle" />
           <Bar dataKey="vencidos" fill={COLORS.expired} radius={[4, 4, 0, 0]} name="Vencidos" />
           <Bar dataKey="criticos" fill={COLORS.critical} radius={[4, 4, 0, 0]} name="Críticos" />
           <Bar
@@ -291,7 +307,8 @@ export function ExpiringMedicinesChart({ medicines = [] }) {
  * Gráfica de Dona - Distribución por Categoría
  */
 export function CategoryDistributionChart({ medicines = [] }) {
-  // Agrupar por cateoría (según schema)
+  const isDark = useDarkMode();
+  // Agrupar por categoría
   const categories = medicines.reduce((acc, med) => {
     const category = med.category_name || med.idCategory || 'Otros';
     acc[category] = (acc[category] || 0) + 1;
@@ -311,6 +328,10 @@ export function CategoryDistributionChart({ medicines = [] }) {
       </div>
     );
   }
+
+  const tooltipBgColor = isDark ? 'rgba(30,41,59,0.95)' : 'rgba(255,255,255,0.95)';
+  const tooltipTextColor = isDark ? '#f1f5f9' : '#1e293b';
+  const tooltipBorderColor = isDark ? '#334155' : '#e5e7eb';
 
   return (
     <div className="space-y-4">
@@ -338,24 +359,17 @@ export function CategoryDistributionChart({ medicines = [] }) {
           </Pie>
           <Tooltip
             formatter={(value) => `${value} medicamentos`}
-            content={({ active, payload }) => {
-              if (active && payload && payload.length) {
-                return (
-                  <div className="rounded-lg border bg-background p-2 shadow-sm">
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="flex flex-col">
-                        <span className="text-[0.70rem] uppercase text-muted-foreground">
-                          {payload[0].name}
-                        </span>
-                        <span className="font-bold text-muted-foreground">{payload[0].value}</span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              }
-
-              return null;
+            contentStyle={{
+              backgroundColor: tooltipBgColor,
+              border: `1px solid ${tooltipBorderColor}`,
+              color: tooltipTextColor,
+              borderRadius: '0.5rem',
+              padding: '0.75rem',
             }}
+            labelStyle={{
+              color: tooltipTextColor,
+            }}
+            cursor={{ fill: isDark ? 'rgba(51,65,85,0.06)' : 'rgba(59,130,246,0.04)' }}
           />
         </PieChart>
       </ResponsiveContainer>

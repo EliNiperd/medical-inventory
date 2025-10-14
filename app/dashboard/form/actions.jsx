@@ -11,10 +11,16 @@ export async function fetchForms() {
   await wakeUpDb();
   try {
     const forms = await prisma.forms.findMany();
-    return forms;
+    return { success: true, status: 200, forms };
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch all forms.');
+    //throw new Error('Failed to fetch all forms.');
+    return {
+      success: false,
+      status: 500,
+      error: `Failed to fetch all forms.: ${error}`,
+      forms: [],
+    };
   }
 }
 
@@ -114,6 +120,6 @@ export async function deleteForm(id_form) {
       return JSON.stringify({ status: 200, message: 'Form deleted.' });
     }
   } catch (error) {
-    return JSON.stringify({ status: 500, message: 'Failed to delete form.' });
+    return JSON.stringify({ status: 500, message: `Failed to delete form: ${error}` });
   }
 }

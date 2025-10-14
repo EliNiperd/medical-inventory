@@ -6,7 +6,6 @@ import { redirect } from 'next/navigation';
 
 import { locationSchema } from '@/lib/schemas/location';
 import { wakeUpDb } from '@/app/lib/db-wake-up';
-//import { parseISO } from "date-fns";
 
 export async function fetchLocations() {
   // Paso intermedio: Despierta la DB antes de la consulta
@@ -14,11 +13,17 @@ export async function fetchLocations() {
 
   try {
     const locations = await prisma.locations.findMany();
+    return { success: true, status: 200, locations: locations };
     //console.log("locations action:", locations);
     //console.log("locations action after: ", locations);
-    return locations;
   } catch (error) {
     console.error('Database Error:', error);
+    return {
+      success: false,
+      status: 500,
+      error: `Failed to fetch all locations.: ${error}`,
+      locations: [],
+    };
     //throw new Error("Failed to fetch all locations.");
   }
 }
@@ -126,7 +131,7 @@ export async function deleteLocation(id_location) {
       return JSON.stringify({ status: 200, message: 'Location deleted.' });
     }
   } catch (error) {
-    return JSON.stringify({ status: 500, message: 'Failed to delete location.' });
+    return JSON.stringify({ status: 500, message: `Failed to delete location: ${error}` });
     //throw new Error("Failed to delete location.");
   }
 }

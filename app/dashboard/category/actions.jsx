@@ -1,13 +1,16 @@
 'use server';
 
-//import { getURL } from "@/lib/getURL";
 import prisma from '@/app/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-
 import { categorySchema } from '@/lib/schemas/category';
 import { wakeUpDb } from '@/app/lib/db-wake-up';
 
+/**
+ * Fetch all categories from the database
+ * @returns {Array} List of categories
+ * @throws {Error} If there is an error fetching the categories
+ */
 export async function fetchCategories() {
   // Paso intermedio: Despierta la DB antes de la consulta
   await wakeUpDb();
@@ -15,9 +18,15 @@ export async function fetchCategories() {
   try {
     const categories = await prisma.categories.findMany();
     //console.log("categories action:", categories);
-    return categories;
+    return { success: true, status: 200, categories: categories };
   } catch (error) {
     console.error('Database Error:', error);
+    return {
+      success: false,
+      status: 500,
+      error: `Failed to fetch all categories.: ${error}`,
+      categories: [],
+    };
     //throw new Error("Failed to fetch all categories.");
   }
 }
@@ -118,6 +127,6 @@ export async function deleteCategory(id_category) {
       return JSON.stringify({ status: 200, message: 'Category deleted.' });
     }
   } catch (error) {
-    return JSON.stringify({ status: 500, message: 'Failed to delete category.' });
+    return JSON.stringify({ status: 500, message: `Failed to delete category.: ${error}` });
   }
 }

@@ -22,8 +22,11 @@ import FooterForm from '@/app/ui/components/form/footer-form';
 import FormInput from '@/app/ui/components/form/form-input';
 import { SubmitButton } from '@/app/ui/components/form/button-form';
 import { toast } from 'sonner';
+import { useMedicineCatalogs } from '@/app/hooks/useMedicine';
 
-export default function MedicineForm({ medicine, categories = [], forms = [], locations = [] }) {
+//, categories = [], forms = [], locations = []
+export default function MedicineForm({ medicine }) {
+  const { categories, forms, locations } = useMedicineCatalogs();
   const isEditMode = Boolean(medicine);
 
   const DICTIONARY_TITLE = {
