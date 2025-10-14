@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { getToastMessage } from '@/lib/utils/expiryAlerts';
+import { fetchFilteredMedicines } from '../dashboard/medicine/actions';
 
 /**
  * Hook personalizado para gestionar el estado del dashboard
@@ -169,21 +170,21 @@ export function useMedicines() {
       setLoading(true);
       setError(null);
 
-      const response = await fetch('/api/medicines', {
-        method: 'GET',
-        cache: 'no-store',
-      });
+      // Llamada a la API (Server Action)
+      const response = await fetchFilteredMedicines('', 1, 100, 'name_medicine', 'asc');
+      //console.log(response);
+      setMedicines(response.medicines || response); // Ajusta según tu respuesta
 
-      if (!response.ok) {
+      if (!response.success) {
         throw new Error('Error al cargar medicamentos');
       }
 
-      const data = await response.json();
-      setMedicines(data.medicines || []);
+      //const data = await response.json();
+      //setMedicines(data.medicines || []);
 
-      return data.medicines;
+      return response.medicines;
     } catch (err) {
-      //console.error('Error loading medicines:', err);
+      console.error('Error loading medicines:', err);
       setError(err.message);
       toast.error('Error al cargar medicamentos');
       return [];

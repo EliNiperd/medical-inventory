@@ -15,6 +15,7 @@ import {
   ExpiringMedicinesChart,
   CategoryDistributionChart,
 } from '@/app/ui/dashborad/DashboardCharts';
+import Link from 'next/link';
 
 // Card de Métrica Reutilizable
 const MetricCard = ({ title, value, icon: Icon, color = 'blue', subtitle, trend }) => {
@@ -347,12 +348,15 @@ export default function DashboardComponent() {
 
           {/* Acciones Rápidas */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button className="flex items-center gap-3 p-4 bg-white dark:bg-gray-800 border-2 border-blue-200 dark:border-blue-700 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900 transition-colors">
+            <Link
+              href="/dashboard/inventory"
+              className="flex items-center gap-3 p-4 bg-white dark:bg-gray-800 border-2 border-blue-200 dark:border-blue-700 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900 transition-colors"
+            >
               <Package className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               <span className="font-medium text-gray-900 dark:text-white">
                 Ver Inventario Completo
               </span>
-            </button>
+            </Link>
 
             <button className="flex items-center gap-3 p-4 bg-white dark:bg-gray-800 border-2 border-green-200 dark:border-green-700 rounded-lg hover:bg-green-50 dark:hover:bg-green-900 transition-colors">
               <Pill className="w-5 h-5 text-green-600 dark:text-green-400" />

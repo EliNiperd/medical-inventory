@@ -52,7 +52,7 @@ export function ActiveVsExpiredChart({ medicines = [] }) {
   //Si no hay datos
   if (medicines.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64 text-gray-400">
+      <div className="flex items-center justify-center h-64 text-gray-400 dark:text-gray-500">
         <p>No hay medicamentos registrados</p>
       </div>
     );
@@ -88,29 +88,47 @@ export function ActiveVsExpiredChart({ medicines = [] }) {
           <Tooltip
             formatter={(value) => `${value} medicamentos`}
             contentStyle={{
-              backgroundColor: 'white',
+              backgroundColor: 'rgba(255, 255, 255, 0.8)',
               border: '1px solid #e5e7eb',
               borderRadius: '0.5rem',
               padding: '0.75rem',
+            }}
+            content={({ active, payload }) => {
+              if (active && payload && payload.length) {
+                return (
+                  <div className="rounded-lg border bg-background p-2 shadow-sm">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="flex flex-col">
+                        <span className="text-[0.70rem] uppercase text-muted-foreground">
+                          {payload[0].name}
+                        </span>
+                        <span className="font-bold text-muted-foreground">{payload[0].value}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
+              return null;
             }}
           />
         </PieChart>
       </ResponsiveContainer>
 
       {/* Leyenda personalizada */}
-      <div className="grid grid-cols-2 gap-4 pt-4 border-t">
+      <div className="grid grid-cols-2 gap-4 pt-4 border-t dark:border-gray-700">
         <div className="flex items-center gap-3">
           <div className="w-4 h-4 rounded-full" style={{ backgroundColor: COLORS.ok }}></div>
           <div>
-            <p className="text-sm font-medium text-gray-900">Activos</p>
-            <p className="text-2xl font-bold text-gray-900 ">{stats.active}</p>
+            <p className="text-sm font-medium text-gray-900 dark:text-gray-100">Activos</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.active}</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <div className="w-4 h-4 rounded-full" style={{ backgroundColor: COLORS.expired }}></div>
           <div>
-            <p className="text-sm font-medium text-gray-900 ">Vencidos</p>
-            <p className="text-2xl font-bold text-gray-900 ">{stats.expired}</p>
+            <p className="text-sm font-medium text-gray-900 dark:text-gray-100">Vencidos</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.expired}</p>
           </div>
         </div>
       </div>
@@ -163,7 +181,7 @@ export function ExpiringMedicinesChart({ medicines = [] }) {
 
   if (medicines.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64 text-gray-400">
+      <div className="flex items-center justify-center h-64 text-gray-400 dark:text-gray-500">
         <p>No hay datos disponibles</p>
       </div>
     );
@@ -180,23 +198,43 @@ export function ExpiringMedicinesChart({ medicines = [] }) {
 
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={weeklyData}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" className="dark:stroke-gray-700" />
           <XAxis
             dataKey="week"
             tick={{ fill: '#6b7280', fontSize: 12 }}
             axisLine={{ stroke: '#e5e7eb' }}
+            className="dark:stroke-gray-700"
           />
           <YAxis
             tick={{ fill: '#6b7280', fontSize: 12 }}
             axisLine={{ stroke: '#e5e7eb' }}
             allowDecimals={false}
+            className="dark:stroke-gray-700"
           />
           <Tooltip
-            contentStyle={{
-              backgroundColor: 'white',
-              border: '1px solid #e5e7eb',
-              borderRadius: '0.5rem',
-              padding: '0.75rem',
+            content={({ active, payload, label }) => {
+              if (active && payload && payload.length) {
+                return (
+                  <div className="rounded-lg border bg-background p-2 shadow-sm">
+                    <div className="grid grid-cols-1 gap-2">
+                      <div className="flex flex-col">
+                        <span className="text-[0.70rem] uppercase text-muted-foreground">
+                          {label}
+                        </span>
+                        <div className="flex flex-col">
+                          {payload.map((entry, index) => (
+                            <span key={index} style={{ color: entry.color }}>
+                              {`${entry.name}: ${entry.value}`}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
+              return null;
             }}
             cursor={{ fill: 'rgba(59, 130, 246, 0.1)' }}
           />
@@ -213,14 +251,14 @@ export function ExpiringMedicinesChart({ medicines = [] }) {
       </ResponsiveContainer>
 
       {/* Resumen */}
-      <div className="grid grid-cols-3 gap-4 pt-4 border-t">
+      <div className="grid grid-cols-3 gap-4 pt-4 border-t dark:border-gray-700">
         <div className="text-center">
           <div
             className="w-3 h-3 rounded-full mx-auto mb-1"
             style={{ backgroundColor: COLORS.expired }}
           ></div>
-          <p className="text-xs text-gray-600">Vencidos</p>
-          <p className="text-lg font-bold text-gray-900">
+          <p className="text-xs text-gray-600 dark:text-gray-300">Vencidos</p>
+          <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
             {weeklyData.reduce((sum, week) => sum + week.vencidos, 0)}
           </p>
         </div>
@@ -229,8 +267,8 @@ export function ExpiringMedicinesChart({ medicines = [] }) {
             className="w-3 h-3 rounded-full mx-auto mb-1"
             style={{ backgroundColor: COLORS.critical }}
           ></div>
-          <p className="text-xs text-gray-600">Críticos</p>
-          <p className="text-lg font-bold text-gray-900">
+          <p className="text-xs text-gray-600 dark:text-gray-300">Críticos</p>
+          <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
             {weeklyData.reduce((sum, week) => sum + week.criticos, 0)}
           </p>
         </div>
@@ -239,8 +277,8 @@ export function ExpiringMedicinesChart({ medicines = [] }) {
             className="w-3 h-3 rounded-full mx-auto mb-1"
             style={{ backgroundColor: COLORS.warning }}
           ></div>
-          <p className="text-xs text-gray-600">Advertencia</p>
-          <p className="text-lg font-bold text-gray-900">
+          <p className="text-xs text-gray-600 dark:text-gray-300">Advertencia</p>
+          <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
             {weeklyData.reduce((sum, week) => sum + week.advertencia, 0)}
           </p>
         </div>
@@ -268,7 +306,7 @@ export function CategoryDistributionChart({ medicines = [] }) {
 
   if (medicines.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64 text-gray-400">
+      <div className="flex items-center justify-center h-64 text-gray-400 dark:text-gray-500">
         <p>No hay datos disponibles</p>
       </div>
     );
@@ -300,25 +338,39 @@ export function CategoryDistributionChart({ medicines = [] }) {
           </Pie>
           <Tooltip
             formatter={(value) => `${value} medicamentos`}
-            contentStyle={{
-              backgroundColor: 'white',
-              border: '1px solid #e5e7eb',
-              borderRadius: '0.5rem',
-              padding: '0.75rem',
+            content={({ active, payload }) => {
+              if (active && payload && payload.length) {
+                return (
+                  <div className="rounded-lg border bg-background p-2 shadow-sm">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="flex flex-col">
+                        <span className="text-[0.70rem] uppercase text-muted-foreground">
+                          {payload[0].name}
+                        </span>
+                        <span className="font-bold text-muted-foreground">{payload[0].value}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
+              return null;
             }}
           />
         </PieChart>
       </ResponsiveContainer>
 
       {/* Lista de categorías */}
-      <div className="space-y-2 pt-4 border-t">
+      <div className="space-y-2 pt-4 border-t dark:border-gray-700">
         {data.map((item, index) => (
           <div key={index} className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
-              <span className="text-sm text-gray-700">{item.name}</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300">{item.name}</span>
             </div>
-            <span className="text-sm font-semibold text-gray-900">{item.value}</span>
+            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+              {item.value}
+            </span>
           </div>
         ))}
       </div>
