@@ -1,27 +1,27 @@
 import Breadcrumbs from '@/app/ui/breadcrumbs';
-import Form from '@/app/ui/user/edit-user';
+import UserForm from '@/app/ui/user/user-form';
 import { fetchUserById } from '@/app/dashboard/user/actions';
 
-async function page({ params }) {
+async function Page({ params }) {
   const id = params.id;
 
-  const [user] = await Promise.all([fetchUserById(id)]);
+  const { user } = await fetchUserById(id);
 
   return (
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'User', href: '/dashboard/user', active: false },
+          { label: 'Usuarios', href: '/dashboard/user' },
           {
             label: 'Editar Usuario',
             href: `/dashboard/user/${id}/edit`,
             active: true,
           },
         ]}
-      ></Breadcrumbs>
-      <Form user={user} />
+      />
+      <UserForm user={user} />
     </main>
   );
 }
 
-export default page;
+export default Page;

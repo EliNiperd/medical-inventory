@@ -37,7 +37,7 @@ export default async function TableCategory({ searchParams }) {
 
       {/* Table con Suspense*/}
       <Suspense key={JSON.stringify(searchParams)} fallback={<CategoryTableSkeleton />}>
-        <ModularCategoryTable categories={categories} loading={false} />
+        <ModularCategoryTable categories={categories.categories} loading={false} />
       </Suspense>
 
       {/* Footer info */}

@@ -41,7 +41,7 @@ export default async function TableUsersPage({ searchParams }) {
         key={JSON.stringify(searchParams)} // Re-suspense cuando cambien los parámetros
         fallback={<UsersTableSkeleton />}
       >
-        <UsersResponsiveTable users={users} loading={false} />
+        <UsersResponsiveTable users={users.users} loading={false} />
       </Suspense>
 
       {/* Footer info */}

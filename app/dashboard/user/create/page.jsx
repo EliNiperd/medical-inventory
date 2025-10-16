@@ -1,20 +1,9 @@
-import Breadcrumbs from '@/app/ui/breadcrumbs';
-import Form from '@/app/ui/user/create-user';
+import UserForm from '@/app/ui/user/user-form';
 
-export default function page() {
+export default function Page() {
   return (
     <main>
-      <Breadcrumbs
-        breadcrumbs={[
-          { label: 'User', href: '/dashboard/user', active: false },
-          {
-            label: 'Crear Usuario',
-            href: '/dashboard/user/create',
-            active: true,
-          },
-        ]}
-      ></Breadcrumbs>
-      <Form />
+      <UserForm />
     </main>
   );
 }

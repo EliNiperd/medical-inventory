@@ -40,7 +40,7 @@ export default async function TableForm({ searchParams }) {
 
       {/* Table con Suspense*/}
       <Suspense key={JSON.stringify(searchParams)} fallback={<FormTableSkeleton />}>
-        <ModularFormTable forms={formsData} loading={false} />
+        <ModularFormTable forms={formsData.forms} loading={false} />
       </Suspense>
 
       {/* Footer info */}

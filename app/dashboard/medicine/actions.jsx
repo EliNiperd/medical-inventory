@@ -1,39 +1,10 @@
 'use server';
 
 import { wakeUpDb } from '@/app/lib/db-wake-up';
-//import { getURL } from "@/lib/getURL";
 import prisma from '@/app/lib/prisma';
 import { parseISO } from 'date-fns';
 import { revalidatePath } from 'next/cache';
-//import { redirect } from 'next/navigation';
-//import { z } from 'zod';
 import { medicineSchema } from '@/lib/schemas/medicine.js';
-
-// ============================================
-// SCHEMAS DE VALIDACIÓN
-// ============================================
-// const MedicineSchema = z.object({
-//   name: z.string({ required_error: 'Ingrese el nombre del medicamento' }),
-//   description: z
-//     .string({ required_error: 'Ingrese una descripción del medicamento' })
-//     .max(255, 'La descripción del medicamento debe tener menos de 255 caracteres'),
-//   idCategory: z.string({ required_error: 'Ingrese el nombre de la categoría' }),
-//   idForm: z.string({ required_error: 'Ingrese el nombre del formato' }),
-//   idLocation: z.string({ required_error: 'Ingrese el nombre de la ubicación' }),
-//   expiration_date: z
-//     .date({ required_error: 'Ingrese la fecha de vencimiento' })
-//     .min(new Date(), 'La fecha de vencimiento debe ser posterior a la fecha actual'),
-//   quantity: z
-//     .number({ required_error: 'Ingrese la cantidad de medicamentos' })
-//     .min(1, 'La cantidad de medicamentos debe ser mayor a 0'),
-//   price: z.number({ required_error: 'Ingrese el precio del medicamento' }),
-//   reorder_point: z
-//     .number({ required_error: 'Ingrese el punto de reorden del medicamento' })
-//     .min(1, 'El punto de reorden debe ser mayor a 0'),
-//   packsize: z
-//     .number({ required_error: 'Ingrese el tamaño del empaque del medicamento' })
-//     .min(1, 'El tamaño del empaque debe ser mayor a 0'),
-// });
 
 // ============================================
 // FETCH MEDICINES (READ)

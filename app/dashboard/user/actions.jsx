@@ -2,74 +2,80 @@
 
 import prisma from '@/app/lib/prisma';
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 import bcrypt from 'bcrypt';
-import { z } from 'zod';
+import { auth } from '@/auth';
+import { wakeUpDb } from '@/app/lib/db-wake-up';
+import { userCreateSchema, userEditSchema } from '@/lib/schemas/user';
 
+/** Create a new user
+ * @param {FormData} formData - Form data from the request
+ * @throws {Error} If there is an error creating the user
+ * */
 export async function createUser(formData) {
-  //TODO: revisar si a validación es necesaria
-  //TODO: revisar si es necesario agregar validación por emmail
-  const registerUSerSchema = z
-    .object({
-      email: z
-        .string()
-        .min(1, 'Please enter your email')
-        .email('Please enter a valid email address'),
-      password: z
-        .string()
-        .min(1, 'Please enter your password')
-        .min(6, 'Password must be at least 6 characters long'),
-      confirmPassword: z
-        .string()
-        .min(1, 'Please enter your password confirmation')
-        .min(6, 'Password must be at least 6 characters long'),
-      /*.refine((data) => data === password, {
-        message: "Las contraseñas no coinciden",
-      }),*/
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-      message: 'Las contraseñas no coinciden',
-      path: ['confirmPassword'],
+  //console.log('createUser', formData);
+  try {
+    await wakeUpDb();
+    // validar los datos con zod desde el schema userSchema
+    const validateFields = userCreateSchema.safeParse({
+      email: formData.email,
+      password: formData.password,
+      confirmPassword: formData.confirmPassword,
     });
 
-  const parsedFormData = registerUSerSchema.safeParse({
-    email: formData.get('email'),
-    password: formData.get('password'),
-    confirmPassword: formData.get('confirmPassword'),
-  });
-  console.log('registerUserSchema', registerUSerSchema, 'parsedFormData', parsedFormData);
-  //return;
-  console.log('registerUserSchema', registerUSerSchema, 'parsedFormData', parsedFormData);
-  //return;
-  if (!parsedFormData.success) {
-    console.error('Invalid form data', parsedFormData.error);
-    return;
+    if (!validateFields.success) {
+      const validationErrors = {};
+      validateFields.error.errors.forEach((err) => {
+        if (err.path.length > 0) {
+          validationErrors[err.path[0]] = err.message;
+        }
+      });
+      console.error('Invalid form data', parsedFormData.error);
+      return {
+        success: false,
+        error: 'Error de validación. Por favor revisa los campos.',
+        validationErrors,
+      };
+    }
+    //console.log(formData);
+    const data = validateFields.data;
+    //console.log('Validated data:', data);
+    // recuperar el id del usuario actual de la sesión
+    const session = await auth();
+    const userId = (session?.user?.id || '5df3b5c6-1c4a-4d2e-8f3b-5c61c4a4d2e8').toString();
+    // hashear la contraseña antes de guardarla en la base de datos
+    const hassedPassword = await bcrypt.hash(formData.password, 10);
+
+    // guardar el nuevo usuario en la base de datos
+    await prisma.users.create({
+      data: {
+        email: data.email,
+        password: hassedPassword,
+        id_user_create: userId,
+      },
+    });
+    // revalidar la caché de la página de usuarios
+    revalidatePath('/dashboard/user');
+    //redirect('/dashboard/user');
+    return { success: true, status: 201, message: 'Usuario creado correctamente' };
+  } catch (error) {
+    console.error('Database Error:', error);
+    return {
+      success: false,
+      status: 500,
+      error: `Failed to create user: ${error}`,
+    };
   }
-
-  //console.log(formData);
-
-  const hassedPassword = await bcrypt.hash(formData.get('password'), 10);
-  const { email, password } = {
-    email: formData.get('email'),
-    password: hassedPassword,
-  };
-
-  //console.log(email, password);
-
-  await prisma.users.create({
-    data: {
-      email,
-      password,
-    },
-  });
-
-  revalidatePath('/dashboard/user');
-  redirect('/dashboard/user');
 }
 
-export async function fetchFilteredUsers(query, page, limit, sort, order) {
+/** Search users by name or email
+ * @param {string} query - Search query
+ * @return {Array} List of users matching the query
+ * @throws {Error} If there is an error fetching the users
+ * */
+export async function fetchFilteredUsers(query) {
   //console.log("fetchFilteredMedicines", query, page, limit, sort, order);
 
+  await wakeUpDb();
   const users = await prisma.users.findMany({
     where: {
       OR: [
@@ -88,10 +94,14 @@ export async function fetchFilteredUsers(query, page, limit, sort, order) {
       ],
     },
   });
-
-  return users;
+  return { success: true, status: 200, users };
 }
 
+/** Search users by ID
+ * @param {string} id - User ID
+ * @return {Object} User object
+ * @throws {Error} If there is an error fetching the user
+ * */
 export async function fetchUserById(id) {
   const user = await prisma.users.findUnique({
     where: {
@@ -99,47 +109,56 @@ export async function fetchUserById(id) {
     },
   });
 
-  return user;
+  return { success: true, status: 200, user };
 }
 
 export async function updateUser(id_user, formData) {
-  console.log('updateUser', id_user, formData.get('password'));
+  try {
+    await wakeUpDb();
 
-  // Obtener el usuario actual de la base de datos
-  const currentUser = await fetchUserById(id_user);
+    const validateFields = userEditSchema.safeParse(formData);
 
-  if (currentUser.length === 0) {
-    throw new Error('Usuario no encontrado');
+    if (!validateFields.success) {
+      const validationErrors = {};
+      validateFields.error.errors.forEach((err) => {
+        if (err.path.length > 0) {
+          validationErrors[err.path[0]] = err.message;
+        }
+      });
+      return {
+        success: false,
+        error: 'Error de validación. Por favor revisa los campos.',
+        validationErrors,
+      };
+    }
+
+    const data = validateFields.data;
+    const updateData = {
+      user_name_full: data.user_name_full,
+      email: data.email,
+    };
+
+    // Si se proporcionó una nueva contraseña, hashearla y agregarla a los datos de actualización
+    if (data.password) {
+      updateData.password = await bcrypt.hash(data.password, 10);
+    }
+
+    await prisma.users.update({
+      where: {
+        id_user: id_user,
+      },
+      data: updateData,
+    });
+
+    revalidatePath('/dashboard/user');
+    return { success: true, message: 'Usuario actualizado correctamente' };
+  } catch (error) {
+    console.error('Database Error:', error);
+    return {
+      success: false,
+      error: `Failed to update user: ${error.message}`,
+    };
   }
-
-  // Verificar si la contraseña ha sido modificada
-  let hashedPassword = currentUser.password;
-  if (formData.get('password') && formData.get('password') !== currentUser.password) {
-    // Si la contraseña ha sido modificada, generar un nuevo hash
-    hashedPassword = await bcrypt.hash(formData.get('password'), 10);
-  }
-
-  //const hassedPassword = await bcrypt.hash(formData.get("password"), 10);
-
-  const { user_name_full, email, password } = {
-    user_name_full: formData.get('user_name_full'),
-    email: formData.get('email'),
-    password: hashedPassword,
-  };
-
-  await prisma.users.update({
-    where: {
-      id_user: id_user,
-    },
-    data: {
-      user_name_full,
-      email,
-      password,
-    },
-  });
-
-  revalidatePath('/dashboard/user');
-  redirect('/dashboard/user');
 }
 
 export async function deleteUser(id_user) {

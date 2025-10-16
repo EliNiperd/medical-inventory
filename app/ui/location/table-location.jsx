@@ -35,7 +35,7 @@ export default async function TableLocations({ searchParams }) {
 
       {/* Table con Suspense*/}
       <Suspense key={JSON.stringify(searchParams)} fallback={<LocationTableSkeleton />}>
-        <ModularLocationTable locations={locations} loading={false} />
+        <ModularLocationTable locations={locations.locations} loading={false} />
       </Suspense>
 
       {/* Footer info */}

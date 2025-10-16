@@ -25,30 +25,32 @@ export function useForm(initialData = {}, zodSchema) {
   const submitTimeoutRef = useRef(null);
   const lastSubmitTimeRef = useRef(0);
 
+  //console.log('🚀 ~ file: useForm.js ~ line 28 ~ validateForm ~ formData', formData);
+
   const validateField = useCallback(
     (fieldName, value) => {
       if (!zodSchema) return true;
 
-      // Clona el esquema para no modificar el original
-      const fieldSchema = zodSchema.shape[fieldName];
-      if (!fieldSchema) return true;
+      const updatedFormData = { ...formData, [fieldName]: value };
+      const result = zodSchema.safeParse(updatedFormData);
 
-      const result = fieldSchema.safeParse(value);
-      setErrors((prev) => ({
-        ...prev,
-        [fieldName]: result.success ? null : result.error.errors[0].message,
-      }));
-
-      return result.success;
+      if (result.success) {
+        setErrors({});
+        return true;
+      } else {
+        const formatted = formatZodErrors(result.error);
+        setErrors(formatted);
+        // La validez del campo específico es si no tiene un error en el nuevo objeto de errores
+        return !formatted[fieldName];
+      }
     },
-    [zodSchema]
+    [zodSchema, formData]
   );
 
   const validateForm = useCallback(
     (options = {}) => {
       const { setTouchedFields = true } = options;
       if (!zodSchema) return true;
-
       const result = zodSchema.safeParse(formData);
 
       if (result.success) {

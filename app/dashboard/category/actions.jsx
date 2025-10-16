@@ -27,39 +27,104 @@ export async function fetchCategories() {
       error: `Failed to fetch all categories.: ${error}`,
       categories: [],
     };
-    //throw new Error("Failed to fetch all categories.");
   }
 }
 
+/**
+ * Fetch a category by id from the database
+ * @param {*} id_category
+ * @return {Object} Category by ID
+ * @throws {Error} If there is an error fetching the category by ID
+ */
 export async function fetchCategoryById(id_category) {
-  const category = await prisma.categories.findUnique({
-    where: {
-      id_category: parseInt(id_category),
-    },
-  });
-  return category;
+  try {
+    // validar que el id_category se recibió correctamente
+    if (!id_category) {
+      return {
+        success: false,
+        status: 400,
+        error: 'Invalid category ID.',
+        category: [],
+      };
+    }
+    // Paso intermedio: Despierta la DB antes de la consulta
+    await wakeUpDb();
+
+    // recuperar el category por id de la base de datos
+    const category = await prisma.categories.findUnique({
+      where: {
+        id_category: parseInt(id_category),
+      },
+    });
+
+    // si no se encuentra el category, devolver un error 404
+    if (!category) {
+      return {
+        success: false,
+        status: 404,
+        error: 'Category not found.',
+        category: [],
+      };
+    }
+    return { success: true, status: 200, category: category };
+  } catch (error) {
+    console.error('Database Error:', error);
+    return {
+      success: false,
+      status: 500,
+      error: `Failed to fetch category by ID.: ${error}`,
+      category: [],
+    };
+  }
 }
+
+/** Search categories by name or description
+ * @param {string} query - Search query
+ * @return {Array} List of categories matching the query
+ * @throws {Error} If there is an error fetching the categories
+ * */
 // , page, limit, sort, order
 export async function fetchFilteredCategories(query) {
-  const categories = await prisma.categories.findMany({
-    where: {
-      OR: [
-        {
-          category_name: {
-            contains: query,
-            mode: 'insensitive',
+  try {
+    // Paso intermedio: Despierta la DB antes de la consulta
+    await wakeUpDb();
+    const categories = await prisma.categories.findMany({
+      where: {
+        OR: [
+          {
+            category_name: {
+              contains: query,
+              mode: 'insensitive',
+            },
           },
-        },
-        {
-          category_description: {
-            contains: query,
-            mode: 'insensitive',
+          {
+            category_description: {
+              contains: query,
+              mode: 'insensitive',
+            },
           },
-        },
-      ],
-    },
-  });
-  return categories;
+        ],
+      },
+    });
+    // TODO: Revisar si es necesario este bloque
+    // if (!categories) {
+    //   return {
+    //     success: false,
+    //     status: 404,
+    //     error: 'Categories not found.',
+    //     categories: [],
+    //   };
+    // }
+    return { success: true, status: 200, categories };
+  } catch (error) {
+    console.error('Database Error:', error);
+    return {
+      success: false,
+      status: 500,
+      error: `Failed to fetch filtered categories.: ${error}`,
+      categories: [],
+    };
+  }
 }
 
 export async function createCategory(formData) {
