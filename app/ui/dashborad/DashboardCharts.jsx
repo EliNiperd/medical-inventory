@@ -32,8 +32,7 @@ const COLORS = {
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="rounded-lg border bg-background p-2 shadow-sm">
-        <p className="label text-sm font-semibold">{`${label}`}</p>
+      <div className="rounded-lg bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 p-2 shadow-sm">
         {payload.map((item, index) => (
           <p key={index} className="desc text-sm" style={{ color: item.color }}>
             {`${item.name}: ${item.value}`}
@@ -53,9 +52,9 @@ export function ActiveVsExpiredChart({ medicines = [] }) {
   const now = new Date();
 
   const stats = {
-    active: medicines.filter((med) => new Date(med.expiry_date || med.expiration_date) > now)
+    active: medicines.filter((med) => new Date(med.expiration_date || med.expiration_date) > now)
       .length,
-    expired: medicines.filter((med) => new Date(med.expiry_date || med.expiration_date) <= now)
+    expired: medicines.filter((med) => new Date(med.expiration_date || med.expiration_date) <= now)
       .length,
   };
 
@@ -75,7 +74,7 @@ export function ActiveVsExpiredChart({ medicines = [] }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-500">
           Medicamentos Activos vs Vencidos
         </h3>
         <div className="text-sm text-gray-600 dark:text-gray-400">
@@ -108,15 +107,15 @@ export function ActiveVsExpiredChart({ medicines = [] }) {
         <div className="flex items-center gap-3">
           <div className="w-4 h-4 rounded-full" style={{ backgroundColor: COLORS.ok }}></div>
           <div>
-            <p className="text-sm font-medium text-gray-900 dark:text-gray-100">Activos</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.active}</p>
+            <p className="text-sm font-medium text-gray-900 dark:text-gray-500">Activos</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-gray-500">{stats.active}</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <div className="w-4 h-4 rounded-full" style={{ backgroundColor: COLORS.expired }}></div>
           <div>
-            <p className="text-sm font-medium text-gray-900 dark:text-gray-100">Vencidos</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.expired}</p>
+            <p className="text-sm font-medium text-gray-900 dark:text-gray-500">Vencidos</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-gray-500">{stats.expired}</p>
           </div>
         </div>
       </div>
@@ -172,7 +171,7 @@ export function ExpiringMedicinesChart({ medicines = [] }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-500">
           Próximos a Vencer (30 días)
         </h3>
         <div className="text-sm text-gray-600 dark:text-gray-400">Por semana</div>
@@ -180,21 +179,31 @@ export function ExpiringMedicinesChart({ medicines = [] }) {
 
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={weeklyData}>
-          <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200 dark:stroke-gray-700" />
+          <CartesianGrid
+            strokeDasharray="3 3"
+            className="stroke-gray-200 dark:stroke-gray-700"
+            backgroundColor={{ backgroundColor: 'transparent' }}
+          />
           <XAxis
             dataKey="week"
             tick={{ fontSize: 12 }}
-            className="fill-gray-500 dark:fill-gray-400"
             axisLine={{ className: 'stroke-gray-300 dark:stroke-gray-700' }}
           />
           <YAxis
             tick={{ fontSize: 12 }}
-            className="fill-gray-500 dark:fill-gray-400"
             axisLine={{ className: 'stroke-gray-300 dark:stroke-gray-700' }}
             allowDecimals={false}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(100, 116, 139, 0.1)' }} />
-          <Legend wrapperClass="pt-4 text-sm text-gray-600 dark:text-gray-300" />
+          <Tooltip content={<CustomTooltip />} />
+          <Legend
+            wrapperStyle={{
+              backgroundColor: '#f5f5f5',
+              border: '1px solid #d5d5d5',
+              borderRadius: 3,
+              lineHeight: '1.5rem',
+              width: '90%',
+            }}
+          />
           <Bar dataKey="vencidos" fill={COLORS.expired} radius={[4, 4, 0, 0]} name="Vencidos" />
           <Bar dataKey="criticos" fill={COLORS.critical} radius={[4, 4, 0, 0]} name="Críticos" />
           <Bar
@@ -213,8 +222,8 @@ export function ExpiringMedicinesChart({ medicines = [] }) {
             className="w-3 h-3 rounded-full mx-auto mb-1"
             style={{ backgroundColor: COLORS.expired }}
           ></div>
-          <p className="text-xs text-gray-600 dark:text-gray-300">Vencidos</p>
-          <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
+          <p className="text-xs text-gray-600 dark:text-gray-500">Vencidos</p>
+          <p className="text-lg font-bold text-gray-900 dark:text-gray-500">
             {weeklyData.reduce((sum, week) => sum + week.vencidos, 0)}
           </p>
         </div>
@@ -223,8 +232,8 @@ export function ExpiringMedicinesChart({ medicines = [] }) {
             className="w-3 h-3 rounded-full mx-auto mb-1"
             style={{ backgroundColor: COLORS.critical }}
           ></div>
-          <p className="text-xs text-gray-600 dark:text-gray-300">Críticos</p>
-          <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
+          <p className="text-xs text-gray-600 dark:text-gray-500">Críticos</p>
+          <p className="text-lg font-bold text-gray-900 dark:text-gray-500">
             {weeklyData.reduce((sum, week) => sum + week.criticos, 0)}
           </p>
         </div>
@@ -233,8 +242,8 @@ export function ExpiringMedicinesChart({ medicines = [] }) {
             className="w-3 h-3 rounded-full mx-auto mb-1"
             style={{ backgroundColor: COLORS.warning }}
           ></div>
-          <p className="text-xs text-gray-600 dark:text-gray-300">Advertencia</p>
-          <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
+          <p className="text-xs text-gray-600 dark:text-gray-500">Advertencia</p>
+          <p className="text-lg font-bold text-gray-900 dark:text-gray-500">
             {weeklyData.reduce((sum, week) => sum + week.advertencia, 0)}
           </p>
         </div>
@@ -269,7 +278,7 @@ export function CategoryDistributionChart({ medicines = [] }) {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-500">
         Distribución por Categoría
       </h3>
 
@@ -298,12 +307,12 @@ export function CategoryDistributionChart({ medicines = [] }) {
       {/* Lista de categorías */}
       <div className="space-y-2 pt-4 border-t dark:border-gray-700">
         {data.map((item, index) => (
-          <div key={index} className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+          <div key={index} className="flex items-left gap-2 ">
+            <div className="flex items-left gap-2">
               <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
-              <span className="text-sm text-gray-700 dark:text-gray-300">{item.name}</span>
+              <span className="text-sm text-gray-700 dark:text-gray-500">{item.name} -</span>
             </div>
-            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+            <span className="text-sm font-semibold text-gray-900 dark:text-gray-500">
               {item.value}
             </span>
           </div>
