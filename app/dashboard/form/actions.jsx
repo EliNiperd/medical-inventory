@@ -114,49 +114,75 @@ export async function fetchFilteredForms(query) {
   }
 }
 
-export async function createForm(formData) {
-  const validateForm = schemaForm.safeParse({
-    form_name: formData.get('form_name'),
-  });
+export async function createForm(data) {
+  const validatedFields = formSchema.safeParse(data);
 
-  if (!validateForm.success) {
-    console.error('Invalid form data', validateForm.error);
-    return;
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      status: 400,
+      error: 'Invalid form data',
+      validationErrors: validatedFields.error.flatten().fieldErrors,
+    };
   }
 
-  await prisma.forms.create({
-    data: {
-      form_name: formData.get('form_name'),
-      form_description: formData.get('form_description') ?? '',
-      id_user_create: '8d8b2e5c-649a-4793-bc56-b8ec3eb68b24',
-    },
-  });
-  revalidatePath('/dashboard/form');
-  redirect('/dashboard/form');
+  const { form_name, form_description } = validatedFields.data;
+
+  try {
+    await prisma.forms.create({
+      data: {
+        form_name,
+        form_description: form_description ?? '',
+        id_user_create: '8d8b2e5c-649a-4793-bc56-b8ec3eb68b24',
+      },
+    });
+    revalidatePath('/dashboard/form');
+    return { success: true, message: 'Formulario creado correctamente' };
+  } catch (error) {
+    console.error('Database Error:', error);
+    return {
+      success: false,
+      status: 500,
+      error: `Failed to create form: ${error.message}`,
+    };
+  }
 }
 
-export async function updateForm(id_form, formData) {
-  const validateForm = schemaForm.safeParse({
-    form_name: formData.get('form_name'),
-  });
+export async function updateForm(id_form, data) {
+  const validatedFields = formSchema.safeParse(data);
 
-  if (!validateForm.success) {
-    console.error('Invalid form data', validateForm.error);
-    return;
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      status: 400,
+      error: 'Invalid form data',
+      validationErrors: validatedFields.error.flatten().fieldErrors,
+    };
   }
 
-  await prisma.forms.update({
-    where: {
-      id_form: id_form,
-    },
-    data: {
-      form_name: formData.get('form_name'),
-      form_description: formData.get('form_description') ?? '',
-      update_at: new Date(),
-    },
-  });
-  revalidatePath('/dashboard/form');
-  redirect('/dashboard/form');
+  const { form_name, form_description } = validatedFields.data;
+
+  try {
+    await prisma.forms.update({
+      where: {
+        id_form: id_form,
+      },
+      data: {
+        form_name,
+        form_description: form_description ?? '',
+        update_at: new Date(),
+      },
+    });
+    revalidatePath('/dashboard/form');
+    return { success: true, message: 'Formulario actualizado correctamente' };
+  } catch (error) {
+    console.error('Database Error:', error);
+    return {
+      success: false,
+      status: 500,
+      error: `Failed to update form: ${error.message}`,
+    };
+  }
 }
 
 export async function deleteForm(id_form) {
