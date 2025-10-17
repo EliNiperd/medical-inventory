@@ -125,7 +125,7 @@ export async function fetchFilteredLocations(query) {
   }
 }
 
-export async function createLocation(formData) {
+export async function createLocation(data) {
   const session = await auth();
   if (!session || !session.user || !session.user.id) {
     return {
@@ -136,17 +136,14 @@ export async function createLocation(formData) {
   }
   const userId = session.user.id;
 
-  const validatedFields = locationSchema.safeParse({
-    location_name: formData.get('location_name'),
-    location_description: formData.get('location_description'),
-  });
+  const validatedFields = locationSchema.safeParse(data);
 
   if (!validatedFields.success) {
     return {
       success: false,
       status: 400,
       error: 'Invalid form data',
-      errors: validatedFields.error.flatten().fieldErrors,
+      validationErrors: validatedFields.error.flatten().fieldErrors,
     };
   }
 
@@ -162,6 +159,7 @@ export async function createLocation(formData) {
     });
 
     revalidatePath('/dashboard/location');
+    return { success: true, message: 'Ubicación creada correctamente' };
   } catch (error) {
     console.error('Database Error:', error);
     return {
@@ -170,33 +168,44 @@ export async function createLocation(formData) {
       error: `Failed to create location: ${error.message}`,
     };
   }
-
-  redirect('/dashboard/location');
 }
 
 export async function updateLocation(id_location, formData) {
-  const validateForm = locationSchema.safeParse({
-    location_name: formData.get('location_name'),
-  });
+  const validatedFields = locationSchema.safeParse(formData);
 
-  if (!validateForm.success) {
-    console.error('Invalid form data', validateForm.error);
-    return;
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      status: 400,
+      error: 'Invalid form data',
+      validationErrors: validatedFields.error.flatten().fieldErrors,
+    };
   }
 
-  await prisma.locations.update({
-    where: {
-      id_location: id_location,
-    },
-    data: {
-      location_name: formData.get('location_name'),
-      location_description: formData.get('location_description') ?? '',
-      updated_at: new Date(),
-    },
-  });
+  const { location_name, location_description } = validatedFields.data;
 
-  revalidatePath('/dashboard/location');
-  redirect('/dashboard/location');
+  try {
+    await prisma.locations.update({
+      where: {
+        id_location: id_location,
+      },
+      data: {
+        location_name,
+        location_description: location_description ?? '',
+        updated_at: new Date(),
+      },
+    });
+
+    revalidatePath('/dashboard/location');
+    return { success: true, message: 'Ubicación actualizada correctamente' };
+  } catch (error) {
+    console.error('Database Error:', error);
+    return {
+      success: false,
+      status: 500,
+      error: `Failed to update location: ${error.message}`,
+    };
+  }
 }
 
 export async function deleteLocation(id_location) {

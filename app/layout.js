@@ -9,6 +9,11 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata = {
   title: 'Medical Inventory',
   description: 'Sistema de gestión de inventario de medicamentos',
+  icons: {
+    icon: [
+      { url: '/favicon-32x32.png', type: 'image/png' }, // Then .png
+    ],
+  },
 };
 
 export default function RootLayout({ children }) {

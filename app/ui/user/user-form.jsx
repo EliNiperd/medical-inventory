@@ -13,6 +13,7 @@ import FormInput from '@/app/ui/components/form/form-input';
 import { SubmitButton } from '@/app/ui/components/form/button-form';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import CustomToast from '@/app/ui/components/custom-toast';
 
 export default function UserForm({ user }) {
   const isEditMode = Boolean(user);
@@ -69,21 +70,19 @@ export default function UserForm({ user }) {
         toast.success(result.message || '✅ Usuario actualizado correctamente');
         router.push('/dashboard/user');
       } else {
-        toast.success('✅ Usuario creado. ¿Deseas agregar otro?', {
-          action: {
-            label: 'Sí, agregar otro',
-            onClick: () => {
-              reset();
-            },
-          },
-          cancel: {
-            label: 'No, ir al listado',
-            onClick: () => {
-              router.push('/dashboard/user');
-            },
-          },
-          duration: 10000, // Keep the toast open longer
-        });
+        toast.custom(
+          (t) => (
+            <CustomToast
+              id={t}
+              message="✅ Usuario creado. ¿Deseas agregar otro?"
+              onConfirm={() => reset()}
+              onCancel={() => router.push('/dashboard/user')}
+              confirmLabel="Sí, agregar otro"
+              cancelLabel="No, ir al listado"
+            />
+          ),
+          { duration: 10000 }
+        );
       }
     } else {
       if (result.validationErrors) {

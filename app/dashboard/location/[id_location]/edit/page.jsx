@@ -1,27 +1,26 @@
 import Breadcrumbs from '@/app/ui/breadcrumbs';
-import FormLocationEdit from '@/app/ui/location/edit-location';
+import LocationForm from '@/app/ui/location/location-form';
 import { fetchLocationById } from '@/app/dashboard/location/actions';
 
-async function page({ params }) {
+async function Page({ params }) {
   const id_location = params.id_location;
+  const { location } = await fetchLocationById(id_location);
 
-  const [location] = await Promise.all([fetchLocationById(id_location)]);
-  //console.log(location);
   return (
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Ubicación', href: '/dashboard/location', active: false },
+          { label: 'Ubicaciones', href: '/dashboard/location' },
           {
             label: 'Editar Ubicación',
             href: `/dashboard/location/${id_location}/edit`,
             active: true,
           },
         ]}
-      ></Breadcrumbs>
-      <FormLocationEdit location={location} />
+      />
+      <LocationForm location={location} />
     </main>
   );
 }
 
-export default page;
+export default Page;
