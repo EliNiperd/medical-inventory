@@ -127,49 +127,75 @@ export async function fetchFilteredCategories(query) {
   }
 }
 
-export async function createCategory(formData) {
-  const validateCategory = schemaCategory.safeParse({
-    category_name: formData.get('category_name'),
-  });
+export async function createCategory(data) {
+  const validatedFields = categorySchema.safeParse(data);
 
-  if (!validateCategory.success) {
-    console.error('Invalid form data', validateCategory.error);
-    return;
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      status: 400,
+      error: 'Invalid form data',
+      validationErrors: validatedFields.error.flatten().fieldErrors,
+    };
   }
 
-  await prisma.categories.create({
-    data: {
-      category_name: formData.get('category_name'),
-      category_description: formData.get('category_description') ?? '',
-      id_user_create: '8d8b2e5c-649a-4793-bc56-b8ec3eb68b24',
-    },
-  });
-  revalidatePath('/dashboard/category');
-  redirect('/dashboard/category');
+  const { category_name, category_description } = validatedFields.data;
+
+  try {
+    await prisma.categories.create({
+      data: {
+        category_name,
+        category_description: category_description ?? '',
+        id_user_create: '8d8b2e5c-649a-4793-bc56-b8ec3eb68b24',
+      },
+    });
+    revalidatePath('/dashboard/category');
+    return { success: true, message: 'Categoría creada correctamente' };
+  } catch (error) {
+    console.error('Database Error:', error);
+    return {
+      success: false,
+      status: 500,
+      error: `Failed to create category: ${error.message}`,
+    };
+  }
 }
 
-export async function updateCategory(id_category, formData) {
-  const validateCategory = schemaCategory.safeParse({
-    category_name: formData.get('category_name'),
-  });
+export async function updateCategory(id_category, data) {
+  const validatedFields = categorySchema.safeParse(data);
 
-  if (!validateCategory.success) {
-    console.error('Invalid category data', validateCategory.error);
-    return;
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      status: 400,
+      error: 'Invalid form data',
+      validationErrors: validatedFields.error.flatten().fieldErrors,
+    };
   }
 
-  await prisma.categories.update({
-    where: {
-      id_category: id_category,
-    },
-    data: {
-      category_name: formData.get('category_name'),
-      category_description: formData.get('category_description') ?? '',
-      //update_at: new Date(),
-    },
-  });
-  revalidatePath('/dashboard/category');
-  redirect('/dashboard/category');
+  const { category_name, category_description } = validatedFields.data;
+
+  try {
+    await prisma.categories.update({
+      where: {
+        id_category: id_category,
+      },
+      data: {
+        category_name,
+        category_description: category_description ?? '',
+        //update_at: new Date(),
+      },
+    });
+    revalidatePath('/dashboard/category');
+    return { success: true, message: 'Categoría actualizada correctamente' };
+  } catch (error) {
+    console.error('Database Error:', error);
+    return {
+      success: false,
+      status: 500,
+      error: `Failed to update category: ${error.message}`,
+    };
+  }
 }
 
 export async function deleteCategory(id_category) {

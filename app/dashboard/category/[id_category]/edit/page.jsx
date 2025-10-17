@@ -1,27 +1,26 @@
 import Breadcrumbs from '@/app/ui/breadcrumbs';
-import Category from '@/app/ui/category/edit-category';
+import CategoryForm from '@/app/ui/category/category-form';
 import { fetchCategoryById } from '@/app/dashboard/category/actions';
 
-async function page({ params }) {
+async function Page({ params }) {
   const id_category = params.id_category;
+  const { category } = await fetchCategoryById(id_category);
 
-  const [category] = await Promise.all([fetchCategoryById(id_category)]);
-  //console.log(location);
   return (
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Presentaciones', href: '/dashboard/category', active: false },
+          { label: 'Categorías', href: '/dashboard/category' },
           {
-            label: 'Editar presentación',
+            label: 'Editar Categoría',
             href: `/dashboard/category/${id_category}/edit`,
             active: true,
           },
         ]}
-      ></Breadcrumbs>
-      <Category category={category} />
+      />
+      <CategoryForm category={category} />
     </main>
   );
 }
 
-export default page;
+export default Page;
