@@ -143,7 +143,7 @@
     @apply btn-destructive;
   }
 
-  /* Componentes de formulario */
+  /* Componentes de formulario   */
   .form-basic {
     @apply w-full rounded-lg border border-input bg-background-form px-3 py-2 
            shadow-sm transition-all duration-200 ease-in-out
