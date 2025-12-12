@@ -35,6 +35,7 @@ jobs:
 
           docker push $IMAGE_NAME
 
+
       - name: Deploy on VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
