@@ -1,39 +1,46 @@
-# ---------- BUILD ----------
+# 1. Build stage
 FROM node:18-alpine AS builder
-
-# Dependencias necesarias para Sharp
-RUN apk add --no-cache \
-    vips-dev \
-    fftw-dev \
-    build-base \
-    --repository=https://dl-cdn.alpinelinux.org/alpine/edge/testing
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install --production=false
+RUN npm install
 
 COPY . .
 
-# Prisma (SQLite + Postgres)
-COPY prisma ./prisma
-RUN npx prisma generate
+# Pasar variables de entorno al build
+ARG NEXTAUTH_URL
+ARG NEXTAUTH_SECRET
+ARG DATABASE_URL
+ARG POSTGRES_URL
+ARG GOOGLE_API_KEY
+
+ENV NEXTAUTH_URL=$NEXTAUTH_URL
+ENV NEXTAUTH_SECRET=$NEXTAUTH_SECRET
+ENV DATABASE_URL=$DATABASE_URL
+ENV POSTGRES_URL=$POSTGRES_URL
+ENV GOOGLE_API_KEY=$GOOGLE_API_KEY
 
 RUN npm run build
 
-
-# ---------- RUN ----------
+# 2. Production stage
 FROM node:18-alpine AS runner
 
 WORKDIR /app
 
-# Dependencias de Sharp en runtime
-RUN apk add --no-cache \
-    vips-dev \
-    fftw-dev \
-    --repository=https://dl-cdn.alpinelinux.org/alpine/edge/testing
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
 
-COPY --from=builder /app ./
+ENV NODE_ENV=production
+
+# Variables necesarias en runtime
+ENV NEXTAUTH_URL=$NEXTAUTH_URL
+ENV NEXTAUTH_SECRET=$NEXTAUTH_SECRET
+ENV DATABASE_URL=$DATABASE_URL
+ENV POSTGRES_URL=$POSTGRES_URL
+ENV GOOGLE_API_KEY=$GOOGLE_API_KEY
 
 EXPOSE 3000
 
