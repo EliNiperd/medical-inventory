@@ -24,13 +24,7 @@ jobs:
           OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]') &&
           REPO=$(basename "${{ github.repository }}" | tr '[:upper:]' '[:lower:]') &&
           IMAGE_NAME=ghcr.io/$OWNER/$REPO:latest &&
-          docker build
-          --build-arg NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}
-          --build-arg NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
-          --build-arg DATABASE_URL=${{ secrets.DATABASE_URL }}
-          --build-arg POSTGRES_URL=${{ secrets.POSTGRES_URL }}
-          --build-arg GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}
-          -t $IMAGE_NAME . &&
+          docker build --build-arg NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }} --build-arg NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }} --build-arg DATABASE_URL=${{ secrets.DATABASE_URL }} --build-arg POSTGRES_URL=${{ secrets.POSTGRES_URL }} --build-arg GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }} -t $IMAGE_NAME . &&
           docker push $IMAGE_NAME
 
       - name: Deploy on VPS
