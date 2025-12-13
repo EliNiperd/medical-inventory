@@ -21,6 +21,8 @@ ENV DATABASE_URL=$DATABASE_URL
 ENV POSTGRES_URL=$POSTGRES_URL
 ENV GOOGLE_API_KEY=$GOOGLE_API_KEY
 
+RUN npx prisma generate
+
 RUN npm run build
 
 # 2. Production stage
