@@ -1,6 +1,6 @@
 // next.config.mjs
 const nextConfig = {
-  output: 'standalone',
+  //output: 'standalone',
 
   // Configuración más específica para el tracing
   experimental: {
