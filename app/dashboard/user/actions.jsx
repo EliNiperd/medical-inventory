@@ -2,7 +2,7 @@
 
 import prisma from '@/app/lib/prisma';
 import { revalidatePath } from 'next/cache';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { auth } from '@/auth';
 import { wakeUpDb } from '@/app/lib/db-wake-up';
 import { userCreateSchema, userEditSchema } from '@/lib/schemas/user';
