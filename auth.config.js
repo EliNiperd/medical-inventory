@@ -8,7 +8,8 @@ export const authConfig = {
   },
   secret: process.env.NEXTAUTH_SECRET,
 
-  // ✅ AGREGA ESTO
+  trustHost: true, // ✅ ESTA ES LA CLAVE
+
   trustedHosts: ['medical-inventory.eliconacento.com', 'www.medical-inventory.eliconacento.com'],
 
   callbacks: {
