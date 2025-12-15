@@ -1,7 +1,7 @@
-import { auth } from './auth'; // ✅ importa tu handler real
+import { auth } from './auth';
 
 export default auth((req) => {
-  // ✅ lógica opcional
+  // lógica opcional
 });
 
 export const config = {

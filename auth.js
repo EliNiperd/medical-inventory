@@ -4,8 +4,8 @@ import bcrypt from 'bcryptjs';
 import sql from '@/app/lib/postgresql';
 import { authConfig } from './auth.config';
 
-console.log('✅ AUTH.JS CARGADO EN PRODUCCIÓN');
-console.log('trustedHosts:', authConfig.trustedHosts);
+// console.log('✅ AUTH.JS CARGADO EN PRODUCCIÓN');
+// console.log('trustedHosts:', authConfig.trustedHosts);
 
 async function getUser(email) {
   try {
@@ -21,7 +21,13 @@ export const { auth, signIn, signOut } = NextAuth({
   ...authConfig,
 
   // ✅ Asegúrate de que trustedHosts esté AQUÍ
-  trustedHosts: ['medical-inventory.eliconacento.com', 'www.medical-inventory.eliconacento.com'],
+  trustedHosts: [
+    'medical-inventory.eliconacento.com',
+    'www.medical-inventory.eliconacento.com',
+    'https://medical-inventory.eliconacento.com',
+    'https://www.medical-inventory.eliconacento.com',
+    'medical-inventory.eliconacento.com:443',
+  ],
 
   providers: [
     Credentials({
