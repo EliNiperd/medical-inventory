@@ -4,8 +4,8 @@ import bcrypt from 'bcryptjs';
 import sql from '@/app/lib/postgresql';
 import { authConfig } from './auth.config';
 
-console.log('✅ AUTH.JS CARGADO EN PRODUCCIÓN');
-console.log('trustedHosts:', authConfig.trustedHosts);
+// console.log('✅ AUTH.JS CARGADO EN PRODUCCIÓN');
+// console.log('trustedHosts:', authConfig.trustedHosts);
 
 async function getUser(email) {
   try {

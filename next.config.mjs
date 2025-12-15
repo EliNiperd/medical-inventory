@@ -1,7 +1,7 @@
 // next.config.mjs
 const nextConfig = {
-  //output: 'standalone',
-  output: undefined, // ✅ fuerza a Next.js a NO usar standalone
+  output: 'standalone',
+
   // Configuración más específica para el tracing
   experimental: {
     externalDir: true,
